@@ -1,0 +1,12 @@
+:autocmd! filetypedetect *
+:autocmd! syntaxset *
+:autocmd! NERDTree *
+:autocmd! NERDTreeHijackNetrw *
+:autocmd! gzip *
+:autocmd! matchparen *
+:autocmd! FileExplorer *
+:autocmd! Network *
+:autocmd! tar *
+:autocmd! zip *
+:au BufNew NERD_tree_1 call g:initNerdTreeInPlace("")
+:new NERD_tree_1

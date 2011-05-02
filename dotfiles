@@ -1,0 +1,14 @@
+locations=$(cat <<EOF
+$HOME/.bash_profile
+$HOME/.bashrc
+$HOME/.gitconfig
+$HOME/.hgrc
+$HOME/.inputrc
+$HOME/.perlrc
+$HOME/.screenrc
+$HOME/.vim
+$HOME/.vimrc
+EOF
+)
+
+cp -R $locations ~/.dotfiles

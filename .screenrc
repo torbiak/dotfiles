@@ -1,0 +1,9 @@
+#caption always %w
+escape ^xx
+vbell on
+vbell_msg ""
+nethack on
+
+shelltitle "|"
+hardstatus alwayslastline
+hardstatus string '%{.kg} %=[ %{.kw}%-Lw%{.kr}%n%f %t%{.kw}%+Lw%{.kg} ]%='

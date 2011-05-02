@@ -1,0 +1,11 @@
+[alias]
+    ci = commit
+    co = checkout
+    l = log --pretty=oneline --graph
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[user]
+	name = Jordan Torbiak
+	email = torbiak@gmail.com

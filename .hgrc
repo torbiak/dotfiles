@@ -1,0 +1,12 @@
+[ui]
+username = Jordan Torbiak <torbiak@gmail.com>
+style = ~/.hg/succinct.style
+
+[extensions]
+parentrevspec = 
+hgext.mq = 
+#pager = 
+
+
+[diff]
+git=1
