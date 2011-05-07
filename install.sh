@@ -6,6 +6,7 @@
 
 # List of dotfiles and dotfolders to create symlinks to in $HOME.
 dotfiles=$(cat <<EOF
+.bashrc
 .profile
 .gitconfig
 .hgrc
@@ -26,11 +27,14 @@ preexisting_dotfiles=$(
 )
 
 # Backup preexisting dotfiles
-tar -C $HOME -czf $HOME/dotfile_$(date +%FT%T).bak.tar.gz $preexisting_dotfiles
+if [[ -n "$preexisting" ]]; then
+	backup="$HOME/dotfile_$(date +%FT%T).bak.tar.gz"
+	tar -C $HOME -czf $backup $preexisting_dotfiles
+fi
 
-repodir=$(dirname $0)
+repodir=$(dirname $(readlink -f "$0"))
 for file in $dotfiles; do
-    if [[ -f $HOME/$file ]]; then
+    if [[ -f $HOME/$file || -L $HOME/$file ]]; then
     	rm $HOME/$file
     elif [[ -d $HOME/$file ]]; then
         rm -rf $HOME/$file
