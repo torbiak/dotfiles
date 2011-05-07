@@ -1,6 +1,5 @@
 [ui]
 username = Jordan Torbiak <torbiak@gmail.com>
-style = ~/.hg/succinct.style
 
 [extensions]
 parentrevspec = 

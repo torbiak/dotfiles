@@ -8,7 +8,7 @@ set ai si
 set ic hls
 set ruler
 
-map Y y$
+cnoremap Y y$
 
 set guioptions='cM'
 colorscheme koehler

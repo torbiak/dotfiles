@@ -1,6 +1,8 @@
 [alias]
     ci = commit
     co = checkout
+    br = branch
+    re = rebase
     l = log --pretty=oneline --graph
 [color]
 	diff = auto
