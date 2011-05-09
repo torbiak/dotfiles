@@ -1,3 +1,4 @@
 set completion-ignore-case On
+C-xr:redraw-current-line
 C-p:history-search-backward
 C-n:history-search-forward
