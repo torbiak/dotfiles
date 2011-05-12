@@ -7,7 +7,7 @@
 # List of dotfiles and dotfolders to create symlinks to in $HOME.
 dotfiles=$(cat <<EOF
 .bashrc
-.profile
+.bash_profile
 .gitconfig
 .hgrc
 .inputrc

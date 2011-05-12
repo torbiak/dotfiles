@@ -1,5 +1,3 @@
-[ -e $HOME/.bashrc.local ] && source $HOME/.bashrc.local
-
 if [[ $(uname -s) == Darwin ]]; then
     export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/local/soylatte16-i386-1.0.3/bin/:$PATH
     export MANPATH=/opt/local/share/man:$MANPATH
@@ -8,6 +6,7 @@ fi
 
 export CLICOLOR=1
 export LSCOLORS=dxfxcxdxbxegedabagacad
+export LS_COLORS='di=1;30:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
 
 export HISTFILESIZE=10000
 export HISTSIZE=10000
@@ -21,9 +20,8 @@ shopt -s histappend checkwinsize cmdhist extglob
 set show-all-if-ambiguous on
 
 function prompt1() {
-    local white="\[\e[37;40m\]"
-    local yellow="\[\e[33;40m\]"
-    local green="\[\e[32;40m\]"
+    local yellow="\[\e[33m\]"
+    local green="\[\e[32m\]"
     local orig="\[\e[0m\]"
     PS1="$green($yellow\$?$green)$yellow\$(date +%H:%M)$green:$yellow\w$green\$$orig "
 }
@@ -34,6 +32,8 @@ alias ls="ls --color=auto"
 alias ll='ls -l'
 alias j='jobs'
 alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
+alias full='sudo xrandr --output default --mode 1920x1080'
+alias small='sudo xrandr --output default --mode 800x600'
 
 bind "\C-p":history-search-backward
 bind "\C-n":history-search-forward
@@ -48,3 +48,5 @@ function up {
     cd ..
   fi
 }
+
+[ -e $HOME/.bashrc.local ] && source $HOME/.bashrc.local
