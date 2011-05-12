@@ -11,7 +11,7 @@ set ruler
 cnoremap Y y$
 
 set guioptions='cM'
-colorscheme koehler
+colorscheme darkblue
 
 cnoremap <C-A>		<Home>
 cnoremap <C-B>		<Left>
