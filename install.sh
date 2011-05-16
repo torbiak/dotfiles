@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # install.sh
 # Installs symlinks in $HOME to point to the dotfiles in the repo.
 # If the repo directory is moved this script will need to be run again.
 # Old dotfiles are saved in a tarball in $HOME.
+set -eu
 
 # List of dotfiles and dotfolders to create symlinks to in $HOME.
 dotfiles=$(cat <<EOF
