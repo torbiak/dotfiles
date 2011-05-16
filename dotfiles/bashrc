@@ -38,7 +38,7 @@ alias small='sudo xrandr --output default --mode 800x600'
 bind "\C-p":history-search-backward
 bind "\C-n":history-search-forward
 
-# cd to a directory further up your path, beginning with the given string.
+# cd to a directory further up your path that contains the given pattern.
 # Changes to the parent directory if nothing given.
 # eg, if pwd is /usr/local/bin, then running "up loc" will cd to /usr/local.
 function up {
