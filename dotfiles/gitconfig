@@ -3,11 +3,13 @@
     co = checkout
     br = branch
     re = rebase
-    l = log --pretty=oneline --graph
+    l = log --oneline
+    sb = show-branch
 [color]
-	diff = auto
-	status = auto
-	branch = auto
+    ui = auto
+    diff = auto
+    status = auto
+    branch = auto
 [user]
-	name = Jordan Torbiak
-	email = torbiak@gmail.com
+    name = Jordan Torbiak
+    email = torbiak@gmail.com
