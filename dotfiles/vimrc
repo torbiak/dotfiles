@@ -1,4 +1,6 @@
 filetype off 
+" vimball doesn't load properly with older versions of vim.
+let g:pathogen_disabled = ['vimball']
 call pathogen#helptags()
 call pathogen#runtime_append_all_bundles()
 
