@@ -37,3 +37,5 @@ function! SilentMake(...)
 endfunction
 com! -nargs=? Ma call SilentMake(<f-args>)
 
+
+ino jk <esc>

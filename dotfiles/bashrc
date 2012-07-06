@@ -16,7 +16,6 @@ if [[ $(uname -s) == Darwin ]]; then
 fi
 
 alias l='ls'
-alias ls="ls --color=auto"
 alias ll='ls -l'
 alias j='jobs'
 alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
