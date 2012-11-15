@@ -1,0 +1,21 @@
+[submodule "probe"]
+    url = https://github.com/torbiak/probe.git
+    path = dotfiles/vim/bundle/probe
+[submodule "nerdtree"]
+    url = git://github.com/scrooloose/nerdtree.git
+    path = dotfiles/vim/bundle/nerdtree
+[submodule "vim-colors-solarized"]
+    url = git://github.com/altercation/vim-colors-solarized.git
+    path = dotfiles/vim/bundle/vim-colors-solarized
+[submodule "fugitive"]
+    url = git://github.com/tpope/vim-fugitive.git
+    path = dotfiles/vim/bundle/fugitive
+[submodule "dotfiles/vim/bundle/probe"]
+	path = dotfiles/vim/bundle/probe
+	url = https://github.com/torbiak/probe.git
+[submodule "dotfiles/vim/bundle/vim-colors-solarized"]
+	path = dotfiles/vim/bundle/vim-colors-solarized
+	url = git://github.com/altercation/vim-colors-solarized.git
+[submodule "dotfiles/vim/bundle/fugitive"]
+	path = dotfiles/vim/bundle/fugitive
+	url = git://github.com/tpope/vim-fugitive.git
