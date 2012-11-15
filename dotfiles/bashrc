@@ -2,12 +2,15 @@ export CLICOLOR=1
 export EDITOR=vim
 export HISTFILESIZE=10000
 export HISTSIZE=10000
+export LC_ALL=C
 export LESS="-# 60 -i -X -R"
 export LSCOLORS=dxfxcxdxbxegedabagacad
-export LS_COLORS='di=1;30:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
+export LS_COLORS='di=1;35:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
 export PAGER=less
-export PATH=$PATH:~/bin:/msg/spgear/bin:/msg/spgear/tools/bin
+export PATH=$PATH:~/bin
+export TERM=xterm-256color
 export VISUAL=vim
+export PYTHONSTARTUP=$HOME/.pythonrc
 
 if [[ $(uname -s) == Darwin ]]; then
     export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/local/soylatte16-i386-1.0.3/bin/
@@ -21,11 +24,20 @@ alias j='jobs'
 alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
 alias full='sudo xrandr --output default --mode 1920x1080'
 alias small='sudo xrandr --output default --mode 800x600'
+alias irssi='TERM=screen-256color irssi'
+alias resolve="vim \$(git status -s | awk '/^UU/ { print \$2}')"
 
 shopt -s histappend checkwinsize cmdhist extglob
+if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+    shopt -s globstar
+fi
 set show-all-if-ambiguous on
+set +H # history substitution is evil
 bind "\C-p":history-search-backward
 bind "\C-n":history-search-forward
+
+# Try to disable flow control
+[ -t 0 ] && stty -ixon -ixoff
 
 function prompt1() {
     local yellow="\[\e[33m\]"
@@ -46,6 +58,22 @@ function up {
   fi
 }
 
+# Given a pattern, echo the most-recently-modified file.
+function mrm {
+    echo $(ls -1t $* | head -n 1)
+}
+
+# eg: emrm vim session*.log
+function emrm {
+    prog=$1; shift;
+    $prog $(mrm $@);
+}
+
+function findq {
+    $(which find) $* 2>/dev/null;
+}
+
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
-[ -e /etc/bash_completion ] && . /etc/bash_completion
-[ -e $HOME/bash_completion ] && . $HOME/bash_completion
+
+# tab completion for select programs, since loading everything takes too long
+[ -e $HOME/.bash_completion.sh ] && . $HOME/.bash_completion.sh

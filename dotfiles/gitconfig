@@ -3,8 +3,13 @@
     co = checkout
     br = branch
     re = rebase
-    l = log --oneline
+    l = log --graph --decorate --oneline
+    ld = log --stat -p -n 1
     sb = show-branch
+    st = status -s
+    vimdiff = difftool -y -t vimdiff
+    vd = difftool -y -t vimdiff
+    pur = pull --rebase
 [color]
     ui = auto
     diff = auto
@@ -13,3 +18,7 @@
 [user]
     name = Jordan Torbiak
     email = torbiak@gmail.com
+[push]
+	default = tracking
+[branch]
+	autosetuprebase = always

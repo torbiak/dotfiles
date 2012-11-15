@@ -36,9 +36,9 @@ endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-vmap <C-c><C-c> "ry :call Send_to_Screen(@r)<CR>
-nmap <C-c><C-c> vip<C-c><C-c>
-
-nmap <C-c>v :call Screen_Vars()<CR>
-nmap <C-c>m :let g:screen_mode = input("screen mode: ")<CR>
+"vmap <C-c><C-c> "ry :call Send_to_Screen(@r)<CR>
+"nmap <C-c><C-c> vip<C-c><C-c>
+"
+"nmap <C-c>v :call Screen_Vars()<CR>
+"nmap <C-c>m :let g:screen_mode = input("screen mode: ")<CR>
 
