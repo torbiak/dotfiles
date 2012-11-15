@@ -11,6 +11,7 @@ dotfiles=$(cat <<EOF
 .bashrc
 .bash_profile
 .gitconfig
+.gitignore
 .hgrc
 .inputrc
 .perlrc

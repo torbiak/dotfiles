@@ -22,3 +22,5 @@
 	default = tracking
 [branch]
 	autosetuprebase = always
+[core]
+    excludesfile = ~/.gitignore
