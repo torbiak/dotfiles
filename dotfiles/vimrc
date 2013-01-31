@@ -19,6 +19,7 @@ set wim=list:longest
 set backup
 set grepprg=ack\ -Ha
 set bs=2
+set complete=.,w
 
 nn Y y$
 ino jk <esc>
