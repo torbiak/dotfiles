@@ -49,6 +49,7 @@ nn <leader>N :N<cr>
 nn <leader>ve :e ~/.vimrc<cr>
 nn <leader>vn :new ~/.vimrc<cr>
 nn <leader>vs :source ~/.vimrc<cr>
+nn <leader> <nop>
 
 " example of evaluating code on the command line
 " also <c-r>=
