@@ -16,6 +16,7 @@ dotfiles=$(cat <<EOF
 .inputrc
 .perlrc
 .screenrc
+.tmux.conf
 .vim
 .vimrc
 EOF
