@@ -17,7 +17,7 @@ set ic hls smartcase incsearch
 set showmatch mat=2
 set wim=list:longest
 set backup
-set grepprg=ack\ -Ha
+set grepprg=ag
 set bs=2
 set complete=.,w
 
