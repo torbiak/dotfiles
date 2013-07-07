@@ -15,7 +15,19 @@
 	url = https://github.com/torbiak/probe.git
 [submodule "dotfiles/vim/bundle/vim-colors-solarized"]
 	path = dotfiles/vim/bundle/vim-colors-solarized
-	url = git://github.com/altercation/vim-colors-solarized.git
+	url = https://github.com/altercation/vim-colors-solarized.git
 [submodule "dotfiles/vim/bundle/fugitive"]
 	path = dotfiles/vim/bundle/fugitive
 	url = git://github.com/tpope/vim-fugitive.git
+[submodule "dotfiles/vim/bundle/gundo.vim"]
+	path = dotfiles/vim/bundle/gundo.vim
+	url = https://github.com/sjl/gundo.vim.git
+[submodule "dotfiles/vim/bundle/go-syntax"]
+	path = dotfiles/vim/bundle/go-syntax
+	url = https://github.com/jigish/go-syntax
+[submodule "dotfiles/vim/bundle/vim-conque"]
+	path = dotfiles/vim/bundle/vim-conque
+	url = https://github.com/basepi/vim-conque.git
+[submodule "dotfiles/vim/bundle/nerdtree"]
+	path = dotfiles/vim/bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
