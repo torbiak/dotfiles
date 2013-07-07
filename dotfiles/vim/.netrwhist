@@ -1,6 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =4
-let g:netrw_dirhist_1='/home/torbij/tmp/ganymed-ssh2-build210/src/ch/ethz/ssh2'
-let g:netrw_dirhist_2='/home/torbij/code/chimera2/chimera_api_tests'
-let g:netrw_dirhist_3='/home/torbij/tmp/jython/src/org/python/modules/time'
-let g:netrw_dirhist_4='/home/torbij/code/chimera2/chimera_api_tests'
