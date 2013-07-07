@@ -1,8 +1,3 @@
-Not much to this: just my personal dotfiles collection. I generally don't
-customize things too much since I like knowing the defaults and at most of my
-jobs I've worked on a bunch of different servers. I'll often type in my needed
-customizations on-the-fly.
-
 This repository is designed to make it very easy to install into a user's home
 directory.  Simply clone into your home directory, name it to what you want
 (perhaps .dotfiles?) and run install.sh to set up symlinks in your $HOME. Your
