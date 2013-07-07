@@ -1,36 +1,31 @@
+let g:pathogen_disabled = []
+call pathogen#infect()
+
 filetype plugin indent on
-" vimball doesn't load properly with older versions of vim.
-let g:pathogen_disabled = ['vimball', 'command-t',]
-call pathogen#helptags()
-call pathogen#runtime_append_all_bundles()
-
-" highlight lines over 120 characters
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%>121v.\+/
-
-let mapleader = 's'
-
 set laststatus=2 ruler
 set sts=4 ts=4 sw=4 et
 set ai
 set ic hls smartcase incsearch
-set showmatch mat=2
+set showmatch matchtime=2  " paren-matching
 set wim=list:longest
 set backup
 set grepprg=ag
 set bs=2
-set complete=.,w
-
-nn Y y$
+set complete=.,w  " stay fast by only suggesting completions from open windows
 ino jk <esc>
 
-syntax enable
+" Leader
+let mapleader = 's'
+nn <leader> <nop>
 
+" Display
+syntax enable
 set guioptions='cM'
 set t_Co=16
 set background=dark
 colorscheme solarized
 
+" Emacs emulation in Cmdline mode.
 cnoremap <C-S>      <C-D>
 cnoremap <C-A>		<Home>
 cnoremap <C-B>		<Left>
@@ -40,75 +35,40 @@ cnoremap <C-F>		<Right>
 cnoremap <C-N>		<Down>
 cnoremap <C-P>		<Up>
 
+" Quickfix
 nn <leader>j :cn<cr>
 nn <leader>k :cp<cr>
-nn <leader>p :set paste!<cr>
-nn <leader>h :noh<cr>
+
+" Arglist
 nn <leader>n :wn<cr>
 nn <leader>N :N<cr>
+
+" vimrc
 nn <leader>ve :e ~/.vimrc<cr>
 nn <leader>vn :new ~/.vimrc<cr>
 nn <leader>vs :source ~/.vimrc<cr>
-nn <leader> <nop>
 
-" example of evaluating code on the command line
-" also <c-r>=
-"cno $c e <C-\>eCurrentFileDir("e")<cr>
+" Various conveniences
+nn <leader>p :set paste!<cr>
+nn <leader>h :noh<cr>
+nn <leader>x :source ~/source.vim<cr>
+nn Y y$
 
-function! SilentMake(...)
-    if a:0 >= 1
-        execute "silent! make! " . a:1
-    else
-        silent! make!
-    endif
-    redraw!
-endfunction
-com! -nargs=? Ma call SilentMake(<f-args>)
 
-function! AppendTemplate(template, start, end)
-    let l:i = a:start
-    while l:i < a:end
-        let l:current_line = substitute(a:template, '%d', l:i, "g")
-        call append(".", l:current_line)
-        call cursor(line(".")+1, 0)
-        let l:i = l:i + 1
-    endwhile
-endfunction
-
+" Plugin configuration
+let g:ConqueTerm_CWInsert = 1
+let g:NERDTreeDirArrows=0
+let g:pyflakes_use_quickfix = 0
 let g:CommandTMaxHeight = 20
+let g:probe_ignore_files = ['\~$', '_build']
 
-" Set the quickfix list to chunks of changes as shown by git diff.
-" Passes its arguments straight to git diff, so by default it diffs the working
-" directory with HEAD.
-" Sets the first non-empty changed line as the description, if possible.
-function! SetGitDiffAsQuickFixList(...)
-    let command = "git diff -U0 " . join(a:000)
-    let lines = split(system(command), '\n')
-    " Relative paths would be nice but absolute paths are far easier.
-    let repoRoot = util#trim(system("git rev-parse --show-toplevel"))
-    let file = ''
-    let locList = []
-    let i = 0
-    while i < len(lines)
-        let line = lines[i]
-        if match(line, '^diff') != -1
-            let file = repoRoot .  '/' . matchlist(line, '\v b/(.*)$')[1]
-        elseif match(line, '^@@') != -1
-            let lineNum = matchlist(line, '\v.* \+(\d*)')[1]
-            let descIndex = i + 1
-            while len(lines[descIndex]) == 1 && descIndex < len(lines) - 1
-                let descIndex += 1
-            endwhile
-            if match(lines[descIndex], '^diff\|^@@') != -1
-                let descIndex = i + 1
-            endif
-            call add(locList, {'filename': file, 'lnum': lineNum, 'text': lines[descIndex]})
-        endif
-        let i += 1
-    endwhile
-    call setqflist(locList)
-endfunction
-command! -nargs=* Gdqf call SetGitDiffAsQuickFixList('<args>')
+command! ProbeFindTc :cal probe#open(
+    \ function('probe#tc#scan'),
+    \ function('probe#tc#open'),
+    \ function('probe#tc#refresh'))
+nn <leader>q :ProbeFindTc<cr>
+nn <leader>d :ProbeFindFile<cr>
+
 
 function! SourceRange() range
     let tmpsofile = tempname()
@@ -118,6 +78,14 @@ function! SourceRange() range
 endfunction
 command! -range Source <line1>,<line2>call SourceRange()
 
+function! WwnToVplex() range
+    exe printf("%d,%ds/\\v([0-9a-f]{2}:){7}/\\='0x' . substitute(submatch(0), ':', '', 'g')/g", a:firstline, a:lastline )
+endfunction
+
+
+"========================================
+" Compilers
+"========================================
 " Fill the quick-fix list with pylint output. Run pylint on the current file.
 function! Pylint()
     let &l:makeprg = "pylint -f parseable -i y -r n %"
@@ -151,86 +119,57 @@ function! PylintGit(...)
 endfunction
 command! -nargs=* Pg call PylintGit('<args>')
 
-function! UnitTestFilepath(fullpath)
-    let testFilename = substitute(a:fullpath, '/yycli/', '/yycli/testHarness/unitTests/', '')
-    let testFilename = substitute(testFilename, '[^/]*$', 'test_&', '')
-    return testFilename
+" Set the quickfix list to chunks of changes as shown by git diff.
+" Passes its arguments straight to git diff, so by default it diffs the working
+" directory with HEAD.
+" Sets the first non-empty changed line as the description, if possible.
+" This could probably be converted to an errorformat.
+function! SetGitDiffAsQuickFixList(...)
+    let command = "git diff -U0 " . join(a:000)
+    let lines = split(system(command), '\n')
+    " Relative paths would be nice but absolute paths are far easier.
+    let repoRoot = util#trim(system("git rev-parse --show-toplevel"))
+    let file = ''
+    let locList = []
+    let i = 0
+    while i < len(lines)
+        let line = lines[i]
+        if match(line, '^diff') != -1
+            let file = repoRoot .  '/' . matchlist(line, '\v b/(.*)$')[1]
+        elseif match(line, '^@@') != -1
+            let lineNum = matchlist(line, '\v.* \+(\d*)')[1]
+            let descIndex = i + 1
+            while len(lines[descIndex]) == 1 && descIndex < len(lines) - 1
+                let descIndex += 1
+            endwhile
+            if match(lines[descIndex], '^diff\|^@@') != -1
+                let descIndex = i + 1
+            endif
+            call add(locList, {'filename': file, 'lnum': lineNum, 'text': lines[descIndex]})
+        endif
+        let i += 1
+    endwhile
+    call setqflist(locList)
 endfunction
-nn <Leader>uts :exec ":sp " . UnitTestFilepath(expand('%:p'))<CR>
-nn <Leader>utv :exec ":vsp " . UnitTestFilepath(expand('%:p'))<CR>
+command! -nargs=* Gdqf call SetGitDiffAsQuickFixList('<args>')
 
-let g:pyflakes_use_quickfix = 0
-
-let g:ctrlp_max_files = 90000
-
-" CtrlP settings.
-"nn <leader>f :CtrlP<cr>
-"nn <leader>b :CtrlPBuffer<cr>
-"nn <leader>m :CtrlPMRUFiles<cr>
-"let g:ctrlp_custom_ignore = {
-"    \ 'dir':  '\.git$\|\.hg$\|\.svn$\|_build',
-"    \ 'file': '\.exe$\|\.so$\|\.dll$\|\~$',
-"    \ }
-"let g:ctrlp_lazy_update = 0
-"let g:ctrlp_clear_cache_on_exit = 0
-"let g:ctrlp_working_path_mode = 0
-"let g:ctrlp_custom_ignore = '\~$'
-" TC extension
-"let g:ctrlp_extensions = ['tc']
-"command! CtrlPTc call ctrlp#init(ctrlp#tc#id())
-"nn <leader>t :CtrlPTc<cr>
-"let g:ctrlp_prompt_mappings = {
-"    \ 'PrtBS()':              ['<bs>', '<c-]>'],
-"    \ 'PrtDelete()':          ['<del>'],
-"    \ 'PrtDeleteWord()':      ['<c-w>'],
-"    \ 'PrtClear()':           ['<c-u>'],
-"    \ 'PrtSelectMove("j")':   ['<c-j>', '<c-n>'],
-"    \ 'PrtSelectMove("k")':   ['<c-k>', '<c-p>'],
-"    \ 'PrtSelectMove("t")':   ['<Home>', '<kHome>'],
-"    \ 'PrtSelectMove("b")':   ['<End>', '<kEnd>'],
-"    \ 'PrtSelectMove("u")':   ['<PageUp>', '<kPageUp>'],
-"    \ 'PrtSelectMove("d")':   ['<PageDown>', '<kPageDown>'],
-"    \ 'PrtHistory(-1)':       [],
-"    \ 'PrtHistory(1)':        [],
-"    \ 'AcceptSelection("e")': ['<cr>', '<2-LeftMouse>'],
-"    \ 'AcceptSelection("h")': ['<c-x>', '<c-cr>', '<c-s>'],
-"    \ 'AcceptSelection("t")': ['<c-t>'],
-"    \ 'AcceptSelection("v")': ['<c-v>', '<RightMouse>'],
-"    \ 'ToggleFocus()':        ['<s-tab>'],
-"    \ 'ToggleRegex()':        ['<c-r>'],
-"    \ 'ToggleByFname()':      ['<c-d>'],
-"    \ 'ToggleType(1)':        ['<c-f>', '<c-up>'],
-"    \ 'ToggleType(-1)':       ['<c-b>', '<c-down>'], "    \ 'PrtExpandDir()':       ['<tab>'], "    \ 'PrtInsert("c")':       ['<MiddleMouse>', '<insert>'],
-"    \ 'PrtInsert()':          ['<c-\>'],
-"    \ 'PrtCurStart()':        ['<c-a>'],
-"    \ 'PrtCurEnd()':          ['<c-e>'],
-"    \ 'PrtCurLeft()':         ['<c-b>', '<left>', '<c-^>'],
-"    \ 'PrtCurRight()':        ['<c-f>', '<right>'],
-"    \ 'PrtClearCache()':      ['<F5>'],
-"    \ 'PrtDeleteEnt()':       ['<F7>'],
-"    \ 'CreateNewFile()':      ['<c-y>'],
-"    \ 'MarkToOpen()':         ['<c-z>'],
-"    \ 'OpenMulti()':          ['<c-o>'],
-"    \ 'PrtExit()':            ['<esc>', '<c-c>', '<c-g>'],
-"    \ }
-
-
-function! WwnToVplex() range
-    exe printf("%d,%ds/\\v([0-9a-f]{2}:){7}/\\='0x' . substitute(submatch(0), ':', '', 'g')/g", a:firstline, a:lastline )
+function! SilentMake(...)
+    if a:0 >= 1
+        execute "silent! make! " . a:1
+    else
+        silent! make!
+    endif
+    redraw!
 endfunction
+com! -nargs=? Make call SilentMake(<f-args>)
 
-" Globally replace the word under the cursor with something else.
-":nn <leader>r :exec printf('%%s#\<%s\>#self.%s#g', expand('<cword>'), expand('<cword>'))<cr>
 
-nn <leader>x :source ~/source.vim<cr>
-command! ProbeFindTc :cal probe#open(
-    \ function('probe#tc#scan'),
-    \ function('probe#tc#open'),
-    \ function('probe#tc#refresh'))
-
-nn <leader>q :ProbeFindTc<cr>
-let g:probe_ignore_files = ['\~$', '_build']
-
-nn <leader>d :ProbeFindFile<cr>
-
-let g:ConqueTerm_CWInsert = 1
+" Tips
+"
+" Evaluate viml in Cmdline mode using <c-r>=
+"
+" Globally replace the word under the cursor with something else:
+" :nn <leader>r :exec printf('%%s#\<%s\>#self.%s#g', expand('<cword>'), expand('<cword>'))<cr>
+"
+" Use substitute and eval together:
+" '<,'>s/{{\([^}]\+\)}}/\=eval(submatch(1))/g
