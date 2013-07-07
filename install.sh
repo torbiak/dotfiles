@@ -6,20 +6,21 @@
 # Old dotfiles are saved in a tarball in $HOME.
 set -eu
 
+# Get relative path from $HOME
+pushd $HOME 1>/dev/null
+absolute_repo_path=$(popd)
+if [[ "$absolute_repo_path" != \~/* ]]; then
+    echo 'dotfiles repo should be under $HOME' 1>&2
+    exit
+fi
+home_to_repo_dir=${absolute_repo_path#\~/}
+
 # List of dotfiles and dotfolders to create symlinks to in $HOME.
-dotfiles=$(cat <<EOF
-.bashrc
-.bash_profile
-.gitconfig
-.gitignore
-.hgrc
-.inputrc
-.perlrc
-.screenrc
-.tmux.conf
-.vim
-.vimrc
-EOF
+dotfiles=$(
+    for path in $home_to_repo_dir/dotfiles/*; do
+        f=$(basename $path)
+        echo ".$f"
+    done
 )
 
 preexisting_dotfiles=$(
@@ -36,16 +37,7 @@ if [[ -n "$preexisting_dotfiles" ]]; then
 	tar -C $HOME -czf $backup $preexisting_dotfiles
 fi
 
-# Get relative path from $HOME
-pushd $HOME 1>/dev/null
-absolute_repo_path=$(popd)
-if [[ "$absolute_repo_path" != \~/* ]]; then
-    echo 'dotfiles repo should be under $HOME' 1>&2
-    exit
-fi
-home_to_repo_dir=${absolute_repo_path#\~/}
-
-# Create symlinks
+# Create symlinks ($HOME -> $DOTFILES_REPO)
 for file in $dotfiles; do
     if [[ -f $HOME/$file || -L $HOME/$file ]]; then
     	rm $HOME/$file
