@@ -12,12 +12,6 @@ export TERM=xterm-256color
 export VISUAL=vim
 export PYTHONSTARTUP=$HOME/.pythonrc
 
-if [[ $(uname -s) == Darwin ]]; then
-    export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/local/soylatte16-i386-1.0.3/bin/
-    export MANPATH=/opt/local/share/man:$MANPATH
-    export PYTHONPATH=/usr/local/lib/python2.5/site-packages:/Library/Python/2.5/site-packages
-fi
-
 alias l='ls'
 alias ll='ls -l'
 alias j='jobs'
@@ -69,10 +63,6 @@ function mrm {
 function emrm {
     prog=$1; shift;
     $prog $(mrm $@);
-}
-
-function findq {
-    $(which find) $* 2>/dev/null;
 }
 
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
