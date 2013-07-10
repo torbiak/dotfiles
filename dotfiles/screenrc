@@ -7,4 +7,4 @@ nethack on
 defscrollback 20000
 shelltitle "|"
 hardstatus alwayslastline
-hardstatus string '%{.kg} %=[ %{.kw}%-Lw%{.kr}%n%f %t%{.kw}%+Lw%{.kg} ]%='
+hardstatus string '{.kg} %=%{.ky}%H %{.kg}[ %{.kw}%-Lw%{.kr}%n%f %t%{.kw}%+Lw%{.kg} ]'

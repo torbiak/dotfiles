@@ -2,4 +2,4 @@
 *.pyc
 *.sw[opn]
 *~
-tags
+.tags

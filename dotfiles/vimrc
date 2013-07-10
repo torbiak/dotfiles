@@ -1,7 +1,10 @@
 let g:pathogen_disabled = []
 call pathogen#infect()
 
+" Basics
+" ======
 filetype plugin indent on
+set tags+=.tags
 set laststatus=2 ruler
 set sts=4 ts=4 sw=4 et
 set ai
@@ -9,12 +12,12 @@ set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
 set backup
-set grepprg=ag
+set grepprg=ag\ --nogroup\ --nocolor\ --column
+"set grepprg=cfind\ -n
 set bs=2
 set complete=.,w  " stay fast by only suggesting completions from open windows
+set winminheight=0
 ino jk <esc>
-
-" Leader
 let mapleader = 's'
 nn <leader> <nop>
 
@@ -52,24 +55,13 @@ nn <leader>vs :source ~/.vimrc<cr>
 nn <leader>p :set paste!<cr>
 nn <leader>h :noh<cr>
 nn <leader>x :source ~/source.vim<cr>
+nn <leader>g :grep <cword><cr>
+
 nn Y y$
 
 
-" Plugin configuration
-let g:ConqueTerm_CWInsert = 1
-let g:NERDTreeDirArrows=0
-let g:pyflakes_use_quickfix = 0
-let g:CommandTMaxHeight = 20
-let g:probe_ignore_files = ['\~$', '_build']
-
-command! ProbeFindTc :cal probe#open(
-    \ function('probe#tc#scan'),
-    \ function('probe#tc#open'),
-    \ function('probe#tc#refresh'))
-nn <leader>q :ProbeFindTc<cr>
-nn <leader>d :ProbeFindFile<cr>
-
-
+" Functions
+" =========
 function! SourceRange() range
     let tmpsofile = tempname()
     call writefile(getline(a:firstline, a:lastline), l:tmpsofile)
@@ -78,21 +70,69 @@ function! SourceRange() range
 endfunction
 command! -range Source <line1>,<line2>call SourceRange()
 
+command! -range=% Copy silent <line1>,<line2>w !xclip
+nn <leader>c :Copy<cr>
+vn <leader>c :Copy<cr>
+
+function! AppendDate()
+    cal setline('.', getline('.') . util#trim(system('date "+%F %A"')))
+endfunction
+nn <leader>md :cal AppendDate()<cr>
+
 function! WwnToVplex() range
     exe printf("%d,%ds/\\v([0-9a-f]{2}:){7}/\\='0x' . substitute(submatch(0), ':', '', 'g')/g", a:firstline, a:lastline )
 endfunction
 
+function! WwnToColon() range
+    exe printf("%d,%ds/\\v0x([0-9a-f]{16})/\\=join(split(submatch(1), '..\\zs'), ':')", a:firstline, a:lastline )
+endfunction
 
-"========================================
+
+" Plugin configuration
+" ====================
+let g:ConqueTerm_CWInsert = 1
+let g:NERDTreeDirArrows=0
+let g:pyflakes_use_quickfix = 0
+let g:CommandTMaxHeight = 20
+
+let g:syntastic_mode_map = {'mode': 'passive'}
+let g:syntastic_python_checkers = ['flake8']
+
+" Probe
+let g:probe_ignore_files = ['\~$', '_build']
+command! ProbeFindTc :cal probe#open(
+    \ function('probe#tc#scan'),
+    \ function('probe#tc#open'),
+    \ function('probe#tc#refresh'))
+nn <leader>mq :ProbeFindTc<cr>
+nn <leader>d :ProbeFindFile<cr>
+nn <leader>f :ProbeFindInRepo<cr>
+
+" Make pyflakes highlighting more visible
+highlight clear SpellBad
+highlight link SpellBad ErrorMsg
+
+
 " Compilers
-"========================================
-" Fill the quick-fix list with pylint output. Run pylint on the current file.
+" =========
 function! Pylint()
     let &l:makeprg = "pylint -f parseable -i y -r n %"
     let &l:efm = "%f:%l: %m"
     make!
 endfunction
 command! Pl call Pylint()
+
+function! Pep8rb()
+    let &l:makeprg=pep8_rb.py
+    make
+endfunction
+nn <leader>8 :cal Pep8rb()<cr>
+
+function! Pep257()
+    let &l:makeprg=pep257_jt
+    make! %
+endfunction
+nn <leader>7 :cal Pep257()<cr>
 
 function! GitTrailingWhitespace(...)
     let prefix = util#trim(system("git rev-parse --show-prefix"))
@@ -123,8 +163,7 @@ command! -nargs=* Pg call PylintGit('<args>')
 " Passes its arguments straight to git diff, so by default it diffs the working
 " directory with HEAD.
 " Sets the first non-empty changed line as the description, if possible.
-" This could probably be converted to an errorformat.
-function! SetGitDiffAsQuickFixList(...)
+function! QuickfixGitDiff(...)
     let command = "git diff -U0 " . join(a:000)
     let lines = split(system(command), '\n')
     " Relative paths would be nice but absolute paths are far easier.
@@ -145,13 +184,13 @@ function! SetGitDiffAsQuickFixList(...)
             if match(lines[descIndex], '^diff\|^@@') != -1
                 let descIndex = i + 1
             endif
-            call add(locList, {'filename': file, 'lnum': lineNum, 'text': lines[descIndex]})
+            cal add(locList, {'filename': file, 'lnum': lineNum, 'text': lines[descIndex]})
         endif
         let i += 1
     endwhile
     call setqflist(locList)
 endfunction
-command! -nargs=* Gdqf call SetGitDiffAsQuickFixList('<args>')
+command! -nargs=* Gdqf call QuickfixGitDiff('<args>')
 
 function! SilentMake(...)
     if a:0 >= 1

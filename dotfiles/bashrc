@@ -2,7 +2,8 @@ export CLICOLOR=1
 export EDITOR=vim
 export HISTFILESIZE=10000
 export HISTSIZE=10000
-export LC_ALL=C
+export HISTIGNORE="&:[ ]*:exit:l:ll:ls:histdel"
+export LC_ALL="en_US.UTF-8"
 export LESS="-# 60 -i -X -R"
 export LSCOLORS=dxfxcxdxbxegedabagacad
 export LS_COLORS='di=1;35:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
@@ -63,6 +64,42 @@ function mrm {
 function emrm {
     prog=$1; shift;
     $prog $(mrm $@);
+}
+
+<<<<<<< HEAD
+=======
+function findq {
+    $(which find) $* 2>/dev/null;
+}
+
+# Delete last command from history: histdel
+# Delete from offset to end of history: histdel OFFSET
+# Delete from offset to another offset: histdel OFFSET OFFSET
+function histdel {
+    local last=$(history | tail -n 1 | awk '{print $1}')
+    local start=${1:-$last}
+    local end=${2:-$((last+1))}
+    while [[ $start -lt $end ]]; do
+        history -d $start
+        end=$((end-1))
+    done
+}
+
+# screen attach
+function sat {
+    local hostname=${1:?No hostname specified}
+    ssh -t $hostname screen -xRR
+}
+
+# git submodule update
+function gsu {
+    repoRoot=$(git rev-parse --show-toplevel)
+    # execute in a subshell so we don't have to save the cwd
+    (cd $repoRoot; git submodule update)
+}
+
+function send_key {
+    ssh $1 "echo $(cat $HOME/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys "
 }
 
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local

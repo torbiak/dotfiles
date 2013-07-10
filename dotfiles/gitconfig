@@ -10,6 +10,8 @@
     vimdiff = difftool -y -t vimdiff
     vd = difftool -y -t vimdiff
     pur = pull --rebase
+	cp = cherry-pick
+	ru = rebase -i @{upstream}
 [color]
     ui = auto
     diff = auto
