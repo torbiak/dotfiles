@@ -90,6 +90,34 @@ function! WwnToColon() range
     exe printf("%d,%ds/\\v0x([0-9a-f]{16})/\\=join(split(submatch(1), '..\\zs'), ':')", a:firstline, a:lastline )
 endfunction
 
+command! -nargs=? Filter let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
+
+" split: 'none', 'split', 'vsplit'
+function! OpenOrReuse(filepath, split)
+    let buffer_name = a:filepath
+    let window = bufwinnr(buffer_name)
+    if window != -1
+        exe printf('%dwincmd w', window)
+    else
+        exe printf('silent! %s %s', a:split, buffer_name)
+    endif
+endfunction
+
+function! QFComment(comment_file)
+    let filepath = expand('%')
+    let lnum = line('.')
+    let prefix = join([filepath, lnum], ':') . ': '
+    cal OpenOrReuse(a:comment_file, 'split')
+    if getline(1, '$') == ['']
+        cal setline(1, prefix)
+    else
+        cal append(line('$'), prefix)
+    endif
+    normal G$
+endfunction
+command! -nargs=? -complete=file QFComment cal QFComment(<f-args>)
+nn <leader>mc :QFComment ~/tmp/comments<cr>
+
 " Idempotent table formatter.
 " sep: field separator
 " opts: dict with the following keys:
