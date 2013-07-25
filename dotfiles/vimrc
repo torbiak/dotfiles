@@ -56,6 +56,9 @@ nn <leader>p :set paste!<cr>
 nn <leader>h :noh<cr>
 nn <leader>x :source ~/source.vim<cr>
 nn <leader>g :grep <cword><cr>
+" remove trailing whitespace
+nn <leader>mw :%s/\v\s+$//<cr>
+nn <leader>ms :SyntasticCheck<cr>
 
 nn Y y$
 
