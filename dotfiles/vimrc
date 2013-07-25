@@ -189,14 +189,18 @@ endfunction
 command! Pl call Pylint()
 
 function! Pep8rb()
-    let &l:makeprg=pep8_rb.py
+    let saved_makeprg = &makeprg
+    let &makeprg = 'pep8_rb.py'
     make
+    let &makeprg = saved_makeprg
 endfunction
-nn <leader>8 :cal Pep8rb()<cr>
+nn <leader>m8 :cal Pep8rb()<cr>
 
 function! Pep257()
-    let &l:makeprg=pep257_jt
+    let saved_makeprg = &makeprg
+    let &makeprg = 'pep257_jt'
     make! %
+    "let &makeprg = saved_makeprg
 endfunction
 nn <leader>7 :cal Pep257()<cr>
 
@@ -278,3 +282,5 @@ com! -nargs=? Make call SilentMake(<f-args>)
 "
 " Use substitute and eval together:
 " '<,'>s/{{\([^}]\+\)}}/\=eval(submatch(1))/g
+"
+" You can basically get tab-specific working directories using :lcd.
