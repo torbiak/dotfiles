@@ -21,7 +21,7 @@ alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
 alias full='sudo xrandr --output default --mode 1920x1080'
 alias small='sudo xrandr --output default --mode 800x600'
 alias irssi='TERM=screen-256color irssi'
-alias resolve="vim \$(git status -s | awk '/^UU/ { print \$2}')"
+alias resolve="vim \$(git status -s | awk '/^(UU|AA)/ { print \$2}')"
 
 shopt -s histappend checkwinsize cmdhist extglob
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
