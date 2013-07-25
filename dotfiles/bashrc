@@ -93,6 +93,7 @@ function gsu {
     (cd $repoRoot; git submodule update)
 }
 
+# consider using ssh-copy-id instead
 function send_key {
     ssh $1 "echo $(cat $HOME/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys "
 }
