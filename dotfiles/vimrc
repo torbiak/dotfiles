@@ -12,11 +12,12 @@ set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
 set backup
-set grepprg=ag\ --nogroup\ --nocolor\ --column
-"set grepprg=cfind\ -n
+"set grepprg=ag\ --nogroup\ --nocolor\ --column
+set grepprg=cfind\ -n
 set bs=2
 set complete=.,w  " stay fast by only suggesting completions from open windows
 set winminheight=0
+set modeline
 ino jk <esc>
 let mapleader = 's'
 nn <leader> <nop>
@@ -26,6 +27,7 @@ syntax enable
 set guioptions='cM'
 set t_Co=16
 set background=dark
+set colorcolumn=80
 colorscheme solarized
 
 " Emacs emulation in Cmdline mode.
@@ -54,11 +56,11 @@ nn <leader>vs :source ~/.vimrc<cr>
 " Various conveniences
 nn <leader>p :set paste!<cr>
 nn <leader>h :noh<cr>
-nn <leader>x :source ~/source.vim<cr>
 nn <leader>g :grep <cword><cr>
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
-nn <leader>ms :SyntasticCheck<cr>
+nn <leader>ms :w<cr>:source %<cr>
+nn <leader>x :source ~/source.vim<cr>
 
 nn Y y$
 
@@ -149,9 +151,23 @@ function! Table(sep, opts) range
     endfor
     cal setline(a:firstline, formatted)
 endfunction
-
 nn <leader>mt :normal! vip:cal Table('  \+', {'newsep': '  '})
 vn <leader>mt :cal Table('  \+', {'newsep': '  '})<cr>
+
+" Make script-local function global.
+function! Public(function_name)
+    let groups = matchlist(a:function_name, '\v^(<SID>|s:)(.*)')
+    let prefix = groups[1]
+    let basename = groups[2]
+    exe printf('%%s/%s/\u%s/g', a:function_name, basename)
+endfunction
+nn sme :cal Public(expand('<cword>'))<cr>
+
+" Hide global function by making it script-local.
+function! Private(function_name)
+    exe printf('%%s/\<%s\>/s:\l&/g', a:function_name)
+endfunction
+nn smh :cal Private(expand('<cword>'))<cr>
 
 
 " Plugin configuration
@@ -165,7 +181,7 @@ let g:syntastic_mode_map = {'mode': 'passive'}
 let g:syntastic_python_checkers = ['flake8']
 
 " Probe
-let g:probe_ignore_files = ['\~$', '_build']
+let g:probe_ignore_files = ['\~$', '_build', 'pyc$']
 command! ProbeFindTc :cal probe#open(
     \ function('probe#tc#scan'),
     \ function('probe#tc#open'),
@@ -188,21 +204,21 @@ function! Pylint()
 endfunction
 command! Pl call Pylint()
 
-function! Pep8rb()
+function! RBCheck()
     let saved_makeprg = &makeprg
-    let &makeprg = 'pep8_rb.py'
+    let &makeprg = 'rb_check'
     make
     let &makeprg = saved_makeprg
 endfunction
-nn <leader>m8 :cal Pep8rb()<cr>
+nn <leader>mr :cal RBCheck()<cr>
 
-function! Pep257()
+function! Pep()
     let saved_makeprg = &makeprg
-    let &makeprg = 'pep257_jt'
-    make! %
-    "let &makeprg = saved_makeprg
+    let &makeprg = 'pep'
+    make %
+    let &makeprg = saved_makeprg
 endfunction
-nn <leader>7 :cal Pep257()<cr>
+nn <leader>mp :cal Pep()<cr>
 
 function! GitTrailingWhitespace(...)
     let prefix = util#trim(system("git rev-parse --show-prefix"))
