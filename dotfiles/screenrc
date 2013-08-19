@@ -1,9 +1,11 @@
 #caption always %w
 escape ^xx
-vbell on
+vbell off
 vbell_msg ""
 nethack on
 ignorecase on
+startup_message off
+msgwait 1
 
 defscrollback 20000
 shelltitle "|"

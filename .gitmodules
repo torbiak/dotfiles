@@ -28,3 +28,6 @@
 [submodule "dotfiles/vim/bundle/syntastic"]
 	path = dotfiles/vim/bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git
+[submodule "dotfiles/vim/bundle/vipyut"]
+	path = dotfiles/vim/bundle/vipyut
+	url = /spgear/zeph_auto/vim/vipyut.git/

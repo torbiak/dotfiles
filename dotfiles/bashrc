@@ -82,8 +82,12 @@ function histdel {
 
 # screen attach
 function sat {
-    local hostname=${1:?No hostname specified}
-    ssh -t $hostname screen -xRR
+    local hostname=${1:-localhost}
+    if [[ "$hostname" == localhost ]]; then
+        screen -xRR
+    else
+        ssh -t $hostname screen -xRR
+    fi
 }
 
 # git submodule update
