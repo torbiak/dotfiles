@@ -41,7 +41,7 @@ function prompt1() {
     local yellow="\[\e[33m\]"
     local green="\[\e[32m\]"
     local orig="\[\e[0m\]"
-    PS1="$green($yellow\$?$green)$yellow\$(date +%H:%M)$green:$yellow\w$green\$$orig "
+    PS1="$green($yellow\$?$green)$yellow\$(date +%H:%M)$green:$yellow\w$green\\\$$orig "
 }
 prompt1
 
