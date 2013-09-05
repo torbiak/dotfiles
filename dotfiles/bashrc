@@ -12,7 +12,7 @@ export PATH=$HOME/bin:$HOME/code/go/bin:$PATH
 export TERM=xterm-256color
 export VISUAL=vim
 export PYTHONSTARTUP=$HOME/.pythonrc
-export PYTHONPATH=.:$HOME/code/python:$(find $HOME/lib/python -maxdepth 1 -type d 2>/dev/null | paste -sd: -)
+export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
 
 alias l='ls'
