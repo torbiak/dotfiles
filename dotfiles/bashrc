@@ -103,6 +103,12 @@ function send_key {
     ssh $1 "echo $(cat $HOME/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys "
 }
 
+# fuzzy find file under current directory
+function sd {
+    pattern=${1:?No pattern given}
+    find -iname "*${pattern}*" 2>/dev/null
+}
+
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
 
 # tab completion for select programs, since loading everything takes too long
