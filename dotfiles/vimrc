@@ -12,12 +12,13 @@ set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
 set backup
-"set grepprg=ag\ --nogroup\ --nocolor\ --column
-set grepprg=cfind\ -n
+set grepprg=ag\ --nogroup\ --nocolor\ --column
+"set grepprg=cfind\ -n
 set bs=2
 set complete=.,w  " stay fast by only suggesting completions from open windows
 set winminheight=0
 set modeline
+set backupdir=~/tmp/vim,.
 ino jk <esc>
 let mapleader = 's'
 nn <leader> <nop>
@@ -27,7 +28,6 @@ syntax enable
 set guioptions='cM'
 set t_Co=16
 set background=dark
-set colorcolumn=80
 colorscheme solarized
 
 " Emacs emulation in Cmdline mode.
@@ -300,3 +300,7 @@ com! -nargs=? Make call SilentMake(<f-args>)
 " '<,'>s/{{\([^}]\+\)}}/\=eval(submatch(1))/g
 "
 " You can basically get tab-specific working directories using :lcd.
+
+if filereadable(expand('~/.vimrc.local'))
+    source ~/.vimrc.local
+endif
