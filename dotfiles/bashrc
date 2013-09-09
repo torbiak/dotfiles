@@ -57,9 +57,10 @@ function up {
   fi
 }
 
-# Given a pattern, echo the most-recently-modified file.
+# Given some patterns, print the most-recently-modified file.
+# The patterns can't contain spaces.
 function mrm {
-    echo $(ls -1t $* | head -n 1)
+    ls -1t $* | head -n 1
 }
 
 # eg: emrm vim session*.log
