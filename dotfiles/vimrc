@@ -3,11 +3,10 @@ call pathogen#infect()
 
 " Basics
 " ======
-filetype plugin indent on
+filetype plugin on
 set tags+=.tags
 set laststatus=2 ruler
 set sts=4 ts=4 sw=4 et
-set ai
 set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
@@ -63,6 +62,52 @@ nn <leader>ms :w<cr>:source %<cr>
 nn <leader>x :source ~/source.vim<cr>
 
 nn Y y$
+
+" Indenting
+" =========
+" One indenting expression to rule them all.
+"
+" Cover common cases but let the user take care of anything weird, since
+" trying to be comprehensive complicates the rules past predictability.
+function! TorbijIndent()
+    let prev_line = getline(v:lnum - 1)
+    let prev_indent = indent(v:lnum - 1)
+    let cur_line = getline(v:lnum)
+    let inc = 0
+    let dec = 0
+    for p in g:inc_indent_after
+        if prev_line =~ p
+            let inc += &sw
+            break
+        endif
+    endfor
+    for p in g:dec_indent_on
+        if cur_line =~ p
+            let dec += &sw
+            break
+        endif
+    endfor
+    if inc == 0 && dec == 0
+        return -1  " Defer to autoindent.
+    endif
+    return prev_indent + inc - dec
+endfunction
+
+" If the previous line matches one of these patterns, increment the indent of
+" the next line.
+let g:inc_indent_after = [
+    \ '[{\[\(:]$',
+    \ '^function ',
+    \ '^\v\s*(if|else|while|do|for|switch|elseif) '
+\ ]
+" If the current line matches one of these patterns, decrement its indent.
+" Depends on indentkeys being set appropriately.
+let g:dec_indent_on = ['^\s*[}\]\)]', '^\s*end']
+
+set indentexpr=TorbijIndent()
+set indentkeys=0},0],0),o,O,0=end
+set ai nosi nocin
+filetype indent off
 
 
 " Functions
@@ -121,10 +166,10 @@ command! -nargs=? -complete=file QFComment cal QFComment(<f-args>)
 nn <leader>mc :QFComment ~/tmp/comments<cr>
 
 " Idempotent table formatter.
-" sep: field separator
+" sep: field separator pattern
 " opts: dict with the following keys:
 "   align: string of field alignments (eg. "llr" for Left, Left, Right)
-"   newsep: new separator. Useful if a metacharacters are present in sep.
+"   newsep: new separator. Useful if regex metacharacters are present in sep.
 function! Table(sep, opts) range
     let alignment = split(get(a:opts, 'align', ""), '\zs')
     let max_len = {}
@@ -134,7 +179,6 @@ function! Table(sep, opts) range
             let max_len[i] = max([get(max_len, i, 0), strlen(field)])
         endfor
     endfor
-    echom string(max_len)
     let formatted = []
     for line in getline(a:firstline, a:lastline)
         let fields = []
@@ -291,7 +335,7 @@ com! -nargs=? Make call SilentMake(<f-args>)
 
 " Tips
 "
-" Evaluate viml in Cmdline mode using <c-r>=
+" Evaluate vimscript almost anywhere using <c-r>=
 "
 " Globally replace the word under the cursor with something else:
 " :nn <leader>r :exec printf('%%s#\<%s\>#self.%s#g', expand('<cword>'), expand('<cword>'))<cr>
