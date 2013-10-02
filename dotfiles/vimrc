@@ -154,6 +154,8 @@ endfunction
 function! QFComment(comment_file)
     let filepath = expand('%')
     let lnum = line('.')
+    " There needs to something after the last colon or the line won't match
+    " any of the default errorformat patterns.
     let prefix = join([filepath, lnum], ':') . ': '
     cal OpenOrReuse(a:comment_file, 'split')
     if getline(1, '$') == ['']
@@ -165,6 +167,7 @@ function! QFComment(comment_file)
 endfunction
 command! -nargs=? -complete=file QFComment cal QFComment(<f-args>)
 nn <leader>mc :QFComment ~/tmp/comments<cr>
+cabbrev QF QFComment
 
 " Idempotent table formatter.
 " sep: field separator pattern
@@ -282,7 +285,7 @@ function! GitTrailingWhitespace(...)
 endfunction
 command! -nargs=* Gtw call GitTrailingWhitespace('<args>')
 
-" Fill the quick-fix list with pylint output. Run pylint on all the files
+" Fill the quickfix list with pylint output. Run pylint on all the files
 " changed since the last commmit (default) or between given revisions, which
 " are passed straight to git diff.
 function! PylintGit(...)
