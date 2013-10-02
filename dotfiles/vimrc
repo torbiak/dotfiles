@@ -11,7 +11,6 @@ set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
 set grepprg=ag\ --nogroup\ --nocolor\ --column
-"set grepprg=cfind\ -n
 set bs=2
 set complete=.,w  " stay fast by only suggesting completions from open windows
 set winminheight=0
@@ -57,7 +56,7 @@ nn <leader>vs :source ~/.vimrc<cr>
 " Various conveniences
 nn <leader>p :set paste!<cr>
 nn <leader>h :noh<cr>
-nn <leader>g :grep <cword><cr>
+nn <leader>g :Cfind <cword><cr>
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
@@ -241,8 +240,17 @@ highlight clear SpellBad
 highlight link SpellBad ErrorMsg
 
 
-" Compilers
-" =========
+" Quickfix
+" ========
+function! Cfind(...)
+    let saved_makeprg = &makeprg
+    let &grepprg = "cfind -n"
+    exe "grep " . join(a:000, ' ')
+    let &makeprg = saved_makeprg
+endfunction
+command! -nargs=+ Cfind call Cfind(<f-args>)
+cabbrev Cf Cfind
+
 function! Pylint()
     let &l:makeprg = "pylint -f parseable -i y -r n %"
     let &l:efm = "%f:%l: %m"
