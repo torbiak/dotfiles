@@ -20,6 +20,7 @@ set modeline
 set backupdir=~/tmp/vim,.
 ino jk <esc>
 let mapleader = 's'
+set vb t_vb=
 nn <leader> <nop>
 
 " Display

@@ -3,3 +3,4 @@ C-xr:redraw-current-line
 C-p:history-search-backward
 C-n:history-search-forward
 M-C-q: edit-and-execute-command
+set bell-style none
