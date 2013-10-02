@@ -99,14 +99,14 @@ endfunction
 let g:inc_indent_after = [
     \ '[{\[\(:]$',
     \ '^function ',
-    \ '^\v\s*(if|else|while|do|for|switch|elseif) '
+    \ '^\v\s*(if|else|while|do|for|case|elseif)>'
 \ ]
 " If the current line matches one of these patterns, decrement its indent.
 " Depends on indentkeys being set appropriately.
-let g:dec_indent_on = ['^\s*[}\]\)]', '^\s*end']
+let g:dec_indent_on = ['^\s*[}\]\)]', '^\v\s*(end|fi|esac|done)']
 
 set indentexpr=TorbijIndent()
-set indentkeys=0},0],0),o,O,0=end
+set indentkeys=0},0],0),o,O,0=end,0=fi,0=esac,0=done
 set ai nosi nocin
 filetype indent off
 
