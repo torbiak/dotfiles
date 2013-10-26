@@ -41,8 +41,9 @@ cnoremap <C-N>		<Down>
 cnoremap <C-P>		<Up>
 
 " Quickfix
-nn <leader>j :cn<cr>
-nn <leader>k :cp<cr>
+" The default bindings for -, _, and + are stupid.
+nn - :cp<cr>
+nn + :cn<cr>
 
 " Arglist
 nn <leader>n :wn<cr>
