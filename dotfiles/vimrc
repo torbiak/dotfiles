@@ -252,11 +252,20 @@ highlight link SpellBad ErrorMsg
 
 " Quickfix
 " ========
-function! Cfind(...)
+function! GrepDiff(range, query)
     let saved_makeprg = &makeprg
+    let &makeprg = printf("git diff --relative %s \\| linewise -rm \\| grep -E %s", a:range, a:query)
+    make
+    let &makeprg = saved_makeprg
+endfunction
+command! -nargs=+ GrepDiff call GrepDiff(<f-args>)
+cabbrev GD GrepDiff
+
+function! Cfind(...)
+    let saved_grepprg = &grepprg
     let &grepprg = "cfind -n"
     exe "grep " . join(a:000, ' ')
-    let &makeprg = saved_makeprg
+    let &grepprg = saved_grepprg
 endfunction
 command! -nargs=+ Cfind call Cfind(<f-args>)
 cabbrev Cf Cfind
