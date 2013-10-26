@@ -54,6 +54,12 @@ nn <leader>ve :e ~/.vimrc<cr>
 nn <leader>vn :new ~/.vimrc<cr>
 nn <leader>vs :source ~/.vimrc<cr>
 
+" Windowing
+" I often have a lot of windows open in two columns and want to navigate
+" through a bunch of them quickly.
+nn <c-j> <c-w>j
+nn <c-k> <c-w>k
+
 " Various conveniences
 nn <leader>p :set paste!<cr>
 nn <leader>h :noh<cr>
