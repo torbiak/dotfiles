@@ -84,13 +84,13 @@ function! TorbijIndent()
     let inc = 0
     let dec = 0
     for p in g:inc_indent_after
-        if prev_line =~ p
+        if prev_line =~# p
             let inc += &sw
             break
         endif
     endfor
     for p in g:dec_indent_on
-        if cur_line =~ p
+        if cur_line =~# p
             let dec += &sw
             break
         endif
