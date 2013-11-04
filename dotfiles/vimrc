@@ -252,9 +252,13 @@ highlight link SpellBad ErrorMsg
 
 " Quickfix
 " ========
-function! GrepDiff(range, query)
+function! GrepDiff(range, query, ...)
+    let grep_args = ''
+    if a:0 > 0
+        let grep_args = a:1
+    endif
     let saved_makeprg = &makeprg
-    let &makeprg = printf("git diff --relative %s \\| linewise -rm \\| grep -E %s", a:range, a:query)
+    let &makeprg = printf("git diff --relative %s \\| linewise -rm \\| grep %s -E %s", a:range, grep_args, a:query)
     make
     let &makeprg = saved_makeprg
 endfunction
