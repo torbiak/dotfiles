@@ -105,7 +105,7 @@ endfunction
 " the next line.
 let g:inc_indent_after = [
     \ '[{\[\(:]$',
-    \ '^function ',
+    \ '^function',
     \ '^\v\s*(if|else|while|do|for|case|elseif)>'
 \ ]
 " If the current line matches one of these patterns, decrement its indent.
