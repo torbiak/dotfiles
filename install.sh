@@ -25,22 +25,22 @@ dotfiles=$(
 
 preexisting_dotfiles=$(
     for file in $dotfiles; do
-    	if [[ -e $HOME/$file ]]; then
-    		echo $file
-    	fi
+        if [[ -e $HOME/$file ]]; then
+            echo $file
+        fi
     done
 )
 
 # Backup preexisting dotfiles
 if [[ -n "$preexisting_dotfiles" ]]; then
-	backup="$HOME/dotfile_$(date +%FT%T).bak.tar.gz"
-	tar -C $HOME -czf $backup $preexisting_dotfiles
+    backup="$HOME/dotfile_$(date +%FT%T).bak.tar.gz"
+    tar -C $HOME -czf $backup $preexisting_dotfiles
 fi
 
 # Create symlinks ($HOME -> $DOTFILES_REPO)
 for file in $dotfiles; do
     if [[ -f $HOME/$file || -L $HOME/$file ]]; then
-    	rm $HOME/$file
+        rm $HOME/$file
     elif [[ -d $HOME/$file ]]; then
         rm -rf $HOME/$file
     fi
