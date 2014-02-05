@@ -73,6 +73,10 @@ nn <leader>x :source ~/source.vim<cr>
 
 nn Y y$
 
+" md signifies markdown, not modula2
+au! filetypedetect BufNewFile,BufRead *.md
+au filetypedetect BufNewFile,BufRead *.md setf markdown
+
 " Indenting
 " =========
 " One indenting expression to rule them all.
