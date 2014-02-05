@@ -314,13 +314,13 @@ function! Pylint()
 endfunction
 command! Pl call Pylint()
 
-function! RBCheck()
+function! RBCheck(...)
     let saved_makeprg = &makeprg
     let &makeprg = 'rb_check'
-    make
+    exe "make " . join(a:000, ' ')
     let &makeprg = saved_makeprg
 endfunction
-nn <leader>mr :cal RBCheck()<cr>
+command! -nargs=* RBCheck call RBCheck(<f-args>)
 
 function! Pep()
     let saved_makeprg = &makeprg
@@ -328,6 +328,7 @@ function! Pep()
     make %
     let &makeprg = saved_makeprg
 endfunction
+command! Pep call Pep(<f-args>)
 nn <leader>mp :cal Pep()<cr>
 
 function! GitTrailingWhitespace(...)
