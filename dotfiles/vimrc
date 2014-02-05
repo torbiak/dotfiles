@@ -299,6 +299,14 @@ endfunction
 command! -nargs=+ Cfind call Cfind(<f-args>)
 cabbrev Cf Cfind
 
+function! Fifm(...)
+    let saved_grepprg = &grepprg
+    let &grepprg = "fifm"
+    exe "grep " . join(a:000, ' ')
+    let &grepprg = saved_grepprg
+endfunction
+command! -nargs=+ Fifm call Fifm(<f-args>)
+
 function! Pylint()
     let &l:makeprg = "pylint -f parseable -i y -r n %"
     let &l:efm = "%f:%l: %m"
