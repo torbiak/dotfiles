@@ -10,8 +10,11 @@
     vimdiff = difftool -y -t vimdiff
     vd = difftool -y -t vimdiff
     pur = pull --rebase
-	cp = cherry-pick
-	ru = rebase -i @{upstream}
+    cp = cherry-pick
+    ru = rebase -i @{upstream}
+    cm = commit --amend
+    cif = commit -am fixup
+    dc = diff --cached
 [color]
     ui = auto
     diff = auto
@@ -21,8 +24,12 @@
     name = Jordan Torbiak
     email = torbiak@gmail.com
 [push]
-	default = tracking
+    default = tracking
 [branch]
-	autosetuprebase = always
+    autosetuprebase = always
 [core]
     excludesfile = ~/.gitignore
+[apply]
+    whitespace = fix
+[notes]
+    rewriteRef = refs/notes/*
