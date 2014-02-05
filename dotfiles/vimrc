@@ -134,6 +134,12 @@ function! SourceRange() range
 endfunction
 command! -range Source <line1>,<line2>call SourceRange()
 
+command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
+
+command! -range Semicolon <line1>,<line2>s/$/;/ | noh
+nn <leader>; :Semicolon<cr>
+vn <leader>; :Semicolon<cr>
+
 command! -range=% Copy silent <line1>,<line2>w !xsel -i -b
 nn <leader>c :Copy<cr>
 vn <leader>c :Copy<cr>
@@ -419,3 +425,4 @@ com! -nargs=? Make call SilentMake(<f-args>)
 if filereadable(expand('~/.vimrc.local'))
     source ~/.vimrc.local
 endif
+noh
