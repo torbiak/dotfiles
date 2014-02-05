@@ -149,6 +149,17 @@ endfunction
 
 command! -nargs=? Filter let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
 
+function! Chars(start, stop)
+    let result = ""
+    let i = a:start
+    while i < a:stop
+        let result .= nr2char(i)
+        let i += 1
+    endwhile
+    return result
+endfunction
+
+
 " split: 'none', 'split', 'vsplit'
 function! OpenOrReuse(filepath, split)
     let buffer_name = a:filepath
