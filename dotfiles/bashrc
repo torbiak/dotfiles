@@ -41,11 +41,24 @@ fi
 # Try to disable flow control
 [ -t 0 ] && stty -ixon -ixoff
 
-function prompt1() {
-    local yellow="\[\e[33m\]"
-    local green="\[\e[32m\]"
+
+function gitBranch {
+    branch_name=$(git symbolic-ref -q HEAD 2>/dev/null || true)
+    branch_name=${branch_name##refs/heads/}
+    branch_name=${branch_name:--}
+    echo $branch_name
+}
+
+function gitTrackingBranch {
+    git rev-parse --symbolic-full-name --abbrev-ref @{upstream}
+}
+
+
+function prompt1 {
+    local y="\[\e[33m\]" # yellow
+    local g="\[\e[32m\]" # green
     local orig="\[\e[0m\]"
-    PS1="$green($yellow\$?$green)$yellow\$(date +%H:%M)$green:$yellow\w$green\\\$$orig "
+    PS1="$g($y\$?$g)$y\$(date +%H:%M)$g:$y\w $g($y\$(gitBranch)$g)$g\$$orig "
 }
 prompt1
 
