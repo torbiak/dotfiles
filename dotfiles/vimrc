@@ -29,16 +29,18 @@ set guioptions='cM'
 set t_Co=16
 set background=dark
 colorscheme solarized
+set list
+set listchars=tab:»\ ,trail:\ ,
 
 " Emacs emulation in Cmdline mode.
-cnoremap <C-S>      <C-D>
-cnoremap <C-A>		<Home>
-cnoremap <C-B>		<Left>
-cnoremap <C-D>		<Del>
-cnoremap <C-E>		<End>
-cnoremap <C-F>		<Right>
-cnoremap <C-N>		<Down>
-cnoremap <C-P>		<Up>
+cnoremap <C-S> <C-D>
+cnoremap <C-A> <Home>
+cnoremap <C-B> <Left>
+cnoremap <C-D> <Del>
+cnoremap <C-E> <End>
+cnoremap <C-F> <Right>
+cnoremap <C-N> <Down>
+cnoremap <C-P> <Up>
 
 " Quickfix
 " The default bindings for -, _, and + are stupid.
