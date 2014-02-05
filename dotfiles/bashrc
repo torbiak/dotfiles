@@ -1,4 +1,5 @@
-[ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
+# Needed for funky stuff like changing HOME for certain hosts.
+[ -e $HOME/.bashrc.pre ] && . $HOME/.bashrc.pre
 
 export CLICOLOR=1
 export EDITOR=vim
@@ -115,3 +116,5 @@ function sd {
 # tab completion for select programs, since loading everything takes too long,
 # especially over nfs.
 [ -e $HOME/.bash_completion.sh ] && . $HOME/.bash_completion.sh
+
+[ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
