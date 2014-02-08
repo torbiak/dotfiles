@@ -42,6 +42,10 @@ cnoremap <C-F> <Right>
 cnoremap <C-N> <Down>
 cnoremap <C-P> <Up>
 
+" Forward/Back in insert mode
+inoremap <C-B> <Left>
+inoremap <C-F> <Right>
+
 " Quickfix
 " The default bindings for -, _, and + are stupid.
 nn - :cp<cr>
@@ -246,7 +250,6 @@ function! Private(function_name)
     exe printf('%%s/\<%s\>/s:\l&/g', a:function_name)
 endfunction
 nn smh :cal Private(expand('<cword>'))<cr>
-
 
 " Plugin configuration
 " ====================
