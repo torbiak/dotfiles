@@ -17,12 +17,3 @@ atexit.register(readline.write_history_file, history)
 
 def t(*args):
     return timeit.Timer(*args).timeit()
-
-def save_history(historyPath=historyPath):
-    try:
-        import readline
-    except ImportError:
-        print "Module readline not available."
-    else:
-        readline.write_history_file(historyPath)
-atexit.register(save_history)
