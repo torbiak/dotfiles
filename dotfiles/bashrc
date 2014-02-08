@@ -142,6 +142,32 @@ function sd {
     find . -iname "*${pattern}*" 2>/dev/null
 }
 
+# filesystem bookmarks
+# create: bm c NAME PATH
+# list: bm l
+# goto: bm g NAME
+function bm {
+    local cmd=${1:-l}; shift
+    local rc=${BMRC:-~/.bmrc}
+    case $cmd in
+        l) cat $rc;;
+        c)
+            local name=${1:?No name given.}; shift
+            local path=${1:-$PWD}
+            echo "$name $path" >> $rc
+            ;;
+        g)
+            local name=${1:?No name given.}; shift
+            cd $(awk "\$1 == \"$name\" {print \$2}" $rc)
+            ;;
+        *)
+            echo "Bad command: $cmd"
+            return 1
+            ;;
+    esac
+}
+alias g="bm g"
+
 # tab completion for select programs, since loading everything takes too long,
 # especially over nfs.
 [ -e $HOME/.bash_completion.sh ] && . $HOME/.bash_completion.sh
