@@ -204,6 +204,7 @@ function! Generate(...) range
 
 endfunction
 
+command! -range Semicolon <line1>,<line2>s/^\s*[^ @].*[A-Za-z)0-9_]$/&;/ | noh
 nn <leader>; :Semicolon<cr>
 vn <leader>; :Semicolon<cr>
 
@@ -474,6 +475,10 @@ function! SilentMake(...)
     redraw!
 endfunction
 com! -nargs=? Make call SilentMake(<f-args>)
+
+
+" Insert-mode abbreviations
+autocmd FileType java :iabbrev <buffer> sop System.out.println
 
 
 " Tips
