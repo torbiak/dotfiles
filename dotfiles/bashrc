@@ -136,8 +136,8 @@ function send_key {
     ssh $1 "echo $(cat $HOME/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys "
 }
 
-# find filenames under current directory containing a pattern
-function sd {
+# find files under current directory containing a pattern
+function ff {
     pattern=${1:?No pattern given}
     find . -iname "*${pattern}*" 2>/dev/null
 }
