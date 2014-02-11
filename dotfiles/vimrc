@@ -140,7 +140,70 @@ command! -range Source <line1>,<line2>call SourceRange()
 
 command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 
-command! -range Semicolon <line1>,<line2>s/$/;/ | noh
+" Using the given range as a template, generate all combinations of given
+" substitutions, adding them below the given range.
+"
+" usage: Generate(<pattern>, <replacements>, <pattern>, <replacements>, ...)
+" eg: on a line containing 'ab':
+" :.call Generate('a', range(2), 'b', range(2))
+" 00
+" 01
+" 10
+" 11
+function! Generate(...) range
+    " Organize args.
+    let replacementLists = {}
+    let patterns = []
+    let i = 0
+    while i < len(a:000)
+        let pattern = a:000[i]
+        cal add(patterns, pattern)
+        let replacementLists[pattern] = a:000[i+1]
+        let i += 2
+    endwhile
+
+    " Initialize combination state.
+    " If we knew how many patterns were going to be given we could use nested
+    " loops to generate the combinations, keeping the combination state in the
+    " loop variables and iterators. To handle an arbitrary number of patterns
+    " we instead keep the combination state in a list.
+    " For example, for two patterns, each with two replacements:
+    "   [0, 0] -> [0, 1] -> [1, 0] -> [1, 1]
+    " Replacements are selected based on the value of 'combinations'.
+    let combination = []
+    for p in patterns
+        cal add(combination, 0)
+    endfor
+
+    let template = join(getline(a:firstline, a:lastline), "\r")
+    let lines = []
+
+    " Generate all combinations of replacements.
+    while combination[0] < len(replacementLists[patterns[0]])
+        let out = template
+        for pi in range(len(patterns))  " pi: pattern index
+            let pattern = patterns[pi]
+            let replacement = replacementLists[pattern][combination[pi]]
+            let out = substitute(out, pattern, replacement, "g")
+        endfor
+
+        cal extend(lines, split(out, "\r"))
+
+        " Increase the combination counters, carrying as necessary depending
+        " on the number of replacements associated with a pattern.
+        let combination[-1] += 1
+        for i in range(len(combination) - 1, 1, -1)
+            if combination[i] >= len(replacementLists[patterns[i]])
+                let combination[i] = 0
+                let combination[i-1] += 1
+            endif
+        endfor
+    endwhile
+
+    cal append(a:lastline, lines)
+
+endfunction
+
 nn <leader>; :Semicolon<cr>
 vn <leader>; :Semicolon<cr>
 
