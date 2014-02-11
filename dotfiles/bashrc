@@ -45,6 +45,11 @@ fi
 [ -t 0 ] && stty -ixon -ixoff
 
 
+function normal_perms {
+    find ${1:-.} -type d -exec chmod 755 '{}' \; -o -type f -exec chmod 644 '{}' \;
+}
+
+
 function gitBranch {
     branch_name=$(git symbolic-ref -q HEAD 2>/dev/null || true)
     branch_name=${branch_name##refs/heads/}
@@ -54,6 +59,12 @@ function gitBranch {
 
 function gitTrackingBranch {
     git rev-parse --symbolic-full-name --abbrev-ref @{upstream}
+}
+
+# git add rebase continue
+function garc {
+    git add -u
+    git rebase --continue
 }
 
 
