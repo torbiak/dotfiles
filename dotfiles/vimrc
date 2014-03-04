@@ -113,6 +113,15 @@ endfunction
 
 " If the previous line matches one of these patterns, increment the indent of
 " the next line.
+" Not sure how to deal with formatting prose where lines start with if, for,
+" do, etc. Remapping gq is awkward, as is creating a new command, and I can't
+" find an option to break the connection between formatting and indenting,
+" unless I use a formatting program, which won't be available on windows by
+" default. Only matching indented keywords would reduce the times formatting
+" isn't performed as expected, but then on-the-fly indenting wouldn't work as
+" expected in shell scripts and it might just be more confusing. Writing a
+" vimscript formatter would be slow, and using another language wouldn't be
+" very portable. Probably best just to clear indentexpr using setlocal.
 let g:inc_indent_after = [
     \ '[{\[\(:]$',
     \ '^function',
@@ -120,10 +129,9 @@ let g:inc_indent_after = [
 \ ]
 " If the current line matches one of these patterns, decrement its indent.
 " Depends on indentkeys being set appropriately.
-let g:dec_indent_on = ['^\s*[}\]\)]', '^\v\s*(end|esac|done)']
-
+let g:dec_indent_on = ['^\s*[}\]\)]', '^\v\s*(end|esac|done|else:)']
+set indentkeys=0},0],0),o,O,0=end,0=esac,0=done,0=else:
 set indentexpr=TorbijIndent()
-set indentkeys=0},0],0),o,O,0=end,0=esac,0=done
 set ai nosi nocin
 filetype indent off
 
