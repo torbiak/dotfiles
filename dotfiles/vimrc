@@ -148,6 +148,34 @@ command! -range Source <line1>,<line2>call SourceRange()
 
 command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 
+function! NormalSurround(open, close)
+    normal viW<esc>
+    cal VisualSurround(a:open, a:close)
+endfunction
+nn <leader>mb :call NormalSurround('<tt>', '</tt>')<cr>
+
+function! VisualSurround(open, close) range
+    let startLine = getline("'<")
+    let endLine = getline("'>")
+    let startCol = col("'<")
+    let endCol = col("'>")
+    if line("'<") == line("'>")
+        let before = strpart(startLine, 0, startCol - 1)
+        let middle = strpart(startLine, startCol - 1, endCol - startCol + 1)
+        let after = strpart(startLine, endCol)
+        cal setline("'<", before . a:open . middle . a:close . after)
+    else
+        let before = strpart(startLine, 0, startCol - 1)
+        let after = strpart(startLine, startCol - 1)
+        cal setline("'<", before . a:open . after)
+        let before = strpart(endLine, 0, endCol - 1)
+        let after = strpart(endLine, endCol - 1)
+        cal setline("'>", before . a:close . after)
+    endif
+    cal cursor(line("'>"), endCol + strlen(a:open) + strlen(a:close))
+endfunction
+vn <leader>mb :call VisualSurround('<tt>', '</tt>')<cr>
+
 " Using the given range as a template, generate all combinations of given
 " substitutions, adding them below the given range.
 "
