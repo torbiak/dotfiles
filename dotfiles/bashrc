@@ -28,7 +28,6 @@ alias irssi='TERM=screen-256color irssi'
 alias resolve="vim \$(git status -s | awk '/^(UU|AA)/ { print \$2}')"
 alias pgrep='grep -P --color=auto'
 
-ulimit -S -n 4096
 
 shopt -s histappend checkwinsize cmdhist extglob
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
@@ -41,8 +40,10 @@ if [[ "$-" == *i* ]]; then # interactive
     bind "\C-n":history-search-forward
 fi
 
-# Try to disable flow control
-[ -t 0 ] && stty -ixon -ixoff
+if [ -t 0 ]; then  # if interactive
+    stty -ixon -ixoff  # Try to disable flow control
+    ulimit -S -n 4096
+fi
 
 
 function normal_perms {
