@@ -146,7 +146,19 @@ function! SourceRange() range
 endfunction
 command! -range Source <line1>,<line2>call SourceRange()
 
+" Count lines in range.
 command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
+
+" Diff current buffer with what's on disk.
+function! DiffBuffer()
+    let tmp = tempname()
+    let absPath = fnamemodify(expand('%'), ':p')
+    exe printf('w %s', tmp)
+    echo system(printf('diff -u %s %s', tmp, absPath))
+    cal delete(tmp)
+endfunction
+com! DiffBuffer call DiffBuffer()
+cabbr DB DiffBuffer
 
 function! NormalSurround(open, close)
     normal viW<esc>
