@@ -26,7 +26,7 @@ alias full='sudo xrandr --output default --mode 1920x1080'
 alias small='sudo xrandr --output default --mode 800x600'
 alias irssi='TERM=screen-256color irssi'
 alias resolve="vim \$(git status -s | awk '/^(UU|AA)/ { print \$2}')"
-alias pgrep='grep -P --color=auto'
+alias grepp='grep -P --color=auto'
 
 
 shopt -s histappend checkwinsize cmdhist extglob
