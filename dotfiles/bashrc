@@ -70,10 +70,10 @@ function garc {
 
 
 function prompt1 {
-    local y="\[\e[33m\]" # yellow
-    local g="\[\e[32m\]" # green
-    local orig="\[\e[0m\]"
-    PS1="$g($y\$?$g)$y\$(date +%H:%M)$g:$y\w $g($y\$(gitBranch)$g)$g\$$orig "
+    local y="\[$(tput setaf 3)\]" # yellow
+    local g="\[$(tput setaf 2)\]" # green
+    local reset="\[$(tput sgr0)\]"
+    PS1="$g($y\$?$g)$y\$(date +%H:%M)$g:$y\w $g($y\$(gitBranch)$g)$g\$$reset "
 }
 prompt1
 
