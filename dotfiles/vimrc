@@ -376,6 +376,11 @@ let g:NERDTreeDirArrows=0
 let g:pyflakes_use_quickfix = 0
 let g:CommandTMaxHeight = 20
 
+let g:slime_target = 'tmux'
+let g:slime_no_mappings = 1
+let g:slime_default_config = {"socket_name": "default", "target_pane": ":.1"}
+nmap <leader>a <Plug>SlimeParagraphSend
+
 let g:syntastic_mode_map = {'mode': 'passive'}
 let g:syntastic_python_checkers = ['flake8']
 
