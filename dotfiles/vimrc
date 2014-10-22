@@ -359,7 +359,7 @@ function! Public(function_name)
     let groups = matchlist(a:function_name, '\v^(<SID>|s:)(.*)')
     let prefix = groups[1]
     let basename = groups[2]
-    exe printf('%%s/%s/\u%s/g', a:function_name, basename)
+    exe printf('%%s/%s\>/\u%s/g', a:function_name, basename)
 endfunction
 nn sme :cal Public(expand('<cword>'))<cr>
 
