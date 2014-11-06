@@ -71,7 +71,7 @@ function prompt1 {
     local y="\[$(tput setaf 3)\]" # yellow
     local g="\[$(tput setaf 2)\]" # green
     local reset="\[$(tput sgr0)\]"
-    PS1="$g($y\$?$g)$y\$(date +%H:%M)$g:$y\w $g($y\$(gitBranch)$g)$g\$$reset "
+    PS1="$g($y\$?$g)$y\$(date +%H:%M)$g:$y\w $g($y\$(gitBranch)$g)$g\\\$$reset "
 }
 prompt1
 
