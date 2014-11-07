@@ -539,6 +539,8 @@ com! -nargs=? Make call SilentMake(<f-args>)
 " Insert-mode abbreviations
 autocmd FileType java :iabbrev <buffer> sop System.out.println
 
+autocmd Filetype ruby :set sts=2 sw=2 ts=2
+
 
 " Tips
 "
