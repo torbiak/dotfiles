@@ -33,3 +33,5 @@
     whitespace = fix
 [notes]
     rewriteRef = refs/notes/*
+[include]
+    path = .gitconfig.local
