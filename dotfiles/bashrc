@@ -179,8 +179,8 @@ function bm {
 alias g="bm g"
 
 # selecta-based path insertion
-# Extended regex that matches the entire filepath.
-SELECTA_IGNORE='.*(\.git|~)'
+# A posix basic regex that matches the entire filepath.
+SELECTA_IGNORE='.*\(\.git\|~\)'
 function insert-path-with-selecta {
     echo -e "\n\n"
     if ! which selecta &>/dev/null; then
@@ -189,13 +189,13 @@ function insert-path-with-selecta {
     fi
     local path=$(cword "$READLINE_LINE" $READLINE_POINT)
     local path_len=${#path}
-    path=${path:=.}
+    path=${path:-.}
     path=${path%/}
     if [[ ! -d "$path" ]]; then
         echo "$path is not a directory." 1>&2
         return
     fi
-    local selection+=$(find -E "$path" -regex "$SELECTA_IGNORE" -prune -o -print | selecta)
+    local selection+=$(find "$path" -regex "$SELECTA_IGNORE" -prune -o -print | selecta)
     local line=${READLINE_LINE:0:$((READLINE_POINT - path_len))}
     line+=$selection
     line+=${READLINE_LINE:$READLINE_POINT}
