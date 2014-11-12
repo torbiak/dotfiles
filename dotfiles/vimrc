@@ -70,7 +70,7 @@ nn <c-k> <c-w>k
 " Various conveniences
 nn <leader>p :set paste!<cr>
 nn <leader>h :noh<cr>
-nn <leader>g :Cfind <cword><cr>
+nn <leader>g :grep <cword><cr>
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
