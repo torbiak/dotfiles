@@ -178,6 +178,61 @@ function bm {
 }
 alias g="bm g"
 
+# selecta-based path insertion
+# Extended regex that matches the entire filepath.
+SELECTA_IGNORE='.*(\.git|~)'
+function insert-path-with-selecta {
+    echo -e "\n\n"
+    if ! which selecta &>/dev/null; then
+        echo "selecta not found" 1>&2
+        return
+    fi
+    local path=$(cword "$READLINE_LINE" $READLINE_POINT)
+    local path_len=${#path}
+    path=${path:=.}
+    path=${path%/}
+    if [[ ! -d "$path" ]]; then
+        echo "$path is not a directory." 1>&2
+        return
+    fi
+    local selection+=$(find -E "$path" -regex "$SELECTA_IGNORE" -prune -o -print | selecta)
+    local line=${READLINE_LINE:0:$((READLINE_POINT - path_len))}
+    line+=$selection
+    line+=${READLINE_LINE:$READLINE_POINT}
+    READLINE_LINE=$line
+    READLINE_POINT=$((READLINE_POINT + ${#selection}))
+}
+bind -x '"\C-s":"insert-path-with-selecta"'
+
+function cword {
+    local line=${1?:No line given}
+    local pos=${2:--1}
+    # A word immediately behind the cursor counts as the current word.
+    local c=${line:$pos:1}
+    if [[ "$c" == " " || "$c" == "" ]] && ((pos != 0)); then
+        ((pos-=1))
+    fi
+    if [[ ${line:pos:1} == " " ]]; then
+        # Cursor isn't on or right after a word. No current word.
+        return
+    fi
+    local i start=$pos end=$((pos+1))
+    for ((i=$((pos+1)); i < ${#line}; i += 1)); do
+        if [[ ${line:$i:1} == " " ]]; then
+            break
+        fi
+        end=$i
+    done
+    for ((i=$pos; i >= 0; i -= 1)); do
+        if [[ ${line:$i:1} == " " ]]; then
+            break
+        fi
+        start=$i
+    done
+    echo "${line:$start:((end-start))}"
+}
+
+
 # tab completion for select programs, since loading everything takes too long,
 # especially over nfs.
 [ -e $HOME/.bash_completion.sh ] && . $HOME/.bash_completion.sh
