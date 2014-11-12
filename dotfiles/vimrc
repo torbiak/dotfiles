@@ -147,6 +147,25 @@ function! SourceRange() range
 endfunction
 command! -range Source <line1>,<line2>call SourceRange()
 
+" Rename buffer's file.
+function! Rename(dst)
+     let old = expand('%')
+     if (old == a:dst)
+         return 0
+     endif
+     exe 'sav' fnameescape(a:dst)
+     call delete(old)
+endfunction
+command! -nargs=1 -complete=file -bar Rename call Rename('<args>')
+
+" Delete buffer and its file.
+function! Delete()
+    let path = expand('%')
+    bdelete
+    call delete(path)
+endfunction
+command! -bar Delete call Delete()
+
 " Count lines in range.
 command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 
