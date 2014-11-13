@@ -1,8 +1,8 @@
 set completion-ignore-case On
 $if bash
 C-xr: redraw-current-line
+$endif
 C-p: history-search-backward
 C-n: history-search-forward
-$endif
 M-C-q: edit-and-execute-command
 set bell-style none
