@@ -52,7 +52,6 @@ function normal_perms {
 function gitBranch {
     branch_name=$(git symbolic-ref -q HEAD 2>/dev/null || true)
     branch_name=${branch_name##refs/heads/}
-    branch_name=${branch_name:--}
     echo $branch_name
 }
 
