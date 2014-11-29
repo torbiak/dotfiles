@@ -67,10 +67,16 @@ function garc {
 
 
 function prompt1 {
-    local y="\[$(tput setaf 3)\]" # yellow
-    local g="\[$(tput setaf 2)\]" # green
-    local reset="\[$(tput sgr0)\]"
-    PS1="$g($y\$?$g)$y\$(date +%H:%M)$g:$y\w $g($y\$(gitBranch)$g)$g\\\$$reset "
+    local r="\[\e[31m\]" # red
+    local g="\[\e[32m\]" # green
+    local y="\[\e[33m\]" # yellow
+    local p="\[\e[34m\]" # purple
+    local reset="\[\e[0m\]"
+    local sep="$y|"
+    local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
+    local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
+    local branch_cmd="\$(b=\$(gitBranch); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
+    PS1="$status_cmd$job_cmd$g\A$sep$g\w$branch_cmd$y\\\$$reset "
 }
 prompt1
 
