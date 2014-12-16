@@ -40,7 +40,7 @@ if [[ "$-" == *i* ]]; then # interactive
     bind "\C-n":history-search-forward
 
     stty -ixon -ixoff  # Try to disable flow control
-    ulimit -S -n 4096
+    ! uname | grep -i cygwin > /dev/null && ulimit -S -n 4096
 fi
 
 
