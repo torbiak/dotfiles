@@ -157,6 +157,12 @@ function ff {
     find . -iname "*${pattern}*" 2>/dev/null
 }
 
+# find files ending with a suffix
+function suf {
+    pattern=${1:?No pattern given}
+    find . -iname "*${pattern}" 2>/dev/null
+}
+
 # filesystem bookmarks
 # create: bm c NAME PATH
 # list: bm l
