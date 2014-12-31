@@ -373,6 +373,123 @@ endfunction
 nn <leader>mt :normal! vip:cal Table('  \+', {'newsep': '  '})
 vn <leader>mt :cal Table('  \+', {'newsep': '  '})<cr>
 
+" Idempotent sequence diagram formatter.
+" Turns this:
+"   car  engine  wheels
+"   |start()->||
+"   ||turn()->|
+"   ||<-|
+"   |<-||
+" Into this:
+"   car      engine   wheels
+"    |start()->|        |
+"    |         |turn()->|
+"    |         |<-------|
+"    |<--------|        |
+" Headings must be separated by at least 2 spaces.
+" Each line must have the same number of columns.
+" After changing a heading or message name run SequenceDiagram again to
+" reformat the diagram.
+function! SequenceDiagram() range
+    let min_arrow_len = 2
+    let header_line = getline(a:firstline)
+    let headings = split(header_line, '\v {2,}')
+    let ncols = len(headings)
+
+    " Find column widths.
+    let col_widths = []
+    " Find min column widths, considering the headings.
+    for i in range(len(headings) - 1)
+        let min_width = s:halflen(headings[i]) + 2 + s:halflen(headings[i+1])
+        cal add(col_widths, min_width)
+    endfor
+    " Relax the min column widths considering message names.
+    for line in getline(a:firstline + 1, a:lastline)
+        let fields = split(line, '|', 1)
+        if len(fields) - 1 != ncols
+            throw printf('Has %d but needs %d columns: "%s"', len(fields) - 1, ncols, line)
+        endif
+        if fields[0] !~# ' *'
+            throw printf('Line must start with pipe or whitespace: "%s"', line)
+        endif
+        if fields[-1] != ''
+            throw printf('Line must end with pipe: "%s"', line)
+        endif
+        let fields = fields[1:-2]  " skip first and last fields
+        for i in range(len(fields))
+            let field = fields[i]
+            let matches = matchlist(field, '\v(\<-+)?([^-]+)(-+\>)?')
+            if len(matches) == 0
+                continue
+            endif
+            let left_arrow = matches[1]
+            let name = matches[2]
+            let right_arrow = matches[3]
+            if len(left_arrow) && len(right_arrow)
+                throw printf('Unexpected double arrow: "%s"', field)
+            endif
+            let col_widths[i] = max([col_widths[i], len(name) + min_arrow_len])
+        endfor
+    endfor
+
+    let lines = []
+
+    " Format headings.
+    let offset = len(headings[0]) / 2
+    let formatted = []
+    for i in range(len(headings) - 1)
+        let padding = col_widths[i] - s:halflen(headings[i]) - s:halflen(headings[i+1]) + 1
+        if i == 0
+            let padding += offset
+        endif
+        cal add(formatted, headings[i])
+        cal add(formatted, repeat(' ', padding))
+    endfor
+    cal add(formatted, headings[-1])
+    cal add(lines, join(formatted, ''))
+
+    " Format message lines.
+    for line in getline(a:firstline + 1, a:lastline)
+        let formatted = []
+        cal add(formatted, repeat(' ', offset))
+        cal add(formatted, '|')
+        let fields = split(line, '|', 1)[1:-2]
+        for i in range(len(fields))
+            let field = fields[i]
+            let matches = matchlist(field, '\v(\<-+)?([^-]+)?(-+\>)?')
+            let left_arrow = matches[1]
+            let name = matches[2]
+            let right_arrow = matches[3]
+            if !len(left_arrow) && !len(right_arrow)
+                cal add(formatted, repeat(' ', col_widths[i]))
+                cal add(formatted, '|')
+                continue
+            endif
+            let padding = col_widths[i] - min_arrow_len - len(name)
+            if len(left_arrow)
+                cal add(formatted, '<-')
+                cal add(formatted, repeat('-', padding))
+            endif
+            cal add(formatted, name)
+            if len(right_arrow)
+                cal add(formatted, repeat('-', padding))
+                cal add(formatted, '->')
+            endif
+            cal add(formatted, '|')
+        endfor
+        cal add(lines, join(formatted, ''))
+    endfor
+
+    cal setline(a:firstline, lines)
+endfunction
+nn <leader>mr :normal! vip:cal SequenceDiagram()
+vn <leader>mr :cal SequenceDiagram()<cr>
+
+function! s:halflen(s)
+    return len(a:s) / 2 + len(a:s) % 2
+endfunction
+
+
 " Make script-local function global.
 function! Public(function_name)
     let groups = matchlist(a:function_name, '\v^(<SID>|s:)(.*)')
@@ -404,7 +521,7 @@ let g:syntastic_mode_map = {'mode': 'passive'}
 let g:syntastic_python_checkers = ['flake8']
 
 " Probe
-let g:probe_ignore_files = ['\~$', '_build', 'pyc$']
+let g:probe_ignore_files = ['\~$', '_build', 'pyc$', 'freetds-.*']
 command! ProbeFindTc :cal probe#open(
     \ function('probe#tc#scan'),
     \ function('probe#tc#open'),
