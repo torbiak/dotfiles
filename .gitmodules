@@ -30,7 +30,7 @@
 	url = https://github.com/scrooloose/syntastic.git
 [submodule "dotfiles/vim/bundle/vipyut"]
 	path = dotfiles/vim/bundle/vipyut
-	url = /spgear/zeph_auto/vim/vipyut.git/
+	url = https://torbiak@bitbucket.org/torbiak/vipyut.git
 [submodule "dotfiles/vim/bundle/vim-slime"]
 	path = dotfiles/vim/bundle/vim-slime
 	url = https://github.com/jpalardy/vim-slime.git
