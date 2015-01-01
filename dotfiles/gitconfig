@@ -15,6 +15,7 @@
     cm = commit --amend
     cif = commit -am fixup
     dc = diff --cached
+    su = branch --set-upstream-to
 [color]
     ui = auto
     diff = auto
