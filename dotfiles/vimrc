@@ -370,7 +370,7 @@ function! Table(sep, opts) range
     endfor
     cal setline(a:firstline, formatted)
 endfunction
-nn <leader>mt :normal! vip:cal Table('  \+', {'newsep': '  '})
+nn <leader>mt :exe printf('%scal Table(" \+", {"newsep": "  "})', util#cpar_line_range_str())<cr>
 vn <leader>mt :cal Table('  \+', {'newsep': '  '})<cr>
 
 " Idempotent sequence diagram formatter.
