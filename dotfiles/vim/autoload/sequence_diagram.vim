@@ -7,6 +7,13 @@
 "   ||<-|
 "   |<-||
 "
+" Or this:
+"   car  engine  wheels
+"   start()
+"       turn()
+"       <-
+"   <-
+"
 " Into this:
 "   car      engine   wheels
 "    |start()->|        |
@@ -26,6 +33,7 @@
 
 let s:min_header_spacing = 2
 let s:min_arrow_len = 2
+let g:jt_sd_indent = '    '
 
 function! sequence_diagram#format() range
     let headings = split(getline(a:firstline), '\v {2,}')
@@ -67,15 +75,18 @@ function! s:format_body(body, col_widths, offset)
         cal add(formatted, repeat(' ', a:offset))
         cal add(formatted, '|')
         for i in range(len(fields))
-            let field = fields[i]
+            let field = util#trim(fields[i])
             let matches = matchlist(field, '\v(\<-+)?([^-]+)?(-+\>)?')
             let left_arrow = matches[1]
             let name = util#trim(matches[2])
             let right_arrow = matches[3]
-            if !len(left_arrow) && !len(right_arrow)
+            if !len(field)
                 cal add(formatted, repeat(' ', a:col_widths[i]))
                 cal add(formatted, '|')
                 continue
+            endif
+            if !len(left_arrow) && !len(right_arrow)
+                let right_arrow = '->'
             endif
             let padding = a:col_widths[i] - s:min_arrow_len - len(name)
             if len(left_arrow)
@@ -122,6 +133,22 @@ function! s:column_widths(headings, body)
 endfunction
 
 function! s:line2fields(line, nheadings)
+    if a:line =~ '\v^ *\|'
+        return s:formatted_line2fields(a:line, a:nheadings)
+    else
+        return s:terse_line2fields(a:line, a:nheadings)
+    endif
+endfunction
+
+function! s:terse_line2fields(line, nheadings)
+    let fields = repeat([''], a:nheadings - 1)
+    let normalized = substitute(a:line, g:jt_sd_indent, "\t", 'g')
+    let indent = len(matchstr(normalized, "^\t*"))
+    let fields[indent] = util#trim(a:line)
+    return fields
+endfunction
+
+function! s:formatted_line2fields(line, nheadings)
     let fields = split(a:line, '|', 1)
     if len(fields) - 1 != a:nheadings
         throw printf('Has %d but needs %d columns: "%s"', len(fields) - 1, a:nheadings, a:line)
