@@ -366,7 +366,7 @@ function! Table(sep, opts) range
             endif
             cal add(fields,  printf(format, field))
         endfor
-        cal add(formatted, join(fields, get(a:opts, 'newsep', a:sep)))
+        cal add(formatted, util#trim(join(fields, get(a:opts, 'newsep', a:sep))))
     endfor
     cal setline(a:firstline, formatted)
 endfunction
