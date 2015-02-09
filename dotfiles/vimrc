@@ -563,6 +563,7 @@ com! -nargs=? Make call SilentMake(<f-args>)
 autocmd FileType java :iabbrev <buffer> sop System.out.println
 
 autocmd Filetype ruby :set sts=2 sw=2 ts=2
+autocmd Filetype lisp :filetype indent on
 
 
 " Tips
