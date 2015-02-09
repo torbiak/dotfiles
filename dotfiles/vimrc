@@ -558,6 +558,13 @@ function! SilentMake(...)
 endfunction
 com! -nargs=? Make call SilentMake(<f-args>)
 
+function! QuickfixConflicts()
+    let files = util#trim(system("git status -s | grep '^\\(UU\\|AA\\)' | awk '{print $2}' | tr '\n' ' '"))
+    silent! exe printf(":grep '[<]<<<<<<' %s", files)
+    redraw!
+endfunction
+com! -nargs=0 Conflicts call QuickfixConflicts()
+
 
 " Insert-mode abbreviations
 autocmd FileType java :iabbrev <buffer> sop System.out.println
