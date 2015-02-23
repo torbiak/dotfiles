@@ -1,6 +1,3 @@
-# Needed for funky stuff like changing HOME for certain hosts.
-[ -e $HOME/.bashrc.pre ] && . $HOME/.bashrc.pre
-
 export CLICOLOR=1
 export EDITOR=vim
 export HISTFILESIZE=10000
