@@ -8,7 +8,11 @@ export LESS="-# 60 -i -X -R"
 export LSCOLORS=dxfxcxdxbxegedabagacad
 export LS_COLORS='di=1;35:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
 export PAGER=less
-export TERM=xterm-256color
+if [[ -n "$TMUX" ]]; then
+    export TERM=screen-256color
+else
+    export TERM=xterm-256color
+fi
 export VISUAL=vim
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
