@@ -244,6 +244,15 @@ function cword {
     echo "${line:$start:((end-start))}"
 }
 
+# Generate a script to rename a bunch of files.
+function edmv {
+    local file=/tmp/rename
+    for f in "$@"; do
+        echo "mv \"$f\" \"$f\""
+    done > $file
+    "$EDITOR" $file
+    bash $file
+}
 
 # tab completion for select programs, since loading everything takes too long,
 # especially over nfs.
