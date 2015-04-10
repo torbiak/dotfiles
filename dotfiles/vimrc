@@ -115,15 +115,6 @@ endfunction
 
 " If the previous line matches one of these patterns, increment the indent of
 " the next line.
-" Not sure how to deal with formatting prose where lines start with if, for,
-" do, etc. Remapping gq is awkward, as is creating a new command, and I can't
-" find an option to break the connection between formatting and indenting,
-" unless I use a formatting program, which won't be available on windows by
-" default. Only matching indented keywords would reduce the times formatting
-" isn't performed as expected, but then on-the-fly indenting wouldn't work as
-" expected in shell scripts and it might just be more confusing. Writing a
-" vimscript formatter would be slow, and using another language wouldn't be
-" very portable. Probably best just to clear indentexpr using setlocal.
 let g:inc_indent_after = [
     \ '[{\[\(:]$',
     \ '^function',
@@ -136,6 +127,23 @@ set indentkeys=0},0],0),o,O,0=end,0=esac,0=done,0=else:
 set indentexpr=TorbijIndent()
 set ai nosi nocin
 filetype indent off
+" Wrap gq so it doesn't use TorbijIndent. Otherwise lines in a paragraph that
+" start with 'if', 'else', etc will get indented.
+function! Format(type, ...)
+    setlocal indentexpr=''
+    if a:0  " Invoked from Visual mode, use gv command.
+        silent exe "normal! gvgq"
+    elseif a:type == 'line'
+        silent exe "normal! '[V']gq"
+    else
+        silent exe "normal! `[v`]gq"
+    endif
+    setlocal indentexpr=TorbijIndent()
+endfunction
+nn <silent> gq :set opfunc=Format<cr>g@
+vn <silent> gq :set opfunc=Format<cr>g@
+" Make gqq work as expected.
+onoremap q $
 
 
 " Functions
