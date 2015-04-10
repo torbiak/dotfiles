@@ -1,4 +1,4 @@
-let g:pathogen_disabled = []
+let g:pathogen_disabled = ['vipyut']
 call pathogen#infect()
 call pathogen#helptags()
 
@@ -406,6 +406,28 @@ nmap <leader>a <Plug>SlimeParagraphSend
 
 let g:syntastic_mode_map = {'mode': 'passive'}
 let g:syntastic_python_checkers = ['flake8']
+
+" Rut
+let g:rut_projects = [{
+  \'pattern': '\v/bdmstest[0-9]?(/|$)',
+  \'test_dir': 'spec',
+  \'source2unit': ['\v.*/lib/bdmstest/(.*/?)([^/]*)\.rb', '\1\2_spec.rb'],
+  \'unit2source': ['\v.*/spec/(.*/)?([^/]*)_spec\.rb', 'lib/bdmstest/\1\2.rb'],
+  \'runner': 'bundle exec rspec',
+  \'errorformat': '     # %f:%l:%m',
+\}]
+
+" Vipyut
+let g:vipyut_projects = [
+    \ {
+        \ 'pattern': '\v/bdmstest[0-9]?(/|$)',
+        \ 'unittests': 'spec',
+        \ 'source2unit': ['\v.*/lib/bdmstest/(.*/?)([^/]*)\.rb', '\1\2_spec.rb'],
+        \ 'unit2source': ['\v.*/spec/(.*/)?([^/]*)_spec\.rb', 'lib/bdmstest/\1\2.rb'],
+        \ 'runner': 'bundle exec rspec -r jt/rspec_vim_formatter.rb -f VimFormatter',
+    \ },
+\]
+let g:vipyut_openOutputOnFail = 0
 
 " Probe
 let g:probe_ignore_files = ['\~$', '_build', 'pyc$', 'freetds-.*']
