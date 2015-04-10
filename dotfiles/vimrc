@@ -16,6 +16,7 @@ set bs=2
 set complete=.,w  " stay fast by only suggesting completions from open windows
 set winminheight=0
 set modeline
+set more
 set backup
 " Make sure ~/tmp/vim exists.
 set backupdir=~/tmp/vim,.
