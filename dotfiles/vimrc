@@ -11,7 +11,7 @@ set sts=4 ts=4 sw=4 et
 set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
-set grepprg=ag\ --nogroup\ --nocolor\ --column
+set grepprg=ag\ --vimgrep
 set bs=2
 set complete=.,w  " stay fast by only suggesting completions from open windows
 set winminheight=0
