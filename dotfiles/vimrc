@@ -272,7 +272,23 @@ function! Generate(...) range
 
 endfunction
 
-command! -range Semicolon <line1>,<line2>s/^\s*[^ @].*[A-Za-z)0-9_]$/&;/ | noh
+function! Semicolon() range
+    for i in range(a:firstline, a:lastline)
+        let line = getline(i)
+        if line =~ '^\s*$' | continue | endif  " blanks
+        if line =~ '\v^\s*(#|//)' | continue | endif  " comments at start
+        " Skip comments at the end of a line. Try not to match comment
+        " indicators in strings, though.
+        if line =~ "\\v(#|//)[^'\"]*$" | continue | endif
+        " Skip lines ending with characters that imply continuance. Also,
+        " lines ending with } often don't want a semicolon.
+        if line =~ '\v[\[\{,\(; \}]$' | continue | endif
+        if getline(i + 1) =~ '\v\s*\.' | continue | endif  " method chains
+        cal setline(i, line . ';')
+    endfor
+endfunction
+
+command! -range Semicolon <line1>,<line2>call Semicolon()
 nn <leader>; :Semicolon<cr>
 vn <leader>; :Semicolon<cr>
 
