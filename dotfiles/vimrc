@@ -175,11 +175,10 @@ function! DiffBuffer()
     let tmp = tempname()
     let absPath = fnamemodify(expand('%'), ':p')
     exe printf('w %s', tmp)
-    echo system(printf('diff -u %s %s', tmp, absPath))
+    echo system(printf('diff -u %s %s', absPath, tmp))
     cal delete(tmp)
 endfunction
 com! DiffBuffer call DiffBuffer()
-cabbr DB DiffBuffer
 
 function! NormalSurround(open, close)
     normal viW<esc>
