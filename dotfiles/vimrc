@@ -498,10 +498,8 @@ function! GrepDiff(range, query, ...)
     if a:0 > 0
         let grep_args = a:1
     endif
-    let saved_makeprg = &makeprg
-    let &makeprg = printf("git diff --relative %s \\| linewise -rm \\| grep %s -E %s", a:range, grep_args, a:query)
+    let &l:makeprg = printf("git diff --relative %s \\| linewise -rm \\| grep %s -E %s", a:range, grep_args, a:query)
     make
-    let &makeprg = saved_makeprg
 endfunction
 command! -nargs=+ GrepDiff call GrepDiff(<f-args>)
 cabbrev GD GrepDiff
@@ -531,18 +529,14 @@ endfunction
 command! Pl call Pylint()
 
 function! RBCheck(...)
-    let saved_makeprg = &makeprg
-    let &makeprg = 'rb_check'
+    let &l:makeprg = 'rb_check'
     exe "make " . join(a:000, ' ')
-    let &makeprg = saved_makeprg
 endfunction
 command! -nargs=* RBCheck call RBCheck(<f-args>)
 
 function! Pep()
-    let saved_makeprg = &makeprg
-    let &makeprg = 'pep'
+    let &l:makeprg = 'pep'
     make %
-    let &makeprg = saved_makeprg
 endfunction
 command! Pep call Pep(<f-args>)
 nn <leader>mp :cal Pep()<cr>
