@@ -471,7 +471,6 @@ command! ProbeFindTc :cal probe#open(
     \ function('probe#tc#scan'),
     \ function('probe#tc#open'),
     \ function('probe#tc#refresh'))
-nn <leader>mq :ProbeFindTc<cr>
 nn <leader>d :ProbeFindFile<cr>
 nn <leader>f :ProbeFindInRepo<cr>
 
