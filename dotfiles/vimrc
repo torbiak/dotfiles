@@ -416,6 +416,18 @@ function! Private(function_name)
 endfunction
 nn smh :cal Private(expand('<cword>'))<cr>
 
+function! RightAlignSecondField()
+    let line = getline('.')
+    let tw = &textwidth == 0 ? 78 : &textwidth
+    let fields = split(line, '\v {2,}')
+    if len(fields) > 2
+        throw 'Too many fields.'
+    endif
+    let pad_width = tw - len(fields[0]) - len(fields[1])
+    cal setline('.', fields[0] . repeat(' ', pad_width) . fields[1])
+endfunction
+
+
 " Plugin configuration
 " ====================
 let g:ConqueTerm_CWInsert = 1
