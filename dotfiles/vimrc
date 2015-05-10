@@ -162,7 +162,11 @@ function! Rename(dst)
      if (old == a:dst)
          return 0
      endif
-     exe 'sav' fnameescape(a:dst)
+     let v:errmsg = ''
+     exe 'sav!' fnameescape(a:dst)
+     if v:errmsg != ''
+       return
+     endif
      call delete(old)
 endfunction
 command! -nargs=1 -complete=file -bar Rename call Rename('<args>')
