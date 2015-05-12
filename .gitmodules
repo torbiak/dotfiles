@@ -1,6 +1,6 @@
 [submodule "dotfiles/vim/bundle/probe"]
 	path = dotfiles/vim/bundle/probe
-	url = https://github.com/torbiak/probe.git
+	url = git@github.com:torbiak/probe.git
 [submodule "dotfiles/vim/bundle/vim-colors-solarized"]
 	path = dotfiles/vim/bundle/vim-colors-solarized
 	url = https://github.com/altercation/vim-colors-solarized.git
@@ -33,4 +33,4 @@
 	url = https://github.com/jpalardy/vim-slime.git
 [submodule "dotfiles/vim/bundle/rut.vim"]
 	path = dotfiles/vim/bundle/rut.vim
-	url = https://github.com/torbiak/rut.vim.git
+	url = git@github.com:torbiak/rut.vim.git
