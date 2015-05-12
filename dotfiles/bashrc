@@ -154,14 +154,14 @@ function send_key {
 
 # find files under current directory containing a pattern
 function ff {
-    pattern=${1:?No pattern given}
-    find . -iname "*${pattern}*" 2>/dev/null
+    pattern=${1:?No pattern given}; shift
+    find . -iname "*${pattern}*" "$@" 2>/dev/null
 }
 
 # find files ending with a suffix
 function suf {
-    pattern=${1:?No pattern given}
-    find . -iname "*${pattern}" 2>/dev/null
+    pattern=${1:?No pattern given}; shift
+    find . -iname "*${pattern}" "$@" 2>/dev/null
 }
 
 # filesystem bookmarks
