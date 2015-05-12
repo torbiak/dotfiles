@@ -451,11 +451,16 @@ let g:syntastic_python_checkers = ['flake8']
 let g:rut_projects = [{
   \'pattern': '\v/bdmstest[0-9]?(/|$)',
   \'test_dir': 'spec',
-  \'source2unit': ['\v.*/lib/bdmstest/(.*/?)([^/]*)\.rb', '\1\2_spec.rb'],
-  \'unit2source': ['\v.*/spec/(.*/)?([^/]*)_spec\.rb', 'lib/bdmstest/\1\2.rb'],
+  \'source2unit': ['\v.*lib/bdmstest/(.*/?)([^/]*)\.rb', 'spec/\1\2_spec.rb'],
+  \'unit2source': ['\v.*spec/(.*/)?([^/]*)_spec\.rb', 'lib/bdmstest/\1\2.rb'],
   \'runner': 'bundle exec rspec',
-  \'errorformat': '     # %f:%l:%m',
+  \'errorformat': '%A %#Failure/Error:%.%#,%Z %## %f:%l:%m,%C%m',
 \}]
+
+"    Failure/Error: loader = LogLoad::SOAPSimulator.new(@sim.id, @sim.started_at, 'no_such_dir')
+"    ArgumentError:
+"      wrong number of arguments (3 for 1)
+"    # ./lib/bdmstest/log_load/soap_simulator.rb:12:in `initialize'
 
 " Vipyut
 let g:vipyut_projects = [
