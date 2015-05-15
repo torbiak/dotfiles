@@ -86,7 +86,7 @@ prompt1
 # eg, if pwd is /usr/local/bin, then running "up loc" will cd to /usr/local.
 function up {
   if [[ "$1" != "" ]]; then
-    cd $(echo "$PWD" | perl -pe "s#(.*$1[^/]*/).*#\1#i;")
+    cd "$(echo "$PWD" | perl -pe "s#(.*$1[^/]*/).*#\1#i;")"
   else
     cd ..
   fi
