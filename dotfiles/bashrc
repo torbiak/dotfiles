@@ -215,7 +215,9 @@ function insert-path-with-selecta {
     READLINE_LINE=$line
     READLINE_POINT=$((READLINE_POINT + ${#selection}))
 }
-bind -x '"\C-s":"insert-path-with-selecta"'
+if [[ "$-" == *i* ]]; then # interactive
+    bind -x '"\C-s":"insert-path-with-selecta"'
+fi
 
 function cword {
     local line=${1?:No line given}
