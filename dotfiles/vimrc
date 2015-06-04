@@ -7,7 +7,7 @@ call pathogen#helptags()
 filetype plugin on
 set tags+=.tags
 set laststatus=2 ruler
-set sts=2 ts=2 sw=2 et
+set sts=4 ts=4 sw=4 et
 set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
@@ -630,8 +630,8 @@ com! -nargs=0 Conflicts call QuickfixConflicts()
 " Insert-mode abbreviations
 autocmd FileType java :iabbrev <buffer> sop System.out.println
 
-autocmd Filetype vim :set sts=4 sw=4 ts=4
-autocmd Filetype python :set sts=4 sw=4 ts=4
+autocmd Filetype java :set sts=2 sw=2 ts=2
+autocmd Filetype ruby :set sts=2 sw=2 ts=2
 autocmd Filetype lisp :filetype indent on
 
 
