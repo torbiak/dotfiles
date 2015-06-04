@@ -140,10 +140,10 @@ function! Format(type, ...)
     endif
     setlocal indentexpr=TorbijIndent()
 endfunction
-nn <silent> gq :set opfunc=Format<cr>g@
-vn <silent> gq :set opfunc=Format<cr>g@
-" Make gqq work as expected.
-onoremap q $
+"nn <silent> gq :set opfunc=Format<cr>g@
+"vn <silent> gq :set opfunc=Format<cr>g@
+"" Make gqq work as expected.
+"onoremap q $
 
 
 " Functions
@@ -287,15 +287,15 @@ endfunction
 function! Semicolon() range
     for i in range(a:firstline, a:lastline)
         let line = getline(i)
-        if line =~ '^\s*$' | continue | endif  " blanks
-        if line =~ '\v^\s*(#|//)' | continue | endif  " comments at start
+        if line =~ '^\s*$' | echo 'blank' | continue | endif  " blanks
+        if line =~ '\v^\s*(#|//)' | echo 'scomm' | continue | endif  " comments at start
         " Skip comments at the end of a line. Try not to match comment
         " indicators in strings, though.
-        if line =~ "\\v(#|//)[^'\"]*$" | continue | endif
+        if line =~ "\\v(#|//)[^'\"]*$" | echo 'ecomm' | continue | endif
         " Skip lines ending with characters that imply continuance. Also,
         " lines ending with } often don't want a semicolon.
-        if line =~ '\v[\[\{,\(; \}]$' | continue | endif
-        if getline(i + 1) =~ '\v\s*\.' | continue | endif  " method chains
+        if line =~ '\v[\[\{,\(; \}]$' | echo 'cont' | continue | endif
+        if getline(i + 1) =~ '\v^\s*\.' | echo 'chain' | continue | endif  " method chains
         cal setline(i, line . ';')
     endfor
 endfunction
@@ -312,6 +312,7 @@ function! AppendDate()
     cal setline('.', getline('.') . util#trim(system('date "+%F %A"')))
 endfunction
 nn <leader>md :cal AppendDate()<cr>
+ino <c-s>d <esc>:call AppendDate()<cr>A
 
 function! DiaryTimestamp()
     cal append('.', '$$ ' . util#trim(system('date "+%F %R %a"')) . ' $$')
