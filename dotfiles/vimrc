@@ -77,6 +77,8 @@ nn <leader>g :grep <cword><cr>
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
 nn <leader>x :source ~/source.vim<cr>
+nn <leader>4 :set sts=4 ts=4 sw=4<cr>
+nn <leader>2 :set sts=2 ts=2 sw=2<cr>
 
 nn Y y$
 
