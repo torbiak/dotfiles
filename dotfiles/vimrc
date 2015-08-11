@@ -73,6 +73,7 @@ nn <c-k> <c-w>k
 nn <leader>p :set paste!<cr>
 nn <leader>h :noh<cr>
 nn <leader>g :grep <cword><cr>
+nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
