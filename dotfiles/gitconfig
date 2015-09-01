@@ -16,6 +16,7 @@
     cif = commit -am fixup
     dc = diff --cached
     su = branch --set-upstream-to
+    rh = reset --hard
 [color]
     ui = auto
     diff = auto
