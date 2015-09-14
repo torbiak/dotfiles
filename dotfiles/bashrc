@@ -19,6 +19,9 @@ export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
 export PATH=$HOME/bin:$GOPATH/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+case $(uname) in
+    Linux | CYGWIN*) alias ls='ls --color=auto';;
+esac
 alias l='ls'
 alias ll='ls -l'
 alias j='jobs'
