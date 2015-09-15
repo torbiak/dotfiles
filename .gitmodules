@@ -31,3 +31,6 @@
 [submodule "dotfiles/vim/bundle/rut.vim"]
 	path = dotfiles/vim/bundle/rut.vim
 	url = git@github.com:torbiak/rut.vim.git
+[submodule "dotfiles/vim/bundle/vim-toml"]
+	path = dotfiles/vim/bundle/vim-toml
+	url = https://github.com/cespare/vim-toml.git
