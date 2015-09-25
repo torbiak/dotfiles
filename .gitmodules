@@ -10,9 +10,6 @@
 [submodule "dotfiles/vim/bundle/gundo.vim"]
 	path = dotfiles/vim/bundle/gundo.vim
 	url = https://github.com/sjl/gundo.vim.git
-[submodule "dotfiles/vim/bundle/go-syntax"]
-	path = dotfiles/vim/bundle/go-syntax
-	url = https://github.com/jigish/go-syntax
 [submodule "dotfiles/vim/bundle/nerdtree"]
 	path = dotfiles/vim/bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
@@ -37,3 +34,6 @@
 [submodule "dotfiles/vim/bundle/tagbar"]
 	path = dotfiles/vim/bundle/tagbar
 	url = https://github.com/majutsushi/tagbar.git
+[submodule "dotfiles/vim/bundle/vim-go"]
+	path = dotfiles/vim/bundle/vim-go
+	url = https://github.com/fatih/vim-go.git
