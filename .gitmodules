@@ -34,3 +34,6 @@
 [submodule "dotfiles/vim/bundle/vim-toml"]
 	path = dotfiles/vim/bundle/vim-toml
 	url = https://github.com/cespare/vim-toml.git
+[submodule "dotfiles/vim/bundle/tagbar"]
+	path = dotfiles/vim/bundle/tagbar
+	url = https://github.com/majutsushi/tagbar.git
