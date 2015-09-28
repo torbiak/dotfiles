@@ -22,6 +22,7 @@ set winminheight=0
 set modeline
 set more
 set backup
+set shellslash
 " Make sure ~/tmp/vim exists.
 set backupdir=~/tmp/vim,.
 ino jk <esc>
