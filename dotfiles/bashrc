@@ -260,8 +260,13 @@ function edmv {
     bash $file
 }
 
-# tab completion for select programs, since loading everything takes too long,
-# especially over nfs.
-[ -e $HOME/.bash_completion.sh ] && . $HOME/.bash_completion.sh
+# Override any distro completions.
+complete -r  # remove all complete specs
+complete -A directory -o bashdefault cd
+COMPLETE_DIR=/etc/bash_completion.d
+for cmd in git; do
+    [[ -r $COMPLETE_DIR/$cmd ]] && . $COMPLETE_DIR/$cmd
+done
+unset COMPLETE_DIR
 
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
