@@ -45,7 +45,7 @@ if [[ "$-" == *i* ]]; then # interactive
     bind 'set revert-all-at-newline on'  # Disable persistent history changes.
 
     stty -ixon -ixoff  # Try to disable flow control
-    ! uname | grep -i cygwin > /dev/null && ulimit -S -n 4096
+    ! uname | egrep -i '(cygwin|msys|mingw)' > /dev/null && ulimit -S -n 4096
 fi
 
 
