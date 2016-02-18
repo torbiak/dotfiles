@@ -456,6 +456,17 @@ function! RightAlignSecondField()
     cal setline('.', fields[0] . repeat(' ', pad_width) . fields[1])
 endfunction
 
+" Convert a path selected in visual mode to quoted list items.
+" eg: /a/b/c -> 'a', 'b', 'c'
+function! PathToQuoted()
+    let line = getline('.')
+    let start = col("'<")
+    let len = col("'>") - start + 1
+    let path = strpart(line, start - 1, len)
+    let quoted = "'" . join(split(path, '/'), "', '"). "'"
+    cal setline('.', strpart(line, 0, start - 1) . quoted . strpart(line, start + len - 1))
+endfunction
+no <leader>mq :call PathToQuoted()<cr>
 
 " Plugin configuration
 " ====================
