@@ -1,6 +1,7 @@
 set completion-ignore-case On
 $if bash
-C-xr: redraw-current-line
+    "\ev": redraw-current-line
+    "\em": menu-complete
     Space: magic-space
 $endif
 C-p: history-search-backward
