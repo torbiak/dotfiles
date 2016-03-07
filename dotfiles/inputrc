@@ -2,6 +2,9 @@ set completion-ignore-case On
 $if bash
     "\ev": redraw-current-line
     "\em": menu-complete
+    "\ex": shell-forward-word
+    "\ez": shell-backward-word
+    "\ee": edit-and-execute-command
     Space: magic-space
 $endif
 C-p: history-search-backward
