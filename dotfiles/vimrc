@@ -29,6 +29,7 @@ ino jk <esc>
 let mapleader = 's'
 set vb t_vb=
 nn <leader> <nop>
+nn Y y$
 
 " Display
 syntax enable
@@ -86,7 +87,12 @@ nn <leader>x :source ~/source.vim<cr>
 nn <leader>4 :set sts=4 ts=4 sw=4<cr>
 nn <leader>2 :set sts=2 ts=2 sw=2<cr>
 
-nn Y y$
+" Formatting
+" remove comment markers when joining lines
+set formatoptions+=j
+" Don't insert two spaces after sentences when joining lines.
+set nojoinspaces
+
 
 " md signifies markdown, not modula2
 au! filetypedetect BufNewFile,BufRead *.md
