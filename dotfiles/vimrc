@@ -94,9 +94,27 @@ set formatoptions+=j
 set nojoinspaces
 
 
-" md signifies markdown, not modula2
+" Filetypes
+" =========
+
+" The standard markdown plugin is lacking as of Vim7.4
+" Improvements in tpope/vim-markdown will eventually be merged upsteam.
+function! MarkdownLevel()
+    let h = matchstr(getline(v:lnum), '^#\+')
+    if empty(h)
+        return "="
+    else
+        return ">" . len(h)
+    endif
+endfunction
+" md extension signifies markdown, not modula2
 au! filetypedetect BufNewFile,BufRead *.md
-au filetypedetect BufNewFile,BufRead *.md setf markdown
+au filetypedetect BufNewFile,BufRead *.md setlocal filetype=markdown
+au FileType markdown setlocal foldexpr=MarkdownLevel()
+au FileType markdown setlocal foldmethod=expr
+" Don't close folds when the filetype is detected.
+au FileType markdown setlocal foldlevel=10
+
 
 " Indenting
 " =========
@@ -733,12 +751,12 @@ function! ToggleZoom()
 endfunction
 
 " Insert-mode abbreviations
-autocmd FileType java :iabbrev <buffer> sop System.out.println
+autocmd FileType java iabbrev <buffer> sop System.out.println
 
-autocmd Filetype java :set sts=2 sw=2 ts=2
-autocmd Filetype ruby :set sts=2 sw=2 ts=2
-autocmd Filetype lisp :filetype indent on
-autocmd Filetype go :set noet
+autocmd Filetype java set sts=2 sw=2 ts=2
+autocmd Filetype ruby set sts=2 sw=2 ts=2
+autocmd Filetype lisp filetype indent on
+autocmd Filetype go set noet
 
 
 " Tips
