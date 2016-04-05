@@ -740,6 +740,7 @@ endfunction
 com! -nargs=0 Conflicts call QuickfixConflicts()
 
 " Zoom/Monocle mode
+" Open/close a new tab with the current buffer.
 nn <leader>z :call ToggleZoom()<cr>
 let s:toggle_zoom_orig_tab = 1
 function! ToggleZoom()
@@ -767,7 +768,7 @@ autocmd Filetype go set noet
 
 " Tips
 "
-" Evaluate vimscript almost anywhere using <c-r>=
+" Evaluate vimscript almost anywhere using the expression register: <c-r>=
 "
 " Globally replace the word under the cursor with something else:
 " :nn <leader>r :exec printf('%%s#\<%s\>#self.%s#g', expand('<cword>'), expand('<cword>'))<cr>
