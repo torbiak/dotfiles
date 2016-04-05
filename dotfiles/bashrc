@@ -259,6 +259,11 @@ function edmv {
     bash $file
 }
 
+# note commit push
+function ncp {
+    git commit -am "update from $(hostname)" && git push
+}
+
 # Override any distro completions.
 complete -r  # remove all complete specs
 complete -A directory -o bashdefault cd
