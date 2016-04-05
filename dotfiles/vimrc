@@ -362,16 +362,16 @@ command! -range=% Copy silent <line1>,<line2>w !xsel -i -b
 nn <leader>c :Copy<cr>
 vn <leader>c :Copy<cr>
 
-function! AppendDate()
-    cal setline('.', getline('.') . util#trim(system('date "+%F %A"')))
-endfunction
-nn <leader>md :cal AppendDate()<cr>
-ino <c-s>d <esc>:call AppendDate()<cr>A
 
-function! DiaryTimestamp()
-    cal append('.', '$$ ' . util#trim(system('date "+%F %R %a"')) . ' $$')
+" Insert using CTRL-R and the expression register.
+function! Date()
+    return strftime("%Y-%m-%d %a")
 endfunction
-cabbrev DT call DiaryTimestamp()
+
+function! Timestamp()
+    return strftime("%Y-%m-%d %H:%M %a")
+endfunction
+
 
 function! WwnToVplex() range
     exe printf("%d,%ds/\\v([0-9a-f]{2}:){7}/\\='0x' . substitute(submatch(0), ':', '', 'g')/g", a:firstline, a:lastline )
