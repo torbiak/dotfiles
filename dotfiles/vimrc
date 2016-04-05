@@ -160,23 +160,29 @@ set indentkeys=0},0],0),o,O,0=end,0=esac,0=done,0=else:
 set indentexpr=TorbijIndent()
 set ai nosi nocin
 filetype indent off
+
 " Wrap gq so it doesn't use TorbijIndent. Otherwise lines in a paragraph that
-" start with 'if', 'else', etc will get indented.
-function! Format(type, ...)
+" happen to start with 'if', 'else', etc will result in indentation.
+" See :help map-operator.
+function! Format(type)
+    let saved_indentexpr = &indentexpr
     setlocal indentexpr=''
-    if a:0  " Invoked from Visual mode, use gv command.
-        silent exe "normal! gvgq"
+    if a:type == 'visual'
+        silent normal! gvgq
+    " Make special arrangement for gqq, since "q" isn't a motion.
+    elseif a:type == 'gqq'
+        silent normal! gqq
     elseif a:type == 'line'
-        silent exe "normal! '[V']gq"
-    else
-        silent exe "normal! `[v`]gq"
+        silent normal! '[V']gq
+    else  " character-wise
+        silent normal! `[v`]gq
     endif
-    setlocal indentexpr=TorbijIndent()
+    let &l:indentexpr = saved_indentexpr
 endfunction
-"nn <silent> gq :set opfunc=Format<cr>g@
-"vn <silent> gq :set opfunc=Format<cr>g@
-"" Make gqq work as expected.
-"onoremap q $
+nn <silent> gq :set opfunc=Format<cr>g@
+nn <silent> gqq :call Format('gqq')<cr>
+nn <silent> gqgq :call Format('gqq')<cr>
+vn <silent> gq :<c-u>call Format('visual')<cr>
 
 
 " Functions
