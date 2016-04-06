@@ -29,8 +29,8 @@ alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
 alias full='sudo xrandr --output default --mode 1920x1080'
 alias small='sudo xrandr --output default --mode 800x600'
 alias irssi='TERM=screen-256color irssi'
-alias resolve="vim \$(git status -s | awk '/^(UU|AA)/ { print \$2}')"
-alias grepp='grep -P --color=auto'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
 
 
 shopt -s histappend checkwinsize cmdhist extglob
@@ -48,8 +48,70 @@ if [[ "$-" == *i* ]]; then # interactive
 fi
 
 
-function normal_perms {
+function prompt1 {
+    local r="\[\e[31m\]" # red
+    local g="\[\e[32m\]" # green
+    local y="\[\e[33m\]" # yellow
+    local p="\[\e[34m\]" # purple
+    local reset="\[\e[0m\]"
+    local sep="$y|"
+    local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
+    local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
+    local branch_cmd="\$(b=\$(gitBranch); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
+    PS1="$status_cmd$job_cmd$g\A$sep$g\w$branch_cmd$y\\\$$reset "
+}
+prompt1
+
+
+# Override any distro completions.
+complete -r  # remove all complete specs
+complete -A directory -o bashdefault cd
+COMPLETE_DIR=/etc/bash_completion.d
+for cmd in git; do
+    [[ -r $COMPLETE_DIR/$cmd ]] && . $COMPLETE_DIR/$cmd
+done
+unset COMPLETE_DIR
+
+
+# cd to a directory further up your path that contains the given pattern.
+# Change to the parent directory if nothing given.
+# eg, if pwd is /usr/local/bin, then running "up loc" will cd to /usr/local.
+function up {
+    if [[ $# -eq 0 ]]; then
+        cd ..
+        return
+    fi
+    [[ "$PWD" =~ .*$1[^/]*/ ]]
+    cd "${BASH_REMATCH[0]}"
+}
+
+# Delete last command from history: histdel
+# Delete from offset to end of history: histdel OFFSET
+# Delete from offset to another offset: histdel OFFSET OFFSET
+function histdel {
+    local last=$(history | tail -n 1 | awk '{print $1}')
+    local start=${1:-$last}
+    local end=${2:-$((last+1))}
+    while [[ $start -lt $end ]]; do
+        history -d $start
+        end=$((end-1))
+    done
+}
+
+function normal-perms {
     find "${1:-.}" -type d -exec chmod 755 '{}' \; -o -type f -exec chmod 644 '{}' \;
+}
+
+# find files under current directory containing a pattern
+function ff {
+    pattern=${1:?No pattern given}; shift
+    find . -iname "*${pattern}*" "$@" 2>/dev/null
+}
+
+# find files ending with a suffix
+function suf {
+    pattern=${1:?No pattern given}; shift
+    find . -iname "*${pattern}" "$@" 2>/dev/null
 }
 
 
@@ -69,31 +131,13 @@ function garc {
     git rebase --continue
 }
 
-
-function prompt1 {
-    local r="\[\e[31m\]" # red
-    local g="\[\e[32m\]" # green
-    local y="\[\e[33m\]" # yellow
-    local p="\[\e[34m\]" # purple
-    local reset="\[\e[0m\]"
-    local sep="$y|"
-    local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
-    local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
-    local branch_cmd="\$(b=\$(gitBranch); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
-    PS1="$status_cmd$job_cmd$g\A$sep$g\w$branch_cmd$y\\\$$reset "
+# git submodule update
+function gsu {
+    repoRoot=$(git rev-parse --show-toplevel)
+    # execute in a subshell so we don't have to save the cwd
+    (cd $repoRoot; git submodule update)
 }
-prompt1
 
-# cd to a directory further up your path that contains the given pattern.
-# Change to the parent directory if nothing given.
-# eg, if pwd is /usr/local/bin, then running "up loc" will cd to /usr/local.
-function up {
-  if [[ "$1" != "" ]]; then
-    cd "$(echo "$PWD" | perl -pe "s#(.*$1[^/]*/).*#\1#i;")"
-  else
-    cd ..
-  fi
-}
 
 # usage: mrm pattern n
 # Print the nth most-recently-modified filename that matches pattern. If
@@ -104,35 +148,6 @@ function mrm {
     ls -1dt $pattern | sed -n -e "${n}p"
 }
 
-# emrm vim session*.log [n]
-function emrm {
-    local prog=${1:?No prog given.}; shift
-    local pattern=${1:?No pattern given.}; shift
-    local n=${1:-1}; shift
-    $prog $(mrm "$pattern" $n);
-}
-
-# view most recently modified
-# eg, to view the second most recent "io" log: vmrm 'io.log*' 2
-function vmrm {
-    local pattern=${1:?No pattern given.}; shift
-    local n=${1:-1}; shift
-    $PAGER $(mrm "$pattern" $n);
-}
-
-# Delete last command from history: histdel
-# Delete from offset to end of history: histdel OFFSET
-# Delete from offset to another offset: histdel OFFSET OFFSET
-function histdel {
-    local last=$(history | tail -n 1 | awk '{print $1}')
-    local start=${1:-$last}
-    local end=${2:-$((last+1))}
-    while [[ $start -lt $end ]]; do
-        history -d $start
-        end=$((end-1))
-    done
-}
-
 # screen attach
 function sat {
     local hostname=${1:-localhost}
@@ -141,112 +156,6 @@ function sat {
     else
         ssh -t $hostname screen -xRR
     fi
-}
-
-# git submodule update
-function gsu {
-    repoRoot=$(git rev-parse --show-toplevel)
-    # execute in a subshell so we don't have to save the cwd
-    (cd $repoRoot; git submodule update)
-}
-
-# consider using ssh-copy-id instead
-function send_key {
-    ssh $1 "echo $(cat $HOME/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys "
-}
-
-# find files under current directory containing a pattern
-function ff {
-    pattern=${1:?No pattern given}; shift
-    find . -iname "*${pattern}*" "$@" 2>/dev/null
-}
-
-# find files ending with a suffix
-function suf {
-    pattern=${1:?No pattern given}; shift
-    find . -iname "*${pattern}" "$@" 2>/dev/null
-}
-
-# filesystem bookmarks
-# create: bm c NAME PATH
-# list: bm l
-# goto: bm g NAME
-function bm {
-    local cmd=${1:-l}; shift
-    local rc=${BMRC:-~/.bmrc}
-    case $cmd in
-        l) cat $rc;;
-        c)
-            local name=${1:?No name given.}; shift
-            local path=${1:-$PWD}
-            echo "$name $path" >> $rc
-            ;;
-        g)
-            local name=${1:?No name given.}; shift
-            cd $(awk "\$1 == \"$name\" {print \$2}" $rc)
-            ;;
-        *)
-            echo "Bad command: $cmd"
-            return 1
-            ;;
-    esac
-}
-alias g="bm g"
-
-# selecta-based path insertion
-# A posix basic regex that matches the entire filepath.
-SELECTA_IGNORE='.*\(\.git\|~\)'
-function insert-path-with-selecta {
-    echo -e "\n\n"
-    if ! which selecta &>/dev/null; then
-        echo "selecta not found" 1>&2
-        return
-    fi
-    local path=$(cword "$READLINE_LINE" $READLINE_POINT)
-    local path_len=${#path}
-    path=${path:-.}
-    path=${path%/}
-    if [[ ! -d "$path" ]]; then
-        echo "$path is not a directory." 1>&2
-        return
-    fi
-    local selection+=$(find "$path" -regex "$SELECTA_IGNORE" -prune -o -print | selecta)
-    local line=${READLINE_LINE:0:$((READLINE_POINT - path_len))}
-    line+=$selection
-    line+=${READLINE_LINE:$READLINE_POINT}
-    READLINE_LINE=$line
-    READLINE_POINT=$((READLINE_POINT + ${#selection}))
-}
-if [[ "$-" == *i* ]]; then # interactive
-    bind -x '"\C-s":"insert-path-with-selecta"'
-fi
-
-function cword {
-    local line=${1?:No line given}
-    local pos=${2:--1}
-    # A word immediately behind the cursor counts as the current word.
-    local c=${line:$pos:1}
-    if [[ "$c" == " " || "$c" == "" ]] && ((pos != 0)); then
-        ((pos-=1))
-    fi
-    if [[ ${line:pos:1} == " " ]]; then
-        # Cursor isn't on or right after a word. No current word.
-        return
-    fi
-    local i start=$pos end=$((pos+1))
-    for ((i=$((pos+1)); i < ${#line}; i += 1)); do
-        if [[ ${line:$i:1} == " " ]]; then
-            break
-        fi
-        end=$i
-    done
-    for ((i=$pos; i >= 0; i -= 1)); do
-        if [[ ${line:$i:1} == " " ]]; then
-            break
-        fi
-        start=$i
-    done
-    echo "${line:$start:((end-start))}"
 }
 
 # Generate a script to rename a bunch of files.
@@ -264,13 +173,5 @@ function ncp {
     git commit -am "update from $(hostname)" && git push
 }
 
-# Override any distro completions.
-complete -r  # remove all complete specs
-complete -A directory -o bashdefault cd
-COMPLETE_DIR=/etc/bash_completion.d
-for cmd in git; do
-    [[ -r $COMPLETE_DIR/$cmd ]] && . $COMPLETE_DIR/$cmd
-done
-unset COMPLETE_DIR
 
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
