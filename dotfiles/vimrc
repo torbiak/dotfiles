@@ -162,28 +162,21 @@ set indentexpr=TorbijIndent()
 set ai nosi nocin
 filetype indent off
 
-" Wrap gq so it doesn't use TorbijIndent. Otherwise lines in a paragraph that
-" happen to start with 'if', 'else', etc will result in indentation.
-" See :help map-operator.
-function! Format(type)
-    let saved_indentexpr = &indentexpr
-    setlocal indentexpr=''
-    if a:type == 'visual'
-        silent normal! gvgq
-    " Make special arrangement for gqq, since "q" isn't a motion.
-    elseif a:type == 'gqq'
-        silent normal! gqq
-    elseif a:type == 'line'
-        silent normal! '[V']gq
-    else  " character-wise
-        silent normal! `[v`]gq
+" Lines in a paragraph that happen to start with 'if', 'else', etc will result
+" in indentation. Turn off TorbijIndent before formatting to avoid this.
+" Despite much effort I haven't been able to wrap gq using map-operator to
+" turn off TorbijIndent automatically without breaking comment formatting (the
+" indent isn't kept for comment lines following the first).
+function! ToggleTorbijIndent()
+    if &indentexpr ==# 'TorbijIndent()'
+        let &l:indentexpr=''
+        echo 'TorbijIndent off'
+    else
+        let &l:indentexpr='TorbijIndent()'
+        echo 'TorbijIndent on'
     endif
-    let &l:indentexpr = saved_indentexpr
 endfunction
-nn <silent> gq :set opfunc=Format<cr>g@
-nn <silent> gqq :call Format('gqq')<cr>
-nn <silent> gqgq :call Format('gqq')<cr>
-vn <silent> gq :<c-u>call Format('visual')<cr>
+nn <leader>i :call ToggleTorbijIndent()<cr>
 
 
 " Functions
