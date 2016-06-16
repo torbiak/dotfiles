@@ -173,5 +173,21 @@ function ncp {
     git commit -am "update from $(hostname)" && git push
 }
 
+function timer {
+    local dur=${1:?No duration given}
+    local start=$(date +%s)
+    local left=$dur
+    while (( left > 0 )); do
+        printf "\r%4d" $left
+        sleep 1
+        left=$((start + dur - $(date +%s)))
+    done
+    case $(uname) in
+        Linux) aplay /usr/share/pommed/goutte.wav &>/dev/null;;
+        CYGWIN*) cat "$(cygpath -W)/Media/chord.wav" > /dev/dsp;;
+    esac
+    echo -en '\r\a' # echo bell to set urgent flag in window manager
+}
+
 
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
