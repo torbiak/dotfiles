@@ -58,7 +58,7 @@ function prompt1 {
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
     local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
     local branch_cmd="\$(b=\$(gitBranch); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
-    PS1="$status_cmd$job_cmd$g\A$sep$g\w$branch_cmd$y\\\$$reset "
+    PS1="\[\a\]$status_cmd$job_cmd$g\A$sep$g\w$branch_cmd$y\\\$$reset "
 }
 prompt1
 
