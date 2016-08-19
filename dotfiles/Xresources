@@ -1,0 +1,30 @@
+*background: #101f2f
+*foreground: #80aad5
+*color0: #323b44
+*color8: #464f58
+*color1: #8c4b4b
+*color9: #8c4b4b
+*color2: #4b8c4b
+*color10: #4b8c4b
+*color3: #8c8c4b
+*color11: #8c8c4b
+*color4: #4b4b8c
+*color12: #4b4b8c
+*color5: #8c4b8c
+*color13: #8c4b8c
+*color6: #4b8c8c
+*color14: #4b8c8c
+*color7: #818a94
+*color15: #9aa4ad
+
+xterm*font: -*-terminus-medium-*-*-*-14-*-*-*-*-*-*-*
+XTerm.VT100.eightBitInput: false
+XTerm*bellIsUrgent: true
+
+aterm*scrollBar: false
+aterm*fading: 80
+
+urxvt*scrollBar: false
+urxvt*fade: 1
+urxvt.visualBell: false
+urxvt.urgentOnBell: true
