@@ -38,7 +38,7 @@ set guioptions='cM'
 set t_Co=16
 set background=dark
 let g:solarized_italic=0
-colorscheme solarized
+colorscheme default
 set list
 set listchars=tab:»\ ,trail:\ ,
 
