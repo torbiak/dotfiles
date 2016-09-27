@@ -13,3 +13,6 @@
 
 "sudo bash -c 'echo $(($(cat /sys/class/backlight/intel_backlight/brightness)+200)) > /sys/class/backlight/intel_backlight/brightness'"
     XF86MonBrightnessUp
+
+"xclip -o -selection primary | xclip -selection clipboard"
+    XF86LaunchB
