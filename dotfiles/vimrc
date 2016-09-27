@@ -754,10 +754,11 @@ endfunction
 " Insert-mode abbreviations
 autocmd FileType java iabbrev <buffer> sop System.out.println
 
-autocmd Filetype java set sts=2 sw=2 ts=2
-autocmd Filetype ruby set sts=2 sw=2 ts=2
+autocmd Filetype java setlocal sts=2 sw=2 ts=2
+autocmd Filetype ruby setlocal sts=2 sw=2 ts=2
 autocmd Filetype lisp filetype indent on
-autocmd Filetype go set noet
+autocmd Filetype go setlocal noet
+autocmd Filetype c setlocal cindent indentexpr= noet
 
 
 " Tips
