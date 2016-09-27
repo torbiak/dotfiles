@@ -555,7 +555,7 @@ let g:vipyut_projects = [
 let g:vipyut_openOutputOnFail = 0
 
 " Probe
-let g:probe_ignore_files = ['\~$', '/_\?build$', '\.pyc$', 'freetds-.*', '\.class$', '/target$']
+let g:probe_ignore_files = ['\~$', '/_\?build$', '\.pyc$', 'freetds-.*', '\.class$', '/target$', '\.sw[pon]$']
 command! ProbeFindTc :cal probe#open(
     \ function('probe#tc#scan'),
     \ function('probe#tc#open'),
