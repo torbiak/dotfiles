@@ -733,24 +733,6 @@ function! QuickfixConflicts()
 endfunction
 com! -nargs=0 Conflicts call QuickfixConflicts()
 
-" Zoom/Monocle mode
-" Open/close a new tab with the current buffer.
-nn <leader>z :call ToggleZoom()<cr>
-let s:toggle_zoom_orig_tab = 1
-function! ToggleZoom()
-    if winnr('$') > 1
-        let pos = getpos('.')
-        let s:toggle_zoom_orig_tab = tabpagenr()
-        let buffer_name = bufname("%")
-        tabedit
-        exe 'buffer ' . buffer_name
-        cal setpos('.', pos)
-    elseif winnr('$') == 1
-        tabclose
-        exe 'tabnext ' . s:toggle_zoom_orig_tab
-    end
-endfunction
-
 " Insert-mode abbreviations
 autocmd FileType java iabbrev <buffer> sop System.out.println
 
