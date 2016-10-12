@@ -741,6 +741,7 @@ autocmd Filetype ruby setlocal sts=2 sw=2 ts=2
 autocmd Filetype lisp filetype indent on
 autocmd Filetype go setlocal noet
 autocmd Filetype c setlocal cindent indentexpr= noet
+autocmd Filetype cpp setlocal cindent indentexpr= noet
 
 
 " Tips
