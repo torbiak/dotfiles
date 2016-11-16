@@ -65,7 +65,9 @@ prompt1
 
 # Override any distro completions.
 complete -r  # remove all complete specs
-complete -A directory -o bashdefault cd
+# Complete directories, and if none are returned do the usual completion of
+# environment variables and files.
+complete -A directory -o bashdefault -o default cd
 COMPLETE_DIR=/etc/bash_completion.d
 for cmd in git; do
     [[ -r $COMPLETE_DIR/$cmd ]] && . $COMPLETE_DIR/$cmd
