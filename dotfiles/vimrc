@@ -256,14 +256,14 @@ vn <leader>mb :call VisualSurround('<tt>', '</tt>')<cr>
 " Using the given range as a template, generate all combinations of given
 " substitutions, adding them below the given range.
 "
-" usage: Generate(<pattern>, <replacements>, <pattern>, <replacements>, ...)
+" usage: TemplateCartesian(<pattern>, <replacements>, <pattern>, <replacements>, ...)
 " eg: on a line containing 'ab':
-" :.call Generate('a', range(2), 'b', range(2))
+" :.call TemplateCartesian('a', range(2), 'b', range(2))
 " 00
 " 01
 " 10
 " 11
-function! Generate(...) range
+function! TemplateCartesian(...) range
     " Organize args.
     let replacementLists = {}
     let patterns = []
@@ -314,7 +314,48 @@ function! Generate(...) range
     endwhile
 
     cal append(a:lastline, lines)
+endfunction
 
+" Using the given range as a template, generate a substitution for each set of
+" replacements, adding them below the given range.
+"
+" usage: TemplateCartesian(<pattern>, <replacements>, <pattern>, <replacements>, ...)
+" eg: on a line containing 'ab':
+" :.call TemplateCartesian('a', [1, 2], 'b', [3, 4])
+" 13
+" 24
+function! TemplateLinear(...) range
+    " Organize args.
+    let replacementLists = {}
+    let i = 0
+    while i < len(a:000)
+        let pattern = a:000[i]
+        let replacementLists[pattern] = a:000[i+1]
+        let i += 2
+    endwhile
+
+    let nrepl = len(values(replacementLists)[0])
+    for [k, v] in items(replacementLists)
+        if len(v) != nrepl
+            throw "wrong number of replacements for " . k
+        endif
+    endfor
+
+    let template = join(getline(a:firstline, a:lastline), "\r")
+    let lines = []
+
+    for i in range(nrepl)
+        " Make substitutions.
+        let out = template
+        for [pattern, replacements] in items(replacementLists)
+            let repl = replacements[i]
+            let out = substitute(out, pattern, repl, "g")
+        endfor
+
+        cal extend(lines, split(out, "\r"))
+    endfor
+
+    cal append(a:lastline, lines)
 endfunction
 
 function! Semicolon() range
