@@ -212,5 +212,9 @@ function timer {
     echo -en '\r\a' # echo bell to set urgent flag in window manager
 }
 
+# Open in BackGround
+function obg {
+    nohup "$@" &> /dev/null & disown $!
+}
 
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
