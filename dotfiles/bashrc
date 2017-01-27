@@ -39,6 +39,7 @@ if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 fi
 set bell-style none
 set show-all-if-ambiguous on
+set +o histexpand
 if [[ "$-" == *i* ]]; then # interactive
     bind "\C-p":history-search-backward
     bind "\C-n":history-search-forward
