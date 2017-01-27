@@ -463,15 +463,23 @@ cabbrev QF QFComment
 " opts: dict with the following keys:
 "   align: string of field alignments (eg. "llr" for Left, Left, Right)
 "   newsep: new separator. Useful if regex metacharacters are present in sep.
+"   ignorecomments: True/False. Leave comment lines alone.
 function! Table(sep, opts) range
     let alignment = split(get(a:opts, 'align', ""), '\zs')
     let max_len = {}
     for line in getline(a:firstline, a:lastline)
+        " Ignore comment lines.
+        if get(a:opts, "ignorecomments", 0) && line =~ '^\v\s*(//|/\*|#).*'
+            continue
+        endif
         for [i, field] in util#enumerate(split(line, a:sep))
             let field = util#trim(field)
             let max_len[i] = max([get(max_len, i, 0), strlen(field)])
         endfor
     endfor
+    if len(max_len) == 0
+        return
+    endif
     let formatted = []
     for line in getline(a:firstline, a:lastline)
         let fields = []
