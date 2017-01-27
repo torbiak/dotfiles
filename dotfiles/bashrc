@@ -163,13 +163,32 @@ function sat {
 }
 
 # Generate a script to rename a bunch of files.
+# Edit a list of destinations in an editor, then review the generated script
+# before running it.
 function edmv {
-    local file=/tmp/rename
-    for f in "$@"; do
-        echo "mv \"$f\" \"$f\""
-    done > $file
-    "$EDITOR" $file
-    bash $file
+    local src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
+    local dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
+    local script=$(mktemp --tmpdir edmvscript.XXXXXXX)
+    for f in "$@"; do echo "$f"; done > "$src"
+    cp "$src" "$dst"
+    "$EDITOR" "$dst"
+    if [[ $(wc -l <"$src") -ne $(wc -l <"$dst") ]]; then
+        printf "Line count mismatch between %s and %s\n" "$src" "$dst" 1>&2
+        rm "$script"
+        return 1;
+    fi
+    while true; do
+        read a <&3 || break
+        read b <&4 || break
+        if [[ "$b" == "" ]]; then
+            printf 'rm "%s"\n' "$a"
+        else
+            printf 'mv "%s" "%s"\n' "$a" "$b"
+        fi
+    done 3<"$src" 4<"$dst" >"$script"
+    "$EDITOR" "$script"
+    bash "$script"
+    rm "$src" "$dst" "$script"
 }
 
 # note commit push
