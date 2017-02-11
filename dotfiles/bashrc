@@ -18,6 +18,7 @@ export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
 export PATH=$HOME/bin:$GOPATH/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+IFS=$'\t\n'
 
 case $(uname) in
     Linux | CYGWIN*) alias ls='ls --color=auto';;
