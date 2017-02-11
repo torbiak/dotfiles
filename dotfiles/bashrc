@@ -1,5 +1,6 @@
 export CLICOLOR=1
 export EDITOR=vim
+export VISUAL=vim
 export HISTFILESIZE=10000
 export HISTSIZE=10000
 export HISTIGNORE="&:[ ]*:exit:l:ll:ls:histdel"
@@ -13,7 +14,6 @@ if [[ -n "$TMUX" ]]; then
 else
     export TERM=xterm-256color
 fi
-export VISUAL=vim
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
