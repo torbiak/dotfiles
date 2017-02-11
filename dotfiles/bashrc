@@ -208,7 +208,8 @@ function timer {
         Linux) aplay /usr/share/pommed/goutte.wav &>/dev/null;;
         CYGWIN*) cat "$(cygpath -W)/Media/chord.wav" > /dev/dsp;;
     esac
-    echo -en '\r\a' # echo bell to set urgent flag in window manager
+    # clear line and then echo bell to set urgent flag in window manager
+    echo -en '\r\e[2K\a'
 }
 
 # Open in BackGround
