@@ -464,16 +464,19 @@ cabbrev QF QFComment
 "   align: string of field alignments (eg. "llr" for Left, Left, Right)
 "   newsep: new separator. Useful if regex metacharacters are present in sep.
 "   ignorecomments: True/False. Leave comment lines alone.
+"   ignore1fcomments: True/False. Leave comments with a single field alone.
 function! Table(sep, opts) range
     let alignment = split(get(a:opts, 'align', ""), '\zs')
     let max_len = {}
     for line in getline(a:firstline, a:lastline)
-        " Ignore comment lines.
         if get(a:opts, "ignorecomments", 0) && line =~ '^\v\s*(//|/\*|#).*'
             continue
         endif
+        if get(a:opts, "ignore1fcomments", 0) && line =~ '^\v\s*(//|/\*|#).*' && line !~ a:sep
+            continue
+        endif
         for [i, field] in util#enumerate(split(line, a:sep))
-            let field = util#trim(field)
+            let field = substitute(field, ' *(.{-}) *', '\1', "")
             let max_len[i] = max([get(max_len, i, 0), strlen(field)])
         endfor
     endfor
@@ -482,9 +485,17 @@ function! Table(sep, opts) range
     endif
     let formatted = []
     for line in getline(a:firstline, a:lastline)
+        if get(a:opts, "ignorecomments", 0) && line =~ '^\v\s*(//|/\*|#).*'
+            cal add(formatted, line)
+            continue
+        endif
+        if get(a:opts, "ignore1fcomments", 0) && line =~ '^\v\s*(//|/\*|#).*' && line !~ a:sep
+            cal add(formatted, line)
+            continue
+        endif
         let fields = []
         for [i, field] in util#enumerate(split(line, a:sep))
-            let field = util#trim(field)
+            let field = substitute(field, ' *(.{-}) *', '\1', "")
             if get(alignment, i, 'l') == 'l'
                 let format = printf('%%-%ds', max_len[i])
             else
@@ -492,7 +503,7 @@ function! Table(sep, opts) range
             endif
             cal add(fields,  printf(format, field))
         endfor
-        cal add(formatted, util#trim(join(fields, get(a:opts, 'newsep', a:sep))))
+        cal add(formatted, substitute(join(fields, get(a:opts, 'newsep', a:sep)), '\v *$', '', ''))
     endfor
     cal setline(a:firstline, formatted)
 endfunction
