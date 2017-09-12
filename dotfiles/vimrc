@@ -747,6 +747,7 @@ command! -nargs=* Pg call PylintGit('<args>')
 " Passes its arguments straight to git diff, so by default it diffs the working
 " directory with HEAD.
 " Sets the first non-empty changed line as the description, if possible.
+" Possibly superceded by git-jump.
 function! QuickfixGitDiff(...)
     let command = "git diff -U0 " . join(a:000)
     let lines = split(system(command), '\n')

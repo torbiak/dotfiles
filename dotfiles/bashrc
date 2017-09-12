@@ -19,10 +19,10 @@ export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
 IFS=$'\t\n'
 
-case $(uname) in
-    Linux | CYGWIN*) alias ls='ls --color=auto';;
+case $OSTYPE in
+    linux-gnu | cygwin) alias ls='ls --color=auto';;
 esac
-alias l='ls'
+alias l='ls -F'
 alias ll='ls -l'
 alias j='jobs'
 alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
