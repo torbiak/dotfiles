@@ -36,3 +36,5 @@
     rewriteRef = refs/notes/*
 [include]
     path = .gitconfig.local
+[rebase]
+    autoSquash = true
