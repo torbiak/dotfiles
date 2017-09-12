@@ -17,3 +17,20 @@ atexit.register(readline.write_history_file, history)
 
 def t(*args):
     return timeit.Timer(*args).timeit()
+
+def xf(pattern):
+    """ eXecute File
+
+    Modifies globals(). Be careful.
+
+    """
+    import glob
+    files = glob.glob(os.path.expanduser(pattern))
+    if len(files) != 1:
+        raise Exception('A single match is expected. files: {}'.format(files))
+    exec(open(files[0]).read(), globals(), globals())
+
+def fa(obj, pattern):
+    """ Filter Attributes. """
+    import fnmatch
+    return fnmatch.filter(dir(obj), pattern)
