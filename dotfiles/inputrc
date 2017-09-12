@@ -5,6 +5,8 @@ $if bash
     "\ex": shell-forward-word
     "\ez": shell-backward-word
     "\ee": edit-and-execute-command
+    "\eh": shell-backward-word
+    "\el": shell-forward-word
 $endif
 C-p: history-search-backward
 C-n: history-search-forward
