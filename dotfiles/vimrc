@@ -99,7 +99,7 @@ set nojoinspaces
 " =========
 
 " The standard markdown plugin is lacking as of Vim7.4
-" Improvements in tpope/vim-markdown will eventually be merged upsteam.
+" Improvements in tpope/vim-markdown will eventually be merged upstream.
 function! MarkdownLevel()
     let h = matchstr(getline(v:lnum), '^#\+')
     if empty(h)
@@ -178,6 +178,29 @@ function! ToggleTorbijIndent()
 endfunction
 nn <leader>i :call ToggleTorbijIndent()<cr>
 
+
+" Spelling
+" ========
+" The default red background is frequently illegible. Just do reverse instead.
+highlight clear SpellBad
+highlight SpellBad term=reverse cterm=reverse gui=undercurl guisp=Red
+
+function! ToggleSpell()
+    if !&spell
+        set spellcapcheck=
+
+        " Avoid checking things that are likely not to be common words.
+        " Sometimes other syntax items will override these, see
+        " :help syn-priority
+        syn match URLNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
+        syn match CapitalizedNoSpell '\<[A-Z]\w*\>' contains=@NoSpell
+        syn match PossessiveNoSpell '\<\w\+\'s\>' contains=@NoSpell
+        " Embedded capital (fileList) or underscore (file_list).
+        syn match IdentNoSpell '\<\w\+[A-Z_]\w\+\>' contains=@NoSpell
+    endif
+    set spell!
+endfunction
+nn <leader>= :call ToggleSpell()<cr>
 
 " Functions
 " =========
@@ -662,11 +685,6 @@ let g:tagbar_type_go = {
     \ 'ctagsbin'  : 'gotags',
     \ 'ctagsargs' : '-sort -silent'
     \ }
-
-" Make pyflakes highlighting more visible
-highlight clear SpellBad
-highlight link SpellBad DiffDelete
-
 
 " Quickfix
 " ========
