@@ -116,6 +116,9 @@ au FileType markdown setlocal foldmethod=expr
 " Don't close folds when the filetype is detected.
 au FileType markdown setlocal foldlevel=10
 
+" gp extension is for gnuplot instead of the PARI/GP calculator.
+au! filetypedetect BufNewFile,BufRead *.gp
+au filetypedetect BufNewFile,BufRead *.gp setlocal filetype=gnuplot
 
 " Indenting
 " =========
