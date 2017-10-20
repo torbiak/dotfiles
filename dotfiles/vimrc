@@ -597,6 +597,15 @@ command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
 nn <leader>J :JoinNoWhitespace<cr>
 vn <leader>J :JoinNoWhitespace<cr>
 
+" Assign-and-increase function intended to be used when making substitutions
+" using the expression register. For example, to replace 'X's with
+" 1, 2, 3, ...: let i=1 | s/X/\=Inc(1)/g
+let g:i = 1
+function! Inc(step)
+    let g:i += a:step
+    return g:i - a:step
+endfunction
+
 
 " Plugin configuration
 " ====================
