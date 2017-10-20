@@ -162,6 +162,8 @@ function sat {
 # Generate a script to rename a bunch of files.
 # Edit a list of destinations in an editor, then review the generated script
 # before running it.
+# vidir from moreutils probably supercedes this. qmv from renameutils is less
+# appealing due to its "<file><tab><file>" output.
 function edmv {
     local src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
     local dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
