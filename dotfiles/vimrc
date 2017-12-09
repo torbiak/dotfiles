@@ -181,6 +181,10 @@ function! ToggleTorbijIndent()
 endfunction
 nn <leader>i :call ToggleTorbijIndent()<cr>
 
+function! GnuC()
+  setlocal sw=2 sts=2 ts=8 et
+  setlocal cinoptions=>2s,e-s,n-s,f0,{s,^-s,:s,=s,g0,+.5s,p2s,t0,(0 cindent
+endfunction
 
 " Spelling
 " ========
