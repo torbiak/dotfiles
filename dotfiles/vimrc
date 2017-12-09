@@ -539,6 +539,7 @@ function! Table(sep, opts) range
 endfunction
 nn <leader>mt :exe printf('%scal Table(" \\{2,}", {"newsep": "  "})', util#cpar_line_range_str())<cr>
 vn <leader>mt :cal Table(' \{2,}', {'newsep': '  '})<cr>
+command! -range AlignComments <line1>,<line2>call Table('\v +\ze[/#]', {'newsep': ' '})
 
 " Sequence diagram mappings
 nn <leader>mr :exe printf('%scal sequence_diagram#format()', util#cpar_line_range_str())<cr>
