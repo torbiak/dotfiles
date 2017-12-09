@@ -1,0 +1,81 @@
+# Some important sqsh options:
+#
+# -b
+#     hide banner
+# -D database
+#     set db
+# -i filename
+# -m horiz|vert|bcp|csv|html|meta|pretty|none
+#     Change the display style. There's also the $style var and the -m flag to \go.
+# -o outfile
+# -p
+#     Display performance statistics. \go has a -p option.
+#
+# -S server
+# -U user
+# -P password
+
+# We can use DSQUERY to show the server name in the prompt because if DSQUERY
+# wasn't used for supplying connection info to sqsh it gets populated with the
+# argument to the -S option.
+\set prompt='{0;32}${DSQUERY}.${database}|${histnum}.${lineno}> {0}'
+\set banner=0
+\set style=pretty
+\set nosepline=1
+\set statistics=1
+\set bcp_rowsep=""
+
+\set histmerge=1
+\set histsize=100
+\set histunique=1
+
+\set repeat_batch=1
+
+\set keyword_completion=exact
+\set keyword_dynamic=1
+# Just tab-complete on User tables and Views for now.
+# For details about sysobjects see: https://docs.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-sysobjects-transact-sql
+\set keyword_query="select name from sysobjects where xtype in ('U', 'V') order by name"
+
+\set tab="mlr --icsv --rs lf --opprint cat | less"
+\alias goml="\go -m csv | mlr --icsv --rs lf --opprint cat | less"
+\alias gom="\go -m csv | mlr --icsv --rs lf --opprint cat"
+\alias lo='\go !* | less -S'
+
+\func -x \rows
+    \if [ $# -ne 1 ]
+        \echo "usage: rows <table>"
+        \return 1
+    \fi
+    select count(1) as rows from ${1}
+    \go
+\done
+
+\func -x \d
+    \if [ $# -ne 1 ]
+        \echo "usage: \d <table>"
+        \return 1
+    \fi
+    SELECT c.name AS column_name
+        ,c.column_id
+        ,t.name AS type_name
+        ,c.max_length
+    FROM sys.columns AS c
+    JOIN sys.types AS t ON c.user_type_id=t.user_type_id
+    WHERE c.object_id = OBJECT_ID(\\'${1}\\')
+    ORDER BY c.column_id
+    \go | less
+\done
+
+\func -x \freq
+    \if [ $# -lt 2 ]
+        \echo "usage: \freq <table> <col>..."
+        \return 1
+    \fi
+    `sql-freq $*`
+    \go
+\done
+
+\if [ -r ~/.sqshrc.local ]
+    \loop -n -i ~/.sqshrc.local 
+\fi
