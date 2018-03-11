@@ -14,7 +14,6 @@ export PAGER=less
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
-IFS=$'\t\n'
 
 case $OSTYPE in
     linux-gnu | cygwin) alias ls='ls --color=auto';;
