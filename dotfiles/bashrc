@@ -83,7 +83,7 @@ function up {
         cd ..
         return
     fi
-    [[ "$PWD" =~ .*$1[^/]*/ ]]
+    [[ "$PWD" =~ .*$1[^/]*/ ]] || return 1
     cd "${BASH_REMATCH[0]}"
 }
 
