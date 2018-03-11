@@ -25,6 +25,10 @@
 \set statistics=1
 \set bcp_rowsep=""
 
+\set date='%Y-%m-%d'
+\set datefmt='%Y-%m-%d'
+\set datetime='%Y-%m-%dT%H:%M:%S'
+
 \set histmerge=1
 \set histsize=100
 \set histunique=1
@@ -42,6 +46,9 @@
 \alias gom="\go -m csv | mlr --icsv --rs lf --opprint cat"
 \alias lo='\go !* | less -S'
 
+# Get autojoin buffer.
+\alias baj='\buf-copy !. aj'
+
 \func -x \rows
     \if [ $# -ne 1 ]
         \echo "usage: rows <table>"
@@ -52,19 +59,19 @@
 \done
 
 \func -x \d
-    \if [ $# -ne 1 ]
-        \echo "usage: \d <table>"
-        \return 1
-    \fi
-    SELECT c.name AS column_name
-        ,c.column_id
-        ,t.name AS type_name
-        ,c.max_length
-    FROM sys.columns AS c
-    JOIN sys.types AS t ON c.user_type_id=t.user_type_id
-    WHERE c.object_id = OBJECT_ID(\\'${1}\\')
-    ORDER BY c.column_id
-    \go | less
+    \shell : >/tmp/d
+    \for table in $*
+        SELECT c.name AS column_name
+            ,c.column_id
+            ,t.name AS type_name
+            ,c.max_length
+        FROM sys.columns AS c
+        JOIN sys.types AS t ON c.user_type_id=t.user_type_id
+        WHERE c.object_id = OBJECT_ID(\\'$table\\')
+        ORDER BY c.column_id
+        \go | sed -e "1i$table" -e '/^$/d;/^Clock Time/d;/rows affected)$/d' >>/tmp/d
+    \done
+    \shell less /tmp/d
 \done
 
 \func -x \freq
