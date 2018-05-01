@@ -37,3 +37,6 @@
 [submodule "dotfiles/vim/bundle/vim-surround"]
 	path = dotfiles/vim/bundle/vim-surround
 	url = https://github.com/tpope/vim-surround.git
+[submodule "dotfiles/vim/bundle/nim.vim"]
+	path = dotfiles/vim/bundle/nim.vim
+	url = git://github.com/zah/nim.vim.git
