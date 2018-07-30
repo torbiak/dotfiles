@@ -53,13 +53,30 @@
 # Get autojoin buffer.
 \alias baj='\buf-copy !. aj'
 
+# Quickly find an approximate row count of the given tables using index
+# partition info.
 \func -x \rows
-    \if [ $# -ne 1 ]
-        \echo "usage: rows <table>"
+    \if [ $# -lt 1 ]
+        \echo "usage: rows <table>..."
         \return 1
     \fi
-    select count(1) as rows from ${1}
-    \go
+    \set saved_stats=$statistics
+    \set statistics=0
+    -- Use some awkward perl to avoid nesting the same types of quotes.
+    \set arg_list="`perl -e 'print join(qq(, ), map {chr(39) . $_ . chr(39)} @ARGV)' $*`"
+
+    select
+        o.name "table",
+        sum(st.row_count) "rows"
+    from sys.dm_db_partition_stats st
+        join sys.objects o on o.object_id = st.object_id
+    where o.name in ($arg_list)
+        and index_id < 2
+    group by o.name
+    order by o.name
+    go | sed '/^$/d;/row affected/d'
+
+    \set statistics=$saved_stats
 \done
 
 \func -x \d
