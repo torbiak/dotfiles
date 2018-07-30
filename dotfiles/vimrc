@@ -438,16 +438,8 @@ function! Timestamp()
     return strftime("%Y-%m-%d %H:%M %a")
 endfunction
 
-
-function! WwnToVplex() range
-    exe printf("%d,%ds/\\v([0-9a-f]{2}:){7}/\\='0x' . substitute(submatch(0), ':', '', 'g')/g", a:firstline, a:lastline )
-endfunction
-
-function! WwnToColon() range
-    exe printf("%d,%ds/\\v0x([0-9a-f]{16})/\\=join(split(submatch(1), '..\\zs'), ':')", a:firstline, a:lastline )
-endfunction
-
-command! -nargs=? Filter let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
+" Collect lines matching pattern into register g.
+command! -nargs=? Collect let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
 
 function! Chars(start, stop)
     let result = ""
@@ -541,10 +533,6 @@ endfunction
 nn <leader>mt :exe printf('%scal Table(" \\{2,}", {"newsep": "  "})', util#cpar_line_range_str())<cr>
 vn <leader>mt :cal Table(' \{2,}', {'newsep': '  '})<cr>
 command! -range AlignComments <line1>,<line2>call Table('\v +\ze[/#]', {'newsep': ' '})
-
-" Sequence diagram mappings
-nn <leader>mr :exe printf('%scal sequence_diagram#format()', util#cpar_line_range_str())<cr>
-vn <leader>mr :cal sequence_diagram#format()<cr>
 
 " Make script-local function global.
 function! Public(function_name)
