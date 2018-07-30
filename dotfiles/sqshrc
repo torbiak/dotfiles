@@ -35,6 +35,10 @@
 
 \set repeat_batch=1
 
+# The semicolon hack is convenient but stops scripts that contain semicolons
+# from working. Sometimes a semicolon is required in the middle of a batch.
+\set semicolon_hack=0
+
 \set keyword_completion=exact
 \set keyword_dynamic=1
 # Just tab-complete on User tables and Views for now.
