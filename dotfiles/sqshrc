@@ -45,9 +45,10 @@
 # For details about sysobjects see: https://docs.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-sysobjects-transact-sql
 \set keyword_query="select name from sysobjects where xtype in ('U', 'V') order by name"
 
-\set tab="mlr --icsv --rs lf --opprint cat | less"
-\alias goml="\go -m csv | mlr --icsv --rs lf --opprint cat | less"
-\alias gom="\go -m csv | mlr --icsv --rs lf --opprint cat"
+\alias gopsv="\go -m csv | sql-mlr -- --ocsvlite --ofs pipe cat"
+\alias gocsv="\go -m csv | sql-mlr -- --ocsvlite cat"
+\alias gomlr="\go -m csv | sql-mlr"
+\alias po="\go -m csv | sql-mlr -p -- --opprint cat"
 \alias lo='\go !* | less -S'
 
 # Get autojoin buffer.
