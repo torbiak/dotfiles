@@ -83,10 +83,10 @@
 \func -x \d
     \shell : >/tmp/d
     \for table in $*
-        SELECT c.name AS column_name
-            ,c.column_id
-            ,t.name AS type_name
+        SELECT c.name [column_name]
+            ,t.name AS [type_name]
             ,c.max_length
+            ,c.is_nullable [null]
         FROM sys.columns AS c
         JOIN sys.types AS t ON c.user_type_id=t.user_type_id
         WHERE c.object_id = OBJECT_ID(\\'$table\\')
@@ -113,7 +113,6 @@
     select * from ${1}
     \go ${2} ${3} ${4} ${5} ${6} | less -S
 \done
-
 
 \if [ -r ~/.sqshrc.local ]
     \loop -n -i ~/.sqshrc.local
