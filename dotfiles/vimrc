@@ -600,6 +600,37 @@ function! Inc(step)
     return g:i - a:step
 endfunction
 
+" A weak fuzzy file finder for use in environments where installing vim
+" plugins or other executables isn't possible or worth it.
+"
+" If a single file under the current directory contains the given substrings
+" in order, edit that file in the current window. Otherwise print the files
+" that matched.
+"
+" Surprisingly, this feels like 70% of what I need from a fuzzy file finder.
+"
+" eg:
+"   :E parts of a file path
+function! EditFileLikeSubstrings(...)
+    let pattern = ''
+    for arg in a:000
+        let pattern .= '*' . arg
+    endfor
+    let pattern .= '*'
+    let cmd = "find . -name .git -prune -o -type f -not -name '*.sw[opq]' -ipath %s -print"
+    let files = systemlist(printf(cmd, shellescape(pattern)))
+    if len(files) == 1
+        exe 'e ' . files[0]
+    elseif len(files) == 0
+        echo 'No files matched.'
+    else
+        echo 'Multiple files matched:'
+        for f in files
+            echo f
+        endfor
+    endif
+endfunction
+command! -nargs=+ E cal EditFileLikeSubstrings(<f-args>)
 
 " Plugin configuration
 " ====================
