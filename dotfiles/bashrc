@@ -218,4 +218,11 @@ function obg {
     nohup "$@" &> /dev/null & disown $!
 }
 
+function sleeptil {
+    local t=${1:?No time given}
+    # date supports suprisingly flexible relative and absolute time strings,
+    # like +3hour, 'tomorrow 03:00', 2012-09-24T20:02:00, etc.
+    sleep $(($(date -d "$t" +%s) - $(date +%s)))
+}
+
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
