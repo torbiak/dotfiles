@@ -1,4 +1,15 @@
 if {$tcl_interactive} {
     package require tclreadline 
+    proc ::tclreadline::prompt1 {} {
+        # Replace HOME with ~, for brevity.
+        set home $::env(HOME)
+        set wd [pwd]
+        if {[string first $home $wd] == 0} {
+            set wd [string replace $wd 0 [string length $home] ~]
+        }
+        # Surround color codes in ^A (001) and ^B (002) so readline knows how
+        # long the prompt is.
+        return "\001\033\[31m\002tcl \001\033\[32m\002$wd\001\033\[33m\002%\001\033\[0m\002 "
+    }
     ::tclreadline::Loop
 }
