@@ -29,6 +29,11 @@
 \set datefmt='%Y-%m-%d'
 \set datetime='%Y-%m-%dT%H:%M:%S'
 
+# Validation of the float format is messed up. The "scale" needs to be set to a
+# value lower than the "precision" in a separate statement. See dsp_prop_set in
+# the sqsh repo.
+\set float=18.3
+
 \set histmerge=1
 \set histsize=100
 \set histunique=1
@@ -45,10 +50,12 @@
 # For details about sysobjects see: https://docs.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-sysobjects-transact-sql
 \set keyword_query="select name from sysobjects where xtype in ('U', 'V') order by name"
 
+# Every CSV column sent to miller must have a column heading.
 \alias gopsv="\go -m csv | sql-mlr -- --ocsvlite --ofs pipe cat"
 \alias gocsv="\go -m csv | sql-mlr -- --ocsvlite cat"
 \alias gomlr="\go -m csv | sql-mlr"
 \alias po="\go -m csv | sql-mlr -p -- --opprint cat"
+
 \alias lo='\go !* | less -S'
 
 # Get autojoin buffer.
