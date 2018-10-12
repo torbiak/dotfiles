@@ -1,18 +1,23 @@
-"amixer set Master toggle"
+"amixer set Master toggle; amixer set Headphone unmute; amixer set Speaker unmute"
     XF86AudioMute
 
-# Raise and Lower are swapped on my Air's keyboard, it seems.
-"amixer set Master 3db-"
-    XF86AudioRaiseVolume
-
-"amixer set Master 3db+"
+"amixer set Master 3db-; ~/.status.sh"
     XF86AudioLowerVolume
 
-"sudo bash -c 'echo $(($(cat /sys/class/backlight/intel_backlight/brightness)-200)) > /sys/class/backlight/intel_backlight/brightness'"
+"amixer set Master 3db+; ~/.status.sh"
+    XF86AudioRaiseVolume
+
+"sudo bash -c 'echo $(($(cat /sys/class/backlight/intel_backlight/brightness)-100)) > /sys/class/backlight/intel_backlight/brightness'"
     XF86MonBrightnessDown
 
-"sudo bash -c 'echo $(($(cat /sys/class/backlight/intel_backlight/brightness)+200)) > /sys/class/backlight/intel_backlight/brightness'"
+"sudo bash -c 'echo $(($(cat /sys/class/backlight/intel_backlight/brightness)+100)) > /sys/class/backlight/intel_backlight/brightness'"
     XF86MonBrightnessUp
 
 "xclip -o -selection primary | xclip -selection clipboard"
-    XF86LaunchB
+    Mod4 + c
+
+"slock"
+    Mod4 + Shift + l
+
+"sudo bash -c 'echo $(($(cat /sys/class/backlight/intel_backlight/brightness)-100)) > /sys/class/backlight/intel_backlight/brightness'"
+    Mod4 + Mod1 + s
