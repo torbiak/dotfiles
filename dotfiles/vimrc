@@ -851,6 +851,7 @@ com! -nargs=0 Conflicts call QuickfixConflicts()
 
 " Insert-mode abbreviations
 autocmd FileType java iabbrev <buffer> sop System.out.println
+autocmd FileType rust iabbrev <buffer> pl println!
 
 autocmd Filetype java setlocal sts=2 sw=2 ts=2
 autocmd Filetype ruby setlocal sts=2 sw=2 ts=2
