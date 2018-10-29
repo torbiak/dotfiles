@@ -49,6 +49,9 @@ case $OSTYPE in
 esac
 
 
+## Prompt
+trap 'SECONDS=0' DEBUG # Zero the SECONDS timer on command invocation.
+
 function prompt1 {
     local r="\[\e[31m\]" # red
     local g="\[\e[32m\]" # green
@@ -57,11 +60,23 @@ function prompt1 {
     local reset="\[\e[0m\]"
     local sep="$y|"
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
+    local dur_cmd="\$([[ \$SECONDS -gt 2 ]] && echo \"$g\$(sec2hms \${SECONDS})$sep\")"
     local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
     local branch_cmd="\$(b=\$(gitBranch); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
-    PS1="\[\a\]$status_cmd$job_cmd$g\w$branch_cmd$y\\\$$reset "
+    PS1="\[\a\]${status_cmd}${dur_cmd}${job_cmd}$g\w${branch_cmd}$y\\\$$reset "
 }
 prompt1
+
+function sec2hms() {
+    local secs=${1:?No seconds given}
+    local h m s
+    let 'h = secs / 3600'
+    let 'm = (secs % 3600) / 60'
+    let 's = secs % 60'
+    [[ $h -gt 0 ]] && printf ${h}h
+    [[ $m -gt 0 ]] && printf ${m}m
+    printf ${s}s
+}
 
 
 # Override any distro completions.
