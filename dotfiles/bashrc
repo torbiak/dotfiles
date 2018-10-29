@@ -161,10 +161,13 @@ function sat {
 }
 
 # Generate a script to rename a bunch of files.
+#
 # Edit a list of destinations in an editor, then review the generated script
 # before running it.
-# vidir from moreutils probably supercedes this. qmv from renameutils is less
-# appealing due to its "<file><tab><file>" output.
+#
+# vidir from moreutils would supercedes this, except installing packages can be
+# a pain on some systems. qmv from renameutils is less appealing due to its
+# "<file><tab><file>" output, and I want to be able to do global substitutions.
 function edmv {
     local src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
     local dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
@@ -181,13 +184,13 @@ function edmv {
         read a <&3 || break
         read b <&4 || break
         if [[ "$b" == "" ]]; then
-            printf 'rm "%s"\n' "$a"
-        else
-            printf 'mv "%s" "%s"\n' "$a" "$b"
+            printf 'rm %q\n' "$a"
+        elif [[ "$a" != "$b" ]]; then
+            printf 'mv %q %q\n' "$a" "$b"
         fi
     done 3<"$src" 4<"$dst" >"$script"
     "$EDITOR" "$script"
-    bash "$script"
+    "$BASH" "$script"
     rm "$src" "$dst" "$script"
 }
 
