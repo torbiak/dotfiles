@@ -438,6 +438,10 @@ function! Timestamp()
     return strftime("%Y-%m-%d %H:%M %a")
 endfunction
 
+function! TimestampIso()
+    return strftime("%Y-%m-%dT%H:%M")
+endfunction
+
 " Collect lines matching pattern into register g.
 command! -nargs=? Collect let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
 
