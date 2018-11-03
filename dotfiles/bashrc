@@ -112,12 +112,14 @@ function histdel {
     local end=${2:-$((last+1))}
     while [[ $start -lt $end ]]; do
         history -d $start
+        let 'end -= 1'
         end=$((end-1))
     done
 }
 
 function normal-perms {
-    find "${1:-.}" -type d -exec chmod 755 '{}' \; -o -type f -exec chmod 644 '{}' \;
+    [[ $# -gt 0 ]] || set .
+    find "$@" -type d -exec chmod 755 '{}' \; -o -type f -exec chmod 644 '{}' \;
 }
 
 # find files under current directory containing a pattern
