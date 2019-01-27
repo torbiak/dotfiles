@@ -1,2 +1,2 @@
-export PATH=$HOME/bin:$HOME/code/go/bin:$HOME/.cargo/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=$HOME/bin:$HOME/code/go/bin:$HOME/.cargo/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:$PATH
 [[ "$-" == *i* ]] && source $HOME/.bashrc
