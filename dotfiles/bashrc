@@ -178,15 +178,18 @@ function sat {
     fi
 }
 
-# Generate a script to rename a bunch of files.
+# Generate a script to rename/remove a bunch of files.
 #
 # Edit a list of destinations in an editor, then review the generated script
-# before running it.
+# before running it. Leave a blank line to remove a file. Don't delete any
+# lines, since files are indexed by position.
 #
-# vidir from moreutils would supercedes this, except installing packages can be
-# a pain on some systems. qmv from renameutils is less appealing due to its
-# "<file><tab><file>" output, and I want to be able to do global substitutions.
+# vidir from moreutils is an alternative to this. qmv from renameutils is less
+# appealing due to its "<file><tab><file>" output. I use this quite frequently,
+# though, so it's nice to keep edmv around for systems where vidir isn't easily
+# available.
 function edmv {
+    [[ $# -eq 0 ]] && return 0
     local src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
     local dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
     local script=$(mktemp --tmpdir edmvscript.XXXXXXX)
@@ -198,15 +201,22 @@ function edmv {
         rm "$script"
         return 1;
     fi
+    local esc=(sed -e 's/[\$\`\"\\]/\\&/g;')
     while true; do
-        read a <&3 || break
-        read b <&4 || break
+        read -r a <&3 || break
+        read -r b <&4 || break
         if [[ "$b" == "" ]]; then
-            printf 'rm %q\n' "$a"
+            printf 'rm "%s"\n' $(echo "$a" | "${esc[@]}")
         elif [[ "$a" != "$b" ]]; then
-            printf 'mv %q %q\n' "$a" "$b"
+            local simple='^[a-zA-Z_0-9.]*$'
+            if [[ "$a" =~ $simple && "$b" =~ $simple ]]; then
+                echo "mv $a $b"
+            else
+                printf 'mv "%s" "%s"\n' $(echo "$a" | "${esc[@]}") $(echo "$b" | "${esc[@]}")
+            fi
         fi
     done 3<"$src" 4<"$dst" >"$script"
+    [[ $(wc -l <"$script") -eq 0 ]] && echo "# Nothing to do" >>$script
     "$EDITOR" "$script"
     "$BASH" "$script"
     rm "$src" "$dst" "$script"
