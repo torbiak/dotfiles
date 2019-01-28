@@ -123,6 +123,15 @@
     \go ${2} ${3} ${4} ${5} ${6} | less -S
 \done
 
+\func -x \head
+    \if [ $# -lt 1 ]
+        \echo "usage: \top <table> [<go-opts>]"
+        \return 1
+    \fi
+    select top 10 * from ${1}
+    \go ${2} ${3} ${4} ${5} ${6} | less -S
+\done
+
 \if [ -r ~/.sqshrc.local ]
     \loop -n -i ~/.sqshrc.local
 \fi
