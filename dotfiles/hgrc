@@ -5,6 +5,7 @@ username = Jordan Torbiak <torbiak@gmail.com>
 parentrevspec = 
 hgext.mq = 
 #pager = 
+purge =
 
 
 [diff]
