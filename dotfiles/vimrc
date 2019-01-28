@@ -636,6 +636,16 @@ function! EditFileLikeSubstrings(...)
 endfunction
 command! -nargs=+ E cal EditFileLikeSubstrings(<f-args>)
 
+" Switch between C header and implementation files.
+function! HOrC(filepath)
+    if a:filepath =~ '\.c$'
+        exe 'e ' . substitute(a:filepath, '\.c$', '.h', '')
+    else
+        exe 'e ' . substitute(a:filepath, '\.h$', '.c', '')
+    endif
+endfunction
+nn <leader>o :call HOrC(expand('%'))<cr>
+
 " Plugin configuration
 " ====================
 let g:ConqueTerm_CWInsert = 1
