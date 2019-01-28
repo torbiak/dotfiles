@@ -12,9 +12,9 @@ function status {
     battery=${battery%\%}
     [[ $battery -lt 30 ]] && msg+="| BATTERY LOW"
     if ! acpi | grep Charging >/dev/null; then
-        [[ $battery -lt 20 ]] && aplay ~/.pluck.wav >/dev/null
+        [[ $battery -lt 20 ]] && ding
     fi
-    new_msgs=$(ls ~/mail/new | wc -l) 
+    new_msgs=$(ls ~/mail/new | wc -l)
     [[ "$new_msgs" -gt 0 ]] && msg+="| $new_msgs new msgs"
     xsetroot -name "$date_ | v$vol | b$battery $msg"
 }
