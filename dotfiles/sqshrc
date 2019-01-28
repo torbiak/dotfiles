@@ -90,6 +90,8 @@
 \func -x \d
     \shell : >/tmp/d
     \for table in $*
+        \echo "" >>/tmp/d
+        \echo "$table" >>/tmp/d
         SELECT c.name [column_name]
             ,t.name AS [type_name]
             ,c.max_length
@@ -98,7 +100,7 @@
         JOIN sys.types AS t ON c.user_type_id=t.user_type_id
         WHERE c.object_id = OBJECT_ID(\\'$table\\')
         ORDER BY c.column_id
-        \go | sed -e "1i$table" -e '/^$/d;/^Clock Time/d;/rows affected)$/d' >>/tmp/d
+        \go -m csv | sql-mlr -- --opprint cat >>/tmp/d
     \done
     \shell less /tmp/d
 \done
