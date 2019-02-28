@@ -264,4 +264,11 @@ function sleeptil {
     sleep $(($(date -d "$t" +%s) - $(date +%s)))
 }
 
+# Expand stdin as if it were a heredoc. That is, parameter, command, and
+# arithmetic expansions are performed by the shell. Also, a backslash must be
+# used to escape any \, $, or ` characters.
+heredoc() {
+    . <(sed -e '1i cat <<__heredoc_delimiter__' -e '$a __heredoc_delimiter__')
+}
+
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
