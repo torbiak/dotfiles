@@ -1,14 +1,5 @@
-set completion-ignore-case On
-$if bash
-    "\ev": redraw-current-line
-    "\em": menu-complete
-    "\ex": shell-forward-word
-    "\ez": shell-backward-word
-    "\ee": edit-and-execute-command
-    "\eh": shell-backward-word
-    "\el": shell-forward-word
-$endif
+set completion-ignore-case on
+set bell-style none
+set show-all-if-ambiguous on
 C-p: history-search-backward
 C-n: history-search-forward
-M-C-q: edit-and-execute-command
-set bell-style none

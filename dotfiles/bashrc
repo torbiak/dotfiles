@@ -32,13 +32,21 @@ shopt -s histappend checkwinsize cmdhist extglob
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
     shopt -s globstar
 fi
-set bell-style none
-set show-all-if-ambiguous on
 set +o histexpand
 
-bind "\C-p":history-search-backward
-bind "\C-n":history-search-forward
+bind C-p:history-search-backward
+bind C-n:history-search-forward
+bind '"\ev": redraw-current-line'
+bind '"\em": menu-complete'
+bind '"\ex": shell-forward-word'
+bind '"\ez": shell-backward-word'
+bind '"\ee": edit-and-execute-command'
+bind '"\eh": shell-backward-word'
+bind '"\el": shell-forward-word'
 bind 'set revert-all-at-newline on'  # Disable persistent history changes.
+bind 'set completion-ignore-case on'
+bind 'set bell-style none'
+bind 'set show-all-if-ambiguous on'
 
 stty -ixon -ixoff  # Try to disable flow control
 
