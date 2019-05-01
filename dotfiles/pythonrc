@@ -27,3 +27,11 @@ def fa(obj, pattern):
     """ Filter Attributes. """
     import fnmatch
     return fnmatch.filter(dir(obj), pattern)
+
+def import_charting():
+    import numpy
+    import matplotlib.pyplot
+    import pandas
+    globals()['np'] = numpy
+    globals()['plt'] = matplotlib.pyplot
+    globals()['pd'] = pandas
