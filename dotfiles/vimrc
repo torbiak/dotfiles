@@ -89,6 +89,7 @@ nn <leader>x :source ~/source.vim<cr>
 nn <leader>8 :set sts=8 ts=8 sw=8 et<cr>
 nn <leader>4 :set sts=4 ts=4 sw=4 et<cr>
 nn <leader>2 :set sts=2 ts=2 sw=2 et<cr>
+nn <leader>y :let @y = @"<cr>
 
 " Formatting
 " remove comment markers when joining lines
