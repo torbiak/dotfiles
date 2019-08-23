@@ -1,3 +1,12 @@
 #line-editing
 ^N down
 ^P up
+^F right
+^B left
+\ef word-right
+\eb word-left
+^D delete
+\ed word-delete
+^W word-backspace
+^A home
+^E end
