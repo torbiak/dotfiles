@@ -18,10 +18,23 @@ atexit.register(readline.write_history_file, history)
 def t(*args):
     return timeit.Timer(*args).timeit()
 
-def xf(filepath):
-    """ eXecute File in the global scope. Be careful. """
-    with open(os.path.expanduser(filepath)) as f:
-        exec(f.read(), globals(), globals())
+def xf(filepath, main=False):
+    """ eXecute File in the global scope. Be careful.
+
+    If main is False, then change __name__ by so that blocks gaurded by `if
+    __name__ == '__main__'` aren't executed.
+
+    """
+    try:
+        if not main:
+            saved_name = __name__
+            globals()['__name__'] = 'xf'
+        with open(os.path.expanduser(filepath)) as f:
+            exec(f.read(), globals(), globals())
+    finally:
+        if not main:
+            globals()['__name__'] = saved_name
+
 
 def fa(obj, pattern):
     """ Filter Attributes. """
