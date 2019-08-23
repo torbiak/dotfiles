@@ -14,8 +14,25 @@ function status {
     if ! acpi | grep Charging >/dev/null; then
         [[ $battery -lt 20 ]] && ding
     fi
+
     new_msgs=$(ls ~/mail/new | wc -l)
     [[ "$new_msgs" -gt 0 ]] && msg+="| $new_msgs new msgs"
+
+    loadavg=$(awk '{if ($1 > 2) {print $1}}' /proc/loadavg)
+    [[ -n "$loadavg" ]] && msg+="| loadavg=$loadavg"
+
+    swap_pct=$(free | awk '
+        /^Swap:/ {
+            total = $2
+            used = $3
+            pct = used / total * 100
+            if (pct > 5){
+                print pct
+            }
+        }'
+    )
+    [[ -n "$swap_pct" ]] && msg+="| swap_pct=$swap_pct"
+
     xsetroot -name "$date_ | v$vol | b$battery $msg"
 }
 
