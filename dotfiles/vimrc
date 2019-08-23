@@ -84,6 +84,7 @@ nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
+nn <leader>mm :Make<cr>
 nn <leader>x :source ~/source.vim<cr>
 nn <leader>8 :set sts=8 ts=8 sw=8 et<cr>
 nn <leader>4 :set sts=4 ts=4 sw=4 et<cr>
@@ -848,6 +849,7 @@ command! -nargs=* Gdqf call QuickfixGitDiff('<args>')
 
 function! SilentMake(...)
     if a:0 >= 1
+        " TODO: support more args
         execute "silent! make! " . a:1
     else
         silent! make!
