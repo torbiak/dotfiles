@@ -45,6 +45,25 @@ def import_charting():
     import numpy
     import matplotlib.pyplot
     import pandas
-    globals()['np'] = numpy
-    globals()['plt'] = matplotlib.pyplot
-    globals()['pd'] = pandas
+    import seaborn
+    globals().update(dict(np=numpy, plt=matplotlib.pyplot, pd=pandas, sns=seaborn))
+
+def pdf(dataframe):
+    """ Page DataFrame.
+
+    Convert given Pandas dataframe to a string and display it using IPython's
+    %page magic.
+
+    """
+    import IPython
+    var = 'ipython_magic_page_str'
+    globals()[var] = dataframe.to_string()
+    IPython.get_ipython().magic('page -r ipython_magic_page_str')
+    del globals()[var]
+
+def pg(obj):
+    import IPython
+    var = 'ipython_magic_page_str'
+    globals()[var] = obj
+    IPython.get_ipython().magic('page -r ipython_magic_page_str')
+    del globals()[var]
