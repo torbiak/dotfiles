@@ -67,3 +67,11 @@ def pg(obj):
     globals()[var] = obj
     IPython.get_ipython().magic('page -r ipython_magic_page_str')
     del globals()[var]
+
+def clip(arg):
+    import subprocess
+    if type(arg) not in (str, bytes):
+        arg = str(arg)
+    if type(arg) == str:
+        arg = arg.encode()
+    subprocess.run(['xsel', '-bi'], input=arg)
