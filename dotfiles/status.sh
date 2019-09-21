@@ -4,22 +4,22 @@ function status {
     msg=""
     date_=$(date '+%Y-%m-%d %H:%M %a')
 
-    [[ "$(amixer get Master || true)" =~ [0-9]{1,3}% ]]
-    vol="${BASH_REMATCH[@]}"
-    vol=${vol%\%}
+    [[ "$(amixer get Master)" =~ [0-9]{1,3}% ]]
+    vol="${BASH_REMATCH%\%}"
 
-    battery=$(acpi | egrep -o '[0-9]+\%')
-    battery=${battery%\%}
-    [[ $battery -lt 30 ]] && msg+="| BATTERY LOW"
-    if ! acpi | grep Charging >/dev/null; then
-        [[ $battery -lt 20 ]] && ding
-    fi
+    acpi=$(acpi -b)
+    [[ "$acpi" =~ [0-9]{2}% ]]
+    pct_charge=${BASH_REMATCH%\%}
+    ((pct_charge < 30)) && {
+        [[ "$acpi" = *Charging* ]] && msg+=" | BATTERY LOW" || msg+=" | BATTERY DISCHARGING"
+    }
+    [[ $pct_charge -lt 20 && "$acpi" != *Charging* ]] && ding
 
     new_msgs=$(ls ~/mail/new | wc -l)
-    [[ "$new_msgs" -gt 0 ]] && msg+="| $new_msgs new msgs"
+    [[ "$new_msgs" -gt 0 ]] && msg+=" | $new_msgs new msgs"
 
     loadavg=$(awk '{if ($1 > 2) {print $1}}' /proc/loadavg)
-    [[ -n "$loadavg" ]] && msg+="| loadavg=$loadavg"
+    [[ -n "$loadavg" ]] && msg+=" | loadavg=$loadavg"
 
     swap_pct=$(free | awk '
         /^Swap:/ {
@@ -31,9 +31,9 @@ function status {
             }
         }'
     )
-    [[ -n "$swap_pct" ]] && msg+="| swap_pct=$swap_pct"
+    [[ -n "$swap_pct" ]] && msg+=" | swap_pct=$swap_pct"
 
-    xsetroot -name "$date_ | v$vol | b$battery $msg"
+    xsetroot -name "$date_ | v$vol | b$pct_charge ${msg# }"
 }
 
 while getopts "c" opt; do
