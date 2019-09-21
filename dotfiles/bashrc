@@ -63,7 +63,7 @@ esac
 ## Prompt
 trap 'SECONDS=0' DEBUG # Zero the SECONDS timer on command invocation.
 
-function prompt1 {
+prompt1() {
     local r="\[\e[31m\]" # red
     local g="\[\e[32m\]" # green
     local y="\[\e[33m\]" # yellow
@@ -78,7 +78,7 @@ function prompt1 {
 }
 prompt1
 
-function sec2hms() {
+sec2hms() {
     local secs=${1:?No seconds given}
     local h m s
     let 'h = secs / 3600'
@@ -105,7 +105,7 @@ unset COMPLETE_DIR
 # cd to a directory further up your path that contains the given pattern.
 # Change to the parent directory if nothing given.
 # eg, if pwd is /usr/local/bin, then running "up loc" will cd to /usr/local.
-function up {
+up() {
     if [[ $# -eq 0 ]]; then
         cd ..
         return
@@ -117,7 +117,7 @@ function up {
 # Delete last command from history: histdel
 # Delete from offset to end of history: histdel OFFSET
 # Delete from offset to another offset: histdel OFFSET OFFSET
-function histdel {
+histdel() {
     local last=$(history | tail -n 1 | awk '{print $1}')
     local start=${1:-$last}
     local end=${2:-$((last+1))}
@@ -128,42 +128,42 @@ function histdel {
     done
 }
 
-function normal-perms {
+normal-perms() {
     [[ $# -gt 0 ]] || set .
     find "$@" -type d -exec chmod 755 '{}' \; -o -type f -exec chmod 644 '{}' \;
 }
 
 # find files under current directory containing a pattern
-function ff {
+ff() {
     pattern=${1:?No pattern given}; shift
     find . -iname "*${pattern}*" "$@" 2>/dev/null
 }
 
 # find files ending with a suffix
-function suf {
+suf() {
     pattern=${1:?No pattern given}; shift
     find . -iname "*${pattern}" "$@" 2>/dev/null
 }
 
 
-function gitBranch {
+gitBranch() {
     branch_name=$(git symbolic-ref -q HEAD 2>/dev/null || true)
     branch_name=${branch_name##refs/heads/}
     echo $branch_name
 }
 
-function gitTrackingBranch {
+gitTrackingBranch() {
     git rev-parse --symbolic-full-name --abbrev-ref @{upstream}
 }
 
 # git add rebase continue
-function garc {
+garc() {
     git add -u
     git rebase --continue
 }
 
 # git submodule update
-function gsu {
+gsu() {
     repoRoot=$(git rev-parse --show-toplevel)
     # execute in a subshell so we don't have to save the cwd
     (cd $repoRoot; git submodule update)
@@ -173,14 +173,14 @@ function gsu {
 # usage: mrm pattern n
 # Print the nth most-recently-modified filename that matches pattern. If
 # pattern is a glob you'll probably want to quote it.
-function mrm {
+mrm() {
     local pattern=${1:?No pattern given.}; shift
     local n=${1:-1}; shift
     ls -1dt $pattern | sed -n -e "${n}p"
 }
 
 # screen attach
-function sat {
+sat() {
     local hostname=${1:-localhost}
     if [[ "$hostname" == localhost ]]; then
         screen -xRR
@@ -199,7 +199,7 @@ function sat {
 # appealing due to its "<file><tab><file>" output. I use this quite frequently,
 # though, so it's nice to keep edmv around for systems where vidir isn't easily
 # available.
-function edmv {
+edmv() {
     [[ $# -eq 0 ]] && return 0
     local src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
     local dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
@@ -234,11 +234,11 @@ function edmv {
 }
 
 # note commit push
-function ncp {
+ncp() {
     git commit -am "update from $(hostname)" && git push
 }
 
-function timer {
+timer() {
     local dur=${1:?No duration given}
     local start=$(date +%s)
     local left=$dur
@@ -256,11 +256,11 @@ function timer {
 }
 
 # Open in BackGround
-function obg {
+obg() {
     nohup "$@" &> /dev/null & disown $!
 }
 
-function sleeptil {
+sleeptil() {
     local t=${1:?No time given}
     # date supports suprisingly flexible relative and absolute time strings,
     # like +3hour, 'tomorrow 03:00', 2012-09-24T20:02:00, etc.
