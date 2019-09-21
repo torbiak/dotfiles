@@ -8,7 +8,7 @@ function status {
     vol="${BASH_REMATCH%\%}"
 
     acpi=$(acpi -b)
-    [[ "$acpi" =~ [0-9]{2}% ]]
+    [[ "$acpi" =~ [0-9]{2,3}% ]]
     pct_charge=${BASH_REMATCH%\%}
     ((pct_charge < 30)) && {
         [[ "$acpi" = *Charging* ]] && msg+=" | BATTERY LOW" || msg+=" | BATTERY DISCHARGING"
