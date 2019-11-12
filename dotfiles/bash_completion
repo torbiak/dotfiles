@@ -1,0 +1,61 @@
+# Remove any distro completions.
+# It's probably better to disable completion in /etc/profile and
+# /etc/bash.bashrc instead. It'd be nice if it was easier to opt out of the
+# global config.
+complete -r  # remove all complete specs
+
+# Complete directories, and if none are returned do the usual completion of
+# environment variables and files.
+complete -A directory -o bashdefault -o default cd
+
+# While it might be nice to use the compspec for the command being given to
+# sudo, nohup, etc, completing commands and falling back to the defaults is
+# enough for me. See _command_offset in debian's bash_completion script for the
+# full-featured approach.
+complete -A command -o bashdefault -o default sudo nohup obg
+
+
+# Load completions for selected commands.
+#
+# Note that most commands that ship with debian will depend on functions in the
+# main bash_completion having been run, making debian completion
+# all-or-nothing.
+for cmd in git; do
+    for dir in /usr/share/bash-completion/completions; do
+        [[ -r "$dir/$cmd" ]] && . "$dir/$cmd"
+        break
+    done
+done
+
+
+# Copy the basic one-liners from Debian's bash completion script.
+
+# user commands see only users
+complete -u groups w
+
+# bg completes with stopped jobs
+complete -A stopped bg
+
+# other job commands
+complete -j fg jobs disown
+
+# readonly and unset complete with shell variables
+complete -v readonly unset
+
+# set completes with set options
+complete -A setopt set
+
+# shopt completes with shopt options
+complete -A shopt shopt
+
+# helptopics
+complete -A helptopic help
+
+# unalias completes with aliases
+complete -a unalias
+
+# type and which complete on commands
+complete -c command type which
+
+# builtin completes on builtins
+complete -b builtin

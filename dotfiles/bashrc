@@ -102,19 +102,6 @@ sec2hms() {
     printf ${s}s
 }
 
-
-# Override any distro completions.
-complete -r  # remove all complete specs
-# Complete directories, and if none are returned do the usual completion of
-# environment variables and files.
-complete -A directory -o bashdefault -o default cd
-COMPLETE_DIR=/etc/bash_completion.d
-for cmd in git; do
-    [[ -r $COMPLETE_DIR/$cmd ]] && . $COMPLETE_DIR/$cmd
-done
-unset COMPLETE_DIR
-
-
 # cd to a directory further up your path that contains the given pattern.
 # Change to the parent directory if nothing given.
 # eg, if pwd is /usr/local/bin, then running "up loc" will cd to /usr/local.
@@ -287,4 +274,5 @@ heredoc() {
     . <(sed -e '1i cat <<__heredoc_delimiter__' -e '$a __heredoc_delimiter__')
 }
 
+[ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
