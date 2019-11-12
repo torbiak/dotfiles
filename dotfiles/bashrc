@@ -268,7 +268,10 @@ sleeptil() {
     local t=${1:?No time given}
     # date supports suprisingly flexible relative and absolute time strings,
     # like +3hour, 'tomorrow 03:00', 2012-09-24T20:02:00, etc.
-    sleep $(($(date -d "$t" +%s) - $(date +%s)))
+    next=$(date -d "$t" +%s)
+    now=$(date +%s)
+    [[ "$next" -le "$now" ]] && return 0
+    sleep $((next - now))
 }
 
 # Expand stdin as if it were a heredoc. That is, parameter, command, and
