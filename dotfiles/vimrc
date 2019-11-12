@@ -12,7 +12,7 @@ filetype plugin on
 set encoding=utf-8
 set tags+=.tags
 set laststatus=2 ruler
-set sts=4 ts=4 sw=4 et
+set sts=4 ts=8 sw=4 et
 set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wim=list:longest
