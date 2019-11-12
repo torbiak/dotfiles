@@ -716,7 +716,7 @@ let g:jedi#show_call_signatures = "0"
 let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 0
 
-nn <leader>t :TagbarToggle<cr>
+nn <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
     \ 'kinds'     : [
