@@ -204,6 +204,7 @@ edmv() {
     local src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
     local dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
     local script=$(mktemp --tmpdir edmvscript.XXXXXXX)
+    echo "set -eu" >"$script"
     for f in "$@"; do echo "$f"; done > "$src"
     cp "$src" "$dst"
     "$EDITOR" "$dst"
@@ -226,11 +227,14 @@ edmv() {
                 printf 'mv "%s" "%s"\n' $(echo "$a" | "${esc[@]}") $(echo "$b" | "${esc[@]}")
             fi
         fi
-    done 3<"$src" 4<"$dst" >"$script"
-    [[ $(wc -l <"$script") -eq 0 ]] && echo "# Nothing to do" >>$script
+    done 3<"$src" 4<"$dst" >>"$script"
+    rm "$src" "$dst"
     "$EDITOR" "$script"
-    "$BASH" "$script"
-    rm "$src" "$dst" "$script"
+    if "$BASH" "$script"; then
+        rm "$script"
+    else
+        echo "$script exited with $?" >&2
+    fi
 }
 
 # note commit push
