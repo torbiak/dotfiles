@@ -23,7 +23,14 @@
 \set style=pretty
 \set nosepline=1
 \set statistics=1
-\set bcp_rowsep=""
+
+# Set BCP separators to include the ASCII unit and record separators so
+# embedded newlines can be handled. Keep a printable character in colsep so
+# it's still easy to look at raw. Note that sqsh adds a newline after each row
+# regardless of rowsep, which is fine.
+\set bcp_colsep="|"
+\set bcp_rowsep=""
+\set bcp_header=1
 
 \set date='%Y-%m-%d'
 \set datefmt='%Y-%m-%d'
