@@ -61,7 +61,7 @@ esac
 
 
 ## Prompt
-trap 'SECONDS=0' DEBUG # Zero the SECONDS timer on command invocation.
+trap 'last_invocation=$SECONDS' DEBUG # Save the time of the last command invocation.
 
 prompt1() {
     local r="\[\e[31m\]" # red
@@ -71,7 +71,7 @@ prompt1() {
     local reset="\[\e[0m\]"
     local sep="$y|"
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
-    local dur_cmd="\$([[ \$SECONDS -gt 2 ]] && echo \"$g\$(sec2hms \${SECONDS})$sep\")"
+    local dur_cmd="\$([[ \$SECONDS -gt 2 ]] && echo \"$g\$(sec2hms \$((SECONDS-last_invocation)))$sep\")"
     local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
     local branch_cmd="\$(b=\$(gitBranch); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
     PS1="\[\a\]${status_cmd}${dur_cmd}${job_cmd}$g\w${branch_cmd}$y\\\$$reset "
