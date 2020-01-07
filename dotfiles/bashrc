@@ -3,8 +3,8 @@
 export CLICOLOR=1
 export EDITOR=vim
 export VISUAL=vim
-export HISTFILESIZE=10000
-export HISTSIZE=10000
+export HISTFILESIZE=100000
+export HISTSIZE=$HISTFILESIZE
 export HISTIGNORE="&:[ ]*:exit:l:ll:ls:histdel"
 export LC_ALL="en_US.UTF-8"
 export LESS="-# 60 -i -X -R"
