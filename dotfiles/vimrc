@@ -52,6 +52,12 @@ cnoremap <C-F> <Right>
 cnoremap <C-N> <Down>
 cnoremap <C-P> <Up>
 
+" Cycle forward/backward through wildmode matches.
+cnoremap <M-m> <C-N>
+cnoremap <esc>m <C-N>
+cnoremap <M-M> <C-P>
+cnoremap <esc>M <C-P>
+
 " Forward/Back in insert mode
 inoremap <C-B> <Left>
 inoremap <C-F> <Right>
