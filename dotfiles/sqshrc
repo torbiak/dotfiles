@@ -69,6 +69,32 @@
 # Get autojoin buffer.
 \alias baj='\buf-copy !. aj'
 
+# List table columns.
+\func -x \d
+    \shell : >/tmp/d
+    \for table in $*
+        \echo "" >>/tmp/d
+        \echo "$table" >>/tmp/d
+        SELECT c.name [column_name]
+            ,t.name AS [type_name]
+            ,c.max_length
+            ,c.is_nullable [null]
+        FROM sys.columns AS c
+        JOIN sys.types AS t ON c.user_type_id=t.user_type_id
+        WHERE c.object_id = OBJECT_ID(\\'$table\\')
+        ORDER BY c.column_id
+        \go -m csv | sql-mlr -- --opprint cat >>/tmp/d
+    \done
+    \shell less /tmp/d
+\done
+
+# Named after the psql command, but currently only displays the db names.
+\func -x \l
+    select name [database] from sys.databases
+    \go -m csv -p none | sql-mlr -- --csv --headerless-csv-output cat
+\done
+
+
 # Quickly find an approximate row count of the given tables using index
 # partition info.
 \func -x \rows
@@ -93,24 +119,6 @@
     go | sed '/^$/d;/row affected/d'
 
     \set statistics=$saved_stats
-\done
-
-\func -x \d
-    \shell : >/tmp/d
-    \for table in $*
-        \echo "" >>/tmp/d
-        \echo "$table" >>/tmp/d
-        SELECT c.name [column_name]
-            ,t.name AS [type_name]
-            ,c.max_length
-            ,c.is_nullable [null]
-        FROM sys.columns AS c
-        JOIN sys.types AS t ON c.user_type_id=t.user_type_id
-        WHERE c.object_id = OBJECT_ID(\\'$table\\')
-        ORDER BY c.column_id
-        \go -m csv | sql-mlr -- --opprint cat >>/tmp/d
-    \done
-    \shell less /tmp/d
 \done
 
 \func -x \freq
