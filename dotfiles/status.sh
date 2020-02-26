@@ -1,11 +1,13 @@
 #!/bin/bash
 set -eu
 function status {
-    msg=""
-    date_=$(date '+%Y-%m-%d %H:%M %a')
+    local msg=""
+    local date=$(date '+%Y-%m-%d %H:%M %a')
 
-    [[ "$(amixer get Master)" =~ [0-9]{1,3}% ]]
+    mixer="$(amixer get Master)"
+    [[ "$mixer" =~ [0-9]{1,3}% ]]
     vol="${BASH_REMATCH%\%}"
+    [[ "$mixer" = *"[off]"* ]] && vol+=m
 
     acpi=$(acpi -b)
     [[ "$acpi" =~ [0-9]{2,3}% ]]
@@ -27,13 +29,13 @@ function status {
             used = $3
             pct = used / total * 100
             if (pct > 5){
-                print pct
+                printf "%.0f", pct
             }
         }'
     )
     [[ -n "$swap_pct" ]] && msg+=" | swap_pct=$swap_pct"
 
-    xsetroot -name "$date_ | v$vol | b$pct_charge ${msg# }"
+    xsetroot -name "$date | v$vol | b$pct_charge ${msg# }"
 }
 
 while getopts "c" opt; do

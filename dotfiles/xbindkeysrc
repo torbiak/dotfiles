@@ -1,4 +1,4 @@
-"amixer set Master toggle; amixer set Headphone unmute; amixer set Speaker unmute"
+"amixer set Master toggle; amixer set Headphone unmute; amixer set Speaker unmute; ~/.status.sh"
     XF86AudioMute
 
 "amixer set Master 3db-; ~/.status.sh"
