@@ -14,6 +14,7 @@ export PAGER=less
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 HISTTIMEFORMAT='%Y-%m-%dT%H:%M:%S '
 
 case $OSTYPE in
@@ -301,6 +302,12 @@ sleeptil() {
 # used to escape any \, $, or ` characters.
 heredoc() {
     . <(sed -e '1i cat <<__heredoc_delimiter__' -e '$a __heredoc_delimiter__')
+}
+
+# rg into less, with colors and headings
+# Seeing matches grouped by file is nice sometimes.
+rgl() {
+    rg --color always --heading "$@" | less
 }
 
 [ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
