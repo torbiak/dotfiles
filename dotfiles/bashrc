@@ -340,4 +340,9 @@ rgl() {
 }
 
 [ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_DEFAULT_OPTS=-m
+
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
+true
