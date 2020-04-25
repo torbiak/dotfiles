@@ -481,23 +481,35 @@ function! OpenOrReuse(filepath, split)
     endif
 endfunction
 
-function! QFComment(comment_file)
+" Load notes from the current window into the quickfix list.
+function! QfLoad()
+    if &autowrite
+        write
+    endif
+    let &l:grepprg = 'cat %'  " This won't work on Windows.
+    let &l:grepformat = '%A%f:%l:%m <<--,%Z--,%f:%l:%m,%+C%.%#,%.%#'
+    grep!
+endfunction
+command! -nargs=0 QfLoad cal QfLoad()
+
+" Create a review note for the current line.
+function! QfNote(note_file)
     let filepath = expand('%')
     let lnum = line('.')
     " There needs to something after the last colon or the line won't match
     " any of the default errorformat patterns.
     let prefix = join([filepath, lnum], ':') . ': '
-    cal OpenOrReuse(a:comment_file, 'split')
-    if getline(1, '$') == ['']
+    cal OpenOrReuse(a:note_file, 'split')
+    if line('$') == 1 && getline(1) == ''
         cal setline(1, prefix)
     else
         cal append(line('$'), prefix)
     endif
     normal G$
 endfunction
-command! -nargs=? -complete=file QFComment cal QFComment(<f-args>)
-nn <leader>mc :QFComment ~/tmp/comments<cr>
-cabbrev QF QFComment
+command! -nargs=? -complete=file QfNote cal QfNote(<f-args>)
+nn <leader>mc :QfNote ~/qfr<cr>
+
 
 " Idempotent table formatter.
 " sep: field separator pattern
