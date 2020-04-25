@@ -16,7 +16,7 @@ set sts=4 ts=8 sw=4 et
 set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wildmode=list
-set grepprg=rg\ --vimgrep
+set grepprg=rg\ --vimgrep\ -S
 set bs=2
 set complete=.,w  " stay fast by only suggesting completions from open windows
 set winminheight=0
