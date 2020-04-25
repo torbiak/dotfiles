@@ -55,7 +55,7 @@ complete -A helptopic help
 complete -a unalias
 
 # type and which complete on commands
-complete -c command type which
+complete -c command type which man
 
 # builtin completes on builtins
 complete -b builtin
