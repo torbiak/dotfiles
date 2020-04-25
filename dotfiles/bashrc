@@ -28,8 +28,7 @@ alias irssi='TERM=screen-256color irssi'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 
-
-shopt -s histappend checkwinsize cmdhist extglob
+shopt -s histappend checkwinsize cmdhist extglob failglob
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
     shopt -s globstar
 fi
