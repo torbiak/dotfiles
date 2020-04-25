@@ -48,25 +48,20 @@ def import_charting():
     import seaborn
     globals().update(dict(np=numpy, plt=matplotlib.pyplot, pd=pandas, sns=seaborn))
 
-def pdf(dataframe):
-    """ Page DataFrame.
+def less(arg):
+    import subprocess
 
-    Convert given Pandas dataframe to a string and display it using IPython's
-    %page magic.
+    tostr = getattr(arg, 'to_string', None)
+    if tostr:
+        arg = tostr()
 
-    """
-    import IPython
-    var = 'ipython_magic_page_str'
-    globals()[var] = dataframe.to_string()
-    IPython.get_ipython().magic('page -r ipython_magic_page_str')
-    del globals()[var]
+    if type(arg) not in (str, bytes):
+        arg = str(arg)
 
-def pg(obj):
-    import IPython
-    var = 'ipython_magic_page_str'
-    globals()[var] = obj
-    IPython.get_ipython().magic('page -r ipython_magic_page_str')
-    del globals()[var]
+    if type(arg) == str:
+        arg = arg.encode()
+
+    subprocess.run(['less'], input=arg)
 
 def clip(arg):
     import subprocess
