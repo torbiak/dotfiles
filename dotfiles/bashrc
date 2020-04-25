@@ -136,7 +136,6 @@ histdel() {
     local end=${2:-$((last+1))}
     while [[ $start -lt $end ]]; do
         history -d $start
-        let 'end -= 1'
         end=$((end-1))
     done
 }
