@@ -24,6 +24,7 @@ set modeline
 set more
 set backup
 set shellslash
+set cryptmethod=blowfish2
 " Make sure ~/tmp/vim exists.
 set backupdir=~/tmp/vim,.
 ino jk <esc>
