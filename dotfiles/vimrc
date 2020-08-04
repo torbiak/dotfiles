@@ -676,6 +676,14 @@ nn <leader>o :call HOrC(expand('%'))<cr>
 
 " Plugin configuration
 " ====================
+set rtp+=~/.fzf
+" Change the split binding to be more mnemonic and match probe.
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+nn <leader>z :FZF<cr>
+
 let g:ConqueTerm_CWInsert = 1
 let g:NERDTreeDirArrows=0
 let g:pyflakes_use_quickfix = 0
