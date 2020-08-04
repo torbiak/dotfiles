@@ -10,7 +10,7 @@ function status {
     [[ "$mixer" = *"[off]"* ]] && vol+=m
 
     acpi=$(acpi -b)
-    [[ "$acpi" =~ [0-9]{2,3}% ]]
+    [[ "$acpi" =~ [0-9]{1,3}% ]]
     pct_charge=${BASH_REMATCH%\%}
     ((pct_charge < 30)) && {
         [[ "$acpi" = *Charging* ]] && msg+=" | BATTERY LOW" || msg+=" | BATTERY DISCHARGING"
