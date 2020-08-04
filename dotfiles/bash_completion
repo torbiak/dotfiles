@@ -12,7 +12,17 @@ complete -A directory -o bashdefault -o default cd
 # sudo, nohup, etc, completing commands and falling back to the defaults is
 # enough for me. See _command_offset in debian's bash_completion script for the
 # full-featured approach.
-complete -A command -o bashdefault -o default sudo nohup obg
+complete -F commands_then_default -o filenames sudo nohup obg
+
+commands_then_default() {
+    local IFS=$'\t\n'
+    # If the previous word is the command being completed (ie we're completing
+    # the second word), complete commands, else complete files and other
+    # bash/readline default stuff.
+    [[ "$3" = "$1" ]] &&
+    COMPREPLY=($(compgen -c "$2")) ||
+    COMPREPLY=($(compgen -f -o bashdefault -o default "$2"))
+}
 
 
 # Load completions for selected commands.
