@@ -148,6 +148,16 @@
     \go ${2} ${3} ${4} ${5} ${6} | less -S
 \done
 
+# Note this needs to sample the table, so it can be slow for huge tables.
+\func -x \rowsize
+    \if [ $# -lt 1 ]
+        \echo "usage: \row <table> [<go-opts>]"
+        \return 1
+    \fi
+    select * from sys.dm_db_index_physical_stats(db_id(), object_id(\\'${1}\\'), null, null , 'limited')
+    \go ${2} ${3} ${4} ${5} ${6} | less -S
+\done
+
 \if [ -r ~/.sqshrc.local ]
     \loop -n -i ~/.sqshrc.local
 \fi
