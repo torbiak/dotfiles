@@ -28,7 +28,7 @@ function status {
             total = $2
             used = $3
             pct = used / total * 100
-            if (pct > 5){
+            if (pct > 20){
                 printf "%.0f", pct
             }
         }'
