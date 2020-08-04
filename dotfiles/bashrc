@@ -74,8 +74,21 @@ prompt1() {
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
     #local dur_cmd="\$([[ \$SECONDS -gt 2 ]] && echo \"$g\$(sec2hms \$((SECONDS-last_invocation)))$sep\")"
     local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
-    local branch_cmd="\$(b=\$(gitBranch); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
-    PS1="\[\a\]${status_cmd}${dur_cmd}${job_cmd}$g\w${branch_cmd}$y\\\$$reset "
+
+    local git_sub_cmd="gitBranch"
+    # Use the prompt function that ships with git if it's available.
+    local git_exec_path=$(git --exec-path) &&
+    [[ -f "$git_exec_path"/git-sh-prompt ]] &&
+    . "$git_exec_path"/git-sh-prompt &&
+    export GIT_PS1_SHOWDIRTYSTATE=yes &&
+    export GIT_PS1_SHOWSTASHSTATE=yes &&
+    export GIT_PS1_SHOWUNTRACKEDFILES=yes &&
+    export GIT_PS1_SHOWUPSTREAM=auto &&
+    export GIT_PS1_STATESEPARATOR='' &&
+    git_sub_cmd="__git_ps1 %s"
+
+    local git_cmd="\$(b=\$($git_sub_cmd); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
+    PS1="\[\a\]${status_cmd}${dur_cmd}${job_cmd}$g\w${git_cmd}$y\\\$$reset "
 }
 prompt1
 
