@@ -38,3 +38,5 @@
     path = .gitconfig.local
 [rebase]
     autoSquash = true
+[pull]
+	ff = only
