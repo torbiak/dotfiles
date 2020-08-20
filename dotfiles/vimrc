@@ -919,6 +919,45 @@ function! SnakeToCamel()
     s/\v_([a-z])/\u\1/g
 endfunction
 
+let g:PipeEvalInterpreter = 'bc'
+function! PipeEval(input)
+    let result = system(g:PipeEvalInterpreter, a:input . "\n")
+    return substitute(result, '\v\n*$', '', 'g')  " Remove trailing newlines.
+endfunction
+function! PipeEvalOp(type)
+    " Get the text.
+    if a:type ==# 'v' || a:type ==# 'V'
+        normal! `<v`>y
+    elseif a:type ==# 'char' || a:type == 'line'
+        normal! `[v`]y
+    else
+        return
+    endif
+
+    " If the input is multiline, paste the output below; otherwise paste the
+    " output inline.
+    let @@ = PipeEval(@@)
+    if stridx(@@, "\n") > -1
+        let @@ = "\n==\n" . @@
+    else
+        let @@ = ' = ' . @@
+    endif
+
+    " Paste the eval'd result.
+    if a:type ==# 'v' || a:type ==# 'V'
+        normal! `>p
+    elseif a:type ==# 'char' || a:type == 'line'
+        normal! `]p
+    endif
+endfunction
+" math eval
+nnoremap <leader>em :let g:PipeEvalInterpreter = 'bc'<cr>:set operatorfunc=PipeEvalOp<cr>g@
+nnoremap <leader>eM :let g:PipeEvalInterpreter = 'bc'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
+vnoremap <leader>em :<c-u>let g:PipeEvalInterpreter = 'bc'<cr>:call PipeEvalOp(visualmode())<cr>
+" bash eval
+nnoremap <leader>eb :let g:PipeEvalInterpreter = 'bash -s'<cr>:set operatorfunc=PipeEvalOp<cr>g@
+nnoremap <leader>eB :let g:PipeEvalInterpreter = 'bash -s'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
+vnoremap <leader>eb :<c-u>let g:PipeEvalInterpreter = 'bash -s'<cr>:call PipeEvalOp(visualmode())<cr>
 
 " Insert-mode abbreviations
 augroup vimrc
