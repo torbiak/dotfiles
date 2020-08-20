@@ -353,6 +353,7 @@ rgl() {
     rg --color always --heading "$@" | less
 }
 
+clipargs() { xsel -ib <<<"$*"; }
 [ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
