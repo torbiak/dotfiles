@@ -354,6 +354,10 @@ rgl() {
 }
 
 clipargs() { xsel -ib <<<"$*"; }
+
+# Pipe the --help output of a command to less.
+hl() { "$@" --help 2>&1 | less; }
+
 [ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
