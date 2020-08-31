@@ -440,10 +440,6 @@ command! -range Semicolon <line1>,<line2>call Semicolon()
 nn <leader>; :Semicolon<cr>
 vn <leader>; :Semicolon<cr>
 
-command! -range=% Copy silent <line1>,<line2>w !xsel -i -b
-nn <leader>c :Copy<cr>
-vn <leader>c :Copy<cr>
-
 
 " Insert using CTRL-R and the expression register.
 function! Date()
@@ -958,6 +954,30 @@ vnoremap <leader>em :<c-u>let g:PipeEvalInterpreter = 'bc'<cr>:call PipeEvalOp(v
 nnoremap <leader>eb :let g:PipeEvalInterpreter = 'bash -s'<cr>:set operatorfunc=PipeEvalOp<cr>g@
 nnoremap <leader>eB :let g:PipeEvalInterpreter = 'bash -s'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
 vnoremap <leader>eb :<c-u>let g:PipeEvalInterpreter = 'bash -s'<cr>:call PipeEvalOp(visualmode())<cr>
+
+let g:PipeOpCmd = 'xsel -ib'
+let g:PipeOpOut = ''
+function! PipeOp(type)
+    " Get the text.
+    if a:type ==# 'v' || a:type ==# 'V'
+        normal! `<v`>y
+    elseif a:type ==# 'char' || a:type == 'line'
+        normal! `[v`]y
+    else
+        return
+    endif
+
+    " Save the output so it can be retrieved via "= if needed.
+    let g:PipeOpOut = system(g:PipeOpCmd, @@)
+endfunction
+
+" Copy/paste using xsel, for when clipboard support isn't available or the
+" connection to X has been broken.
+nnoremap <leader>c :let g:PipeOpCmd = 'xsel -ib'<cr>:set operatorfunc=PipeOp<cr>g@
+nnoremap <leader>C :let g:PipeOpCmd = 'xsel -ib'<cr>V:<c-u>call PipeOp(visualmode())<cr>
+vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode())<cr>
+nnoremap <leader>* :call append(line('.'), systemlist('xsel -op'))<cr>
+nnoremap <leader>+ :call append(line('.'), systemlist('xsel -ob'))<cr>
 
 " Insert-mode abbreviations
 augroup vimrc
