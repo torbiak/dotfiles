@@ -47,6 +47,7 @@ def import_charting():
     import pandas
     import seaborn
     globals().update(dict(np=numpy, plt=matplotlib.pyplot, pd=pandas, sns=seaborn))
+    pd.plotting.register_matplotlib_converters()
 
 def less(arg):
     import subprocess
