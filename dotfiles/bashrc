@@ -285,13 +285,13 @@ edmv() {
         read -r a <&3 || break
         read -r b <&4 || break
         if [[ "$b" == "" ]]; then
-            printf 'rm "%s"\n' $(echo "$a" | "${esc[@]}")
+            printf 'rm "%s"\n' "$(echo "$a" | "${esc[@]}")"
         elif [[ "$a" != "$b" ]]; then
             local simple='^[a-zA-Z_0-9.]*$'
             if [[ "$a" =~ $simple && "$b" =~ $simple ]]; then
                 echo "mv $a $b"
             else
-                printf 'mv "%s" "%s"\n' $(echo "$a" | "${esc[@]}") $(echo "$b" | "${esc[@]}")
+                printf 'mv "%s" "%s"\n' "$(echo "$a" | "${esc[@]}")" "$(echo "$b" | "${esc[@]}")"
             fi
         fi
     done 3<"$src" 4<"$dst" >>"$script"
