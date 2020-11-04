@@ -15,6 +15,7 @@ export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
 export GOPATH=$HOME/code/go
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+export BC_ENV_ARGS="-l $HOME/.bcrc"
 HISTTIMEFORMAT='%Y-%m-%dT%H:%M:%S '
 
 case $OSTYPE in
