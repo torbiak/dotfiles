@@ -60,6 +60,8 @@ case $OSTYPE in
     *) ulimit -S -n 4096;;
 esac
 
+ulimit -Sm 4000000  # Limit max resident memory to 4GB per process.
+
 
 ## Prompt
 # Disabled on 2020-05-07 to see if it's related to bash segfaulting in malloc occasionally.
