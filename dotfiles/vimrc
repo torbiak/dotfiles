@@ -992,6 +992,9 @@ augroup vimrc
     autocmd Filetype go setlocal noet
     autocmd Filetype c setlocal cindent indentexpr= noet
     autocmd Filetype cpp setlocal cindent indentexpr= noet
+
+    " Don't worry about underscores within words.
+    autocmd Filetype markdown hi link markdownError NONE
 augroup END
 
 
