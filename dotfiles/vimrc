@@ -258,6 +258,12 @@ function! Delete()
 endfunction
 command! -bar Delete call Delete()
 
+function! PlusExecutable()
+    silent! !chmod +x %
+    redraw!
+endfunction
+command! Px cal PlusExecutable()
+
 " Count lines in range.
 command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 
