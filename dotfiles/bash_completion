@@ -25,6 +25,13 @@ commands_then_default() {
 }
 
 
+# Use user-defined hostnames for completion, if available.
+[[ -r ~/.hosts ]] && HOSTFILE=~/.hosts
+# Complete filenames and hostnames for scp.
+complete -f -A hostname -o bashdefault -o default scp host
+# Complete just hostnames for most networking tools.
+complete -A hostname -o bashdefault -o default nc ping sftp smbclient ssh telnet tracepath traceroute
+
 # Load completions for selected commands.
 #
 # Note that most commands that ship with debian will depend on functions in the
