@@ -28,6 +28,7 @@ alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
 alias irssi='TERM=screen-256color irssi'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
+alias dfh='df -hTx tmpfs'
 
 shopt -s histappend checkwinsize cmdhist extglob failglob
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
