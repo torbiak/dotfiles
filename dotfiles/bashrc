@@ -65,8 +65,6 @@ ulimit -Sm 4000000  # Limit max resident memory to 4GB per process.
 
 
 ## Prompt
-# Disabled on 2020-05-07 to see if it's related to bash segfaulting in malloc occasionally.
-#trap 'last_invocation=$SECONDS' DEBUG # Save the time of the last command invocation.
 
 prompt1() {
     local r="\[\e[31m\]" # red
@@ -76,7 +74,6 @@ prompt1() {
     local reset="\[\e[0m\]"
     local sep="$y|"
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
-    #local dur_cmd="\$([[ \$SECONDS -gt 2 ]] && echo \"$g\$(sec2hms \$((SECONDS-last_invocation)))$sep\")"
     local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
 
     local git_sub_cmd="gitBranch"
@@ -92,7 +89,7 @@ prompt1() {
     git_sub_cmd="__git_ps1 %s"
 
     local git_cmd="\$(b=\$($git_sub_cmd); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
-    PS1="\[\a\]${status_cmd}${dur_cmd}${job_cmd}$g\w${git_cmd}$y\\\$$reset "
+    PS1="\[\a\]${status_cmd}${job_cmd}$g\w${git_cmd}$y\\\$$reset "
 }
 prompt1
 
@@ -104,9 +101,8 @@ prompt1_cheap() {
     local reset="\[\e[0m\]"
     local sep="$y|"
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
-    #local dur_cmd="\$([[ \$SECONDS -gt 2 ]] && echo \"$g\$(sec2hms \${SECONDS})$sep\")"
     local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
-    PS1="\[\a\]${status_cmd}${dur_cmd}${job_cmd}$g\w$y\\\$$reset "
+    PS1="\[\a\]${status_cmd}${job_cmd}$g\w$y\\\$$reset "
 }
 
 sec2hms() {
