@@ -984,7 +984,6 @@ vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode
 nnoremap <leader>* :call append(line('.'), systemlist('xsel -op'))<cr>
 nnoremap <leader>+ :call append(line('.'), systemlist('xsel -ob'))<cr>
 
-" Insert-mode abbreviations
 augroup vimrc
     " Remove all vimrc autocommands.
     autocmd!
@@ -999,7 +998,11 @@ augroup vimrc
     autocmd Filetype cpp setlocal cindent indentexpr= noet
 
     " Don't worry about underscores within words.
-    autocmd Filetype markdown hi link markdownError NONE
+    autocmd Filetype markdown syn clear markdownError
+    " Don't hilight italics. I want literal asterisks all the time in my notes
+    " and italics don't denote enough emphasis to deserve hilighting anyway.
+    autocmd Filetype markdown syn clear markdownItalicDelimiter markdownItalic
+
 augroup END
 
 
