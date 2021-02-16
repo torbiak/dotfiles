@@ -238,16 +238,15 @@ command! -range Source <line1>,<line2>call SourceRange()
 
 " Rename buffer's file.
 function! Rename(dst)
-     let old = expand('%')
-     if (old == a:dst)
-         return 0
-     endif
-     let v:errmsg = ''
-     exe 'sav!' fnameescape(a:dst)
-     if v:errmsg != ''
+    let old = expand('%')
+    if (old == a:dst)
+        return
+    endif
+    if rename(old, a:dst) != 0
+       echom 'rename failed'
        return
-     endif
-     call delete(old)
+    endif
+    exe 'e!' a:dst
 endfunction
 command! -nargs=1 -complete=file -bar Rename call Rename('<args>')
 
