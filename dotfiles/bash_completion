@@ -35,15 +35,9 @@ complete -A hostname -o bashdefault -o default nc ping sftp smbclient ssh telnet
 # Load completions for selected commands.
 #
 # Note that most commands that ship with debian will depend on functions in the
-# main bash_completion having been run, making debian completion
+# main bash_completion having been sourced, making debian completion
 # all-or-nothing.
-for cmd in git; do
-    for dir in /usr/share/bash-completion/completions; do
-        [[ -r "$dir/$cmd" ]] && . "$dir/$cmd"
-        break
-    done
-done
-
+[[ -r /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
 
 # Copy the basic one-liners from Debian's bash completion script.
 
