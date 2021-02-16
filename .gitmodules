@@ -46,3 +46,6 @@
 [submodule "dotfiles/vim/bundle/vim-abolish"]
 	path = dotfiles/vim/bundle/vim-abolish
 	url = https://github.com/tpope/vim-abolish.git
+[submodule "dotfiles/vim/bundle/diffconflicts"]
+	path = dotfiles/vim/bundle/diffconflicts
+	url = https://github.com/whiteinge/diffconflicts.git
