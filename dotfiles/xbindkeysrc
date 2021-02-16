@@ -21,3 +21,6 @@
 
 "sudo bash -c 'echo $(($(cat /sys/class/backlight/intel_backlight/brightness)-100)) > /sys/class/backlight/intel_backlight/brightness'"
     Mod4 + Mod1 + s
+
+"touch ~/.last_workout; ~/.status.sh"
+    Mod4 + Shift + w
