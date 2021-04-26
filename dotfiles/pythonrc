@@ -71,3 +71,13 @@ def clip(arg):
     if type(arg) == str:
         arg = arg.encode()
     subprocess.run(['xsel', '-bi'], input=arg)
+
+def freshen_prefix(prefix):
+    import importlib
+    mods = {m for m in sys.modules if m.startswith(prefix)}
+    # Delete all the modules first so that on reimport they can't grab an old
+    # version of one of their friends.
+    for m in mods:
+        del sys.modules[m]
+    for m in mods:
+        importlib.import_module(m)
