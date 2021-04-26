@@ -177,7 +177,7 @@ let g:dec_indent_on = [
     \ '^\v\s*(else|elif|elsif)',
     \ '^\v\s*(end|esac|done)'
 \ ]
-set indentkeys=0},0],0),o,O,0=end,0=esac,0=done,0=else,0=elif,0=elsif
+set indentkeys=0},0],0),o,O,0=end,0=done,0=else,0=elif,0=elsif
 set indentexpr=TorbijIndent()
 set ai nosi nocin
 filetype indent off
