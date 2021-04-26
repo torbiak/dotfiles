@@ -40,11 +40,11 @@
 [rebase]
     autoSquash = true
 [pull]
-	ff = only
+    ff = only
 [merge]
-	tool = diffconflicts
+    tool = diffconflicts
 [mergetool "diffconflicts"]
-	cmd = vim -c DiffConflicts \"$MERGED\" \"$BASE\" \"$LOCAL\" \"$REMOTE\"
-	trustExitCode = true
+    cmd = vim -c DiffConflicts \"$MERGED\" \"$BASE\" \"$LOCAL\" \"$REMOTE\"
+    trustExitCode = true
 [mergetool]
-	keepBackup = false
+    keepBackup = false
