@@ -1010,6 +1010,8 @@ augroup vimrc
     " and italics don't denote enough emphasis to deserve hilighting anyway.
     autocmd Filetype markdown syn clear markdownItalicDelimiter markdownItalic
 
+    autocmd Filetype make setlocal sts=4 sw=4 ts=4 noet
+
 augroup END
 
 
