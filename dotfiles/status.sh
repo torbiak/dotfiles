@@ -35,7 +35,7 @@ function status {
     )
     [[ -n "$swap_pct" ]] && msg+=" | swap_pct=$swap_pct"
 
-    if [[ ! -e ~/.last_workout ]] || (($(date +%s) - "$(stat --printf=%Y ~/.last_workout)" > 90*60)); then
+    if [[ -e ~/.last_workout ]] && (($(date +%s) - "$(stat --printf=%Y ~/.last_workout)" > 90*60)); then
         msg+=" | WORKOUT"
     fi
 
