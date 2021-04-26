@@ -317,10 +317,6 @@ timer() {
         sleep 1
         left=$((start + dur - $(date +%s)))
     done
-    case $(uname) in
-        Linux) aplay /usr/share/pommed/goutte.wav &>/dev/null;;
-        CYGWIN*) cat "$(cygpath -W)/Media/chord.wav" > /dev/dsp;;
-    esac
     # clear line and then echo bell to set urgent flag in window manager
     echo -en '\r\e[2K\a'
 }
