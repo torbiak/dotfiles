@@ -937,8 +937,10 @@ function! PipeEvalOp(type)
 
     " If the input is multiline, paste the output below; otherwise paste the
     " output inline.
+    " Is there more than one newline in the input?
+    let is_multiline = stridx(@@, "\n") != strridx(@@, "\n")
     let @@ = PipeEval(@@)
-    if stridx(@@, "\n") > -1
+    if is_multiline
         let @@ = "\n==\n" . @@
     else
         let @@ = ' = ' . @@
