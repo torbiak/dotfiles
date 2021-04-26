@@ -961,6 +961,10 @@ vnoremap <leader>em :<c-u>let g:PipeEvalInterpreter = 'bc'<cr>:call PipeEvalOp(v
 nnoremap <leader>eb :let g:PipeEvalInterpreter = 'bash -s'<cr>:set operatorfunc=PipeEvalOp<cr>g@
 nnoremap <leader>eB :let g:PipeEvalInterpreter = 'bash -s'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
 vnoremap <leader>eb :<c-u>let g:PipeEvalInterpreter = 'bash -s'<cr>:call PipeEvalOp(visualmode())<cr>
+" python eval
+nnoremap <leader>ep :let g:PipeEvalInterpreter = 'python3'<cr>:set operatorfunc=PipeEvalOp<cr>g@
+nnoremap <leader>eP :let g:PipeEvalInterpreter = 'python3'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
+vnoremap <leader>ep :<c-u>let g:PipeEvalInterpreter = 'python3'<cr>:call PipeEvalOp(visualmode())<cr>
 
 let g:PipeOpCmd = 'xsel -ib'
 let g:PipeOpOut = ''
