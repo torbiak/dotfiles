@@ -188,12 +188,15 @@ garc() {
     git add -u
     git rebase --continue
 }
-
 # git submodule update
 gsu() {
     repoRoot=$(git rev-parse --show-toplevel)
     # execute in a subshell so we don't have to save the cwd
     (cd $repoRoot; git submodule update)
+}
+# git add -p
+gap() {
+    git add -p "$@"
 }
 
 most() {
