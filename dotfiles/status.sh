@@ -9,7 +9,7 @@ function status {
     vol="${BASH_REMATCH%\%}"
     [[ "$mixer" = *"[off]"* ]] && vol+=m
 
-    acpi=$(acpi -b)
+    acpi=$(acpi -b | grep -v 'rate information unavailable')
     [[ "$acpi" =~ [0-9]{1,3}% ]]
     pct_charge=${BASH_REMATCH%\%}
     ((pct_charge < 30)) && {
