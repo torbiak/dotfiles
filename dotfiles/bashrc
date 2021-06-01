@@ -361,7 +361,7 @@ hl() { "$@" --help 2>&1 | less; }
 [ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-export FZF_DEFAULT_OPTS='-m --no-mouse'
+export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
 
 [ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
 true

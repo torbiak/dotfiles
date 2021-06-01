@@ -683,7 +683,7 @@ let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
-nn <leader>z :FZF<cr>
+nn <leader>z :FZF --exact<cr>
 
 let g:ConqueTerm_CWInsert = 1
 let g:NERDTreeDirArrows=0
