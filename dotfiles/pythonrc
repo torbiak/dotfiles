@@ -8,7 +8,9 @@ import _socket
 import sys
 import time
 
-if sys.version_info < (3,):
+# python3.4+ does this by default, and ipython stores history in sqlite.
+# See https://docs.python.org/3/library/site.html#rlcompleter-config
+if sys.version_info < (3, 4) and 'get_ipython' not in globals():
     history = os.path.expanduser('~/.python_history')
     if os.path.exists(history):
         readline.read_history_file(history)
