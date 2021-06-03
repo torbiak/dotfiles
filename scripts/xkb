@@ -1,0 +1,44 @@
+#!/bin/bash
+# Customize some keyboard mappings.
+#
+# There's no definitive guide to xkb, but these were all helpful:
+# - https://help.ubuntu.com/community/Custom%20keyboard%20layout%20definitions
+# - https://www.x.org/releases/current/doc/xorg-docs/input/XKB-Enhancing.html
+# - https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+# - https://www.charvolant.org/doug/xkb/html/
+# - https://www.x.org/wiki/guide/hutterer-kbd/
+set -euo pipefail
+
+# install the layout
+sudo cat >/usr/share/X11/xkb/symbols/jat <<'EOF'
+partial default alphanumeric_keys function_keys modifier_keys
+xkb_symbols "basic" {
+  // We need to include `us` and `inet` symbols first so that our changes
+  // override them.
+  include "us(basic)"
+  include "ctrl(nocaps)"
+  include "inet(evdev)"
+
+  name[Group1]= "jat";
+
+  // On UX430A I was frequently accidentally pressing the
+  // MENU/COMP/context-menu key instead of RALT
+  key <MENU>  { [Alt_R] };
+
+  // Use "internet"/inet keyboard-backlight-up "KEY_KBDILLUMUP" as
+  // Multi_key/compose instead. See /usr/share/X11/locale/en_US.UTF-8/Compose
+  // for the list of available compositions. Compositions aren't defined for
+  // en_CA.UTF-8, so if your locale was automatically set to that you may want
+  // to change /etc/default/locale to en_US.UTF-8.
+  key <I238>  { [Multi_key] };
+  // Use the weird "/A" Asus key on UX435 as a Multi_key, too.
+  key <I248>  { [Multi_key] };
+};
+EOF
+
+# configure the above layout as the default. This affects both X.org and
+# kernel ttys. From X you can apply this layout regardless what's in
+# /etc/default/keyboard with `setxkbmap -layout jat`.
+# After writing /etc/default/keyboard or ~/.keyboard appropriately 
+# `setupcon -k` can be run from a tty to change the tty keyboard layout.
+sudo sed -i '/XKBLAYOUT/c XKBLAYOUT="jat"' /etc/default/keyboard
