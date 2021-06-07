@@ -1,0 +1,9 @@
+#!/bin/bash
+
+xsetroot -bg black
+xrdb -merge ~/.Xresources
+xbindkeys
+
+~/.status.sh -c &
+
+exec dwm
