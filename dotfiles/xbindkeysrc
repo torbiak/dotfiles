@@ -7,10 +7,10 @@
 "amixer set Master 3db+; ~/.status.sh"
     XF86AudioRaiseVolume
 
-"sudo bash -c 'echo $(($(< /sys/class/backlight/intel_backlight/brightness)-100)) > /sys/class/backlight/intel_backlight/brightness'"
+"sudo light -s sysfs/backlight/intel_backlight -U 10"
     XF86MonBrightnessDown
 
-"sudo bash -c 'echo $(($(< /sys/class/backlight/intel_backlight/brightness)+100)) > /sys/class/backlight/intel_backlight/brightness'"
+"sudo light -s sysfs/backlight/intel_backlight -A 10"
     XF86MonBrightnessUp
 
 "xclip -o -selection primary | xclip -selection clipboard"
@@ -18,9 +18,6 @@
 
 "slock"
     Mod4 + Shift + l
-
-"sudo bash -c 'echo $(($(< /sys/class/backlight/intel_backlight/brightness)-100)) > /sys/class/backlight/intel_backlight/brightness'"
-    Mod4 + Mod1 + s
 
 "touch ~/.last_workout; ~/.status.sh"
     Mod4 + Shift + w
