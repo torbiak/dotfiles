@@ -1,0 +1,74 @@
+#!/bin/bash
+# Install fzf according to Jordan Torbiak's preferences: using a package
+# manager when possible and always linking or copying the bash keybindings to
+# ~/.fzf_key_bindings
+
+set -euo pipefail
+
+bindings_rc=~/.fzf_key_bindings.bash
+
+install_fzf_pkg() {
+    local os_release=/etc/os-release
+    [[ -e "$os_release" ]] || {
+        echo "unknown platform: $os_release does not exist" >&2
+        return 1
+    }
+    (
+        # Source os-release in a subshell to avoid polluting the global
+        # namespace.
+        . "$os_release" || exit 1
+        if [[ "$NAME" == Ubuntu ]]; then
+            sudo apt-get -qqy install fzf &&
+            ln -s /usr/share/doc/fzf/examples/key-bindings.bash "$bindings_rc" ||
+            exit 1
+        elif [[ "$NAME" == 'Arch Linux' ]]; then
+            sudo pacman -S fzf &&
+            ln -s /usr/share/fzf/key-bindings.bash "$bindings_rc" ||
+            exit 1
+        else
+            echo "unknown distro: $NAME" >&2
+            exit 1
+        fi
+    ) || return 1
+}
+
+install_fzf_tarball() {
+    local version=0.27.2
+    local platform=$(uname -sm)
+    if [[ "$platform" != "Linux x86_64" ]]; then
+        echo "unexpected platform: $platform" >&2
+        return 1
+    fi
+
+    if ! which fzf &>/dev/null; then
+        dir=~/bin
+        [[ "$PATH" = *"$dir"* ]] && echo "install_fzf_tarball: $dir not in PATH" >&2
+
+        mkdir -p "$dir" &&
+        curl -L "https://github.com/junegunn/fzf/releases/download/$version/fzf-$version-linux_amd64.tar.gz" | tar -C "$dir" -xf - ||
+        return 1
+    fi
+
+    local bindings_rc=~/.fzf_key_bindings
+    if ! [[ -e "$bindings_rc" ]]; then
+        curl -L -o "$bindings_rc" "https://github.com/junegunn/fzf/raw/$version/shell/key-bindings.bash" ||
+        return 1
+    fi
+}
+
+usage="install-fzf [-h] package|tarball"
+while getopts "h" opt; do
+    case "$opt" in
+    h) echo "$usage"; exit 0;;
+    esac
+done
+shift $((OPTIND-1))
+[[ $# -eq 1 ]] || {
+    echo "$usage"
+    exit 1
+}
+cmd=$1; shift
+case "$cmd" in
+package) install_fzf_pkg;;
+tarball) install_fzf_tarball;;
+esac
