@@ -1,4 +1,5 @@
 #!/bin/bash
+logfile=~/.status.sh.log
 set -eu
 function status {
     local msg=""
@@ -49,11 +50,11 @@ while getopts "c" opt; do
     esac
 done
 
-status
+status &>"$logfile"
 
 [[ -z "${cont:-}" ]] && exit 0
 
 while true; do
     sleep 10
     status
-done 2>>~/.status.sh.log &
+done &>>"$logfile"
