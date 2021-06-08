@@ -1,10 +1,10 @@
-"amixer set Master toggle; amixer set Headphone unmute; amixer set Speaker unmute; ~/.status.sh"
+"amixer -D pulse set Master toggle; amixer set Headphone unmute; amixer set Speaker unmute; ~/.status.sh"
     XF86AudioMute
 
-"amixer set Master 3db-; ~/.status.sh"
+"amixer -D pulse set Master 5%-; ~/.status.sh"
     XF86AudioLowerVolume
 
-"amixer set Master 3db+; ~/.status.sh"
+"amixer -D pulse set Master 5%+; ~/.status.sh"
     XF86AudioRaiseVolume
 
 "sudo light -s sysfs/backlight/intel_backlight -U 10"

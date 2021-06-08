@@ -5,7 +5,7 @@ function status {
     local msg=""
     local date=$(date '+%Y-%m-%d %H:%M %a')
 
-    mixer="$(amixer get Master)"
+    mixer="$(amixer -D pulse get Master)"
     [[ "$mixer" =~ [0-9]{1,3}% ]]
     vol="${BASH_REMATCH%\%}"
     [[ "$mixer" = *"[off]"* ]] && vol+=m
