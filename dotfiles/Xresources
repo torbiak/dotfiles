@@ -28,3 +28,6 @@ urxvt*scrollBar: false
 urxvt*fade: 1
 urxvt.visualBell: false
 urxvt.urgentOnBell: true
+
+Xcursor.theme: default
+Xcursor.size: 32
