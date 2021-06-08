@@ -1,4 +1,11 @@
 #!/bin/bash
+if [[ "$HOSTNAME" = ux435 ]]; then
+    xrandr --output HDMI-2 --off
+
+    # Fix slow-opening gnome apps like pavucontrol.
+    # See https://bbs.archlinux.org/viewtopic.php?id=224787 and https://github.com/flatpak/xdg-desktop-portal-gtk/issues/107
+    dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
+fi
 
 xsetroot -bg black
 xrdb -merge ~/.Xresources
