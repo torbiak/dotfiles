@@ -677,7 +677,7 @@ nn <leader>o :call HOrC(expand('%'))<cr>
 
 " Plugin configuration
 " ====================
-set rtp+=~/.fzf
+set rtp+=/usr/share/doc/fzf/examples,~/.fzf
 " Change the split binding to be more mnemonic and match probe.
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',

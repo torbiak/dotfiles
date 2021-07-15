@@ -5,7 +5,8 @@
 
 set -euo pipefail
 
-bindings_rc=~/.fzf_key_bindings.bash
+dir=~/.fzf
+bindings_rc=$dir/key_bindings.bash
 
 install_fzf_pkg() {
     local os_release=/etc/os-release
@@ -17,6 +18,7 @@ install_fzf_pkg() {
         # Source os-release in a subshell to avoid polluting the global
         # namespace.
         . "$os_release" || exit 1
+        mkdir -p ~/.fzf
         if [[ "$NAME" == Ubuntu ]]; then
             sudo apt-get -qqy install fzf &&
             ln -s /usr/share/doc/fzf/examples/key-bindings.bash "$bindings_rc" ||
@@ -49,9 +51,16 @@ install_fzf_tarball() {
         return 1
     fi
 
-    local bindings_rc=~/.fzf_key_bindings
+    mkdir -p ~/.fzf
     if ! [[ -e "$bindings_rc" ]]; then
         curl -L -o "$bindings_rc" "https://github.com/junegunn/fzf/raw/$version/shell/key-bindings.bash" ||
+        return 1
+    fi
+
+    plugin="$dir/plugin/fzf.vim"
+    if ! [[ -e "$plugin" ]]; then
+        mkdir -p "$(dirname "$plugin")"
+        curl -L -o "$plugin" "https://github.com/junegunn/fzf/raw/$version/plugin/fzf.vim" ||
         return 1
     fi
 }
