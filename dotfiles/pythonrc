@@ -48,7 +48,10 @@ def fa(obj, pattern):
 def import_charting():
     import numpy
     import matplotlib.pyplot
-    import pandas
+    try:
+        import jat.pandas_lt as pandas
+    except:
+        import pandas
     import seaborn
     globals().update(dict(np=numpy, plt=matplotlib.pyplot, pd=pandas, sns=seaborn))
     pd.plotting.register_matplotlib_converters()
