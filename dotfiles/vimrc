@@ -52,6 +52,8 @@ cnoremap <C-E> <End>
 cnoremap <C-F> <Right>
 cnoremap <C-N> <Down>
 cnoremap <C-P> <Up>
+cnoremap <esc>b <S-Left>
+cnoremap <esc>f <S-Right>
 
 " Cycle forward/backward through wildmode matches.
 cnoremap <M-m> <C-N>
