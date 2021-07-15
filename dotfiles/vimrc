@@ -102,8 +102,9 @@ nn <leader>y :let @y = @"<cr>
 nn <leader>$ "+y$
 
 " Formatting
-" remove comment markers when joining lines
-set formatoptions+=j
+" j: remove comment markers when joining lines
+" q: allow formatting comments with gq
+set formatoptions+=jq
 " Don't insert two spaces after sentences when joining lines.
 set nojoinspaces
 
