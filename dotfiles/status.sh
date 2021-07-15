@@ -24,17 +24,17 @@ function status {
     loadavg=$(awk '{if ($1 > 2) {print $1}}' /proc/loadavg)
     [[ -n "$loadavg" ]] && msg+=" | loadavg=$loadavg"
 
-    swap_pct=$(free | awk '
-        /^Swap:/ {
+    mem_avail_pct=$(free | awk '
+        /^Mem:/ {
             total = $2
-            used = $3
-            pct = used / total * 100
-            if (pct > 20){
+            avail = $7
+            pct = avail / total * 100
+            if (pct < 30){
                 printf "%.0f", pct
             }
         }'
     )
-    [[ -n "$swap_pct" ]] && msg+=" | swap_pct=$swap_pct"
+    [[ -n "$mem_avail_pct" ]] && msg+=" | mem_avail_pct=$mem_avail_pct"
 
     if [[ -e ~/.last_workout ]] && (($(date +%s) - "$(stat --printf=%Y ~/.last_workout)" > 90*60)); then
         msg+=" | WORKOUT"
