@@ -41,6 +41,7 @@ bind C-p:history-search-backward
 bind C-n:history-search-forward
 bind '"\ev": redraw-current-line'
 bind '"\em": menu-complete'
+bind '"\eM": menu-complete-backward'
 bind '"\ex": shell-kill-word'
 bind '"\ez": shell-backward-kill-word'
 bind '"\ee": edit-and-execute-command'
