@@ -1,3 +1,4 @@
+set completion-query-items 500
 set completion-ignore-case on
 set bell-style none
 set show-all-if-ambiguous on
