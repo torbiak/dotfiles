@@ -79,6 +79,9 @@ prompt1() {
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
     local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
 
+    local chroot=
+    [[ -v SCHROOT_CHROOT_NAME ]] && chroot="${r}${SCHROOT_CHROOT_NAME}${sep}"
+
     local git_sub_cmd="gitBranch"
     # Use the prompt function that ships with git if it's available.
     local git_exec_path=$(git --exec-path) &&
@@ -92,7 +95,7 @@ prompt1() {
     git_sub_cmd="__git_ps1 %s"
 
     local git_cmd="\$(b=\$($git_sub_cmd); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
-    PS1="\[\a\]${status_cmd}${job_cmd}$g\w${git_cmd}$y\\\$$reset "
+    PS1="\[\a\]${status_cmd}${job_cmd}${chroot}$g\w${git_cmd}$y\\\$$reset "
 }
 prompt1
 
