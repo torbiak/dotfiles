@@ -111,6 +111,25 @@ prompt1_cheap() {
     PS1="\[\a\]${status_cmd}${job_cmd}$g\w$y\\\$$reset "
 }
 
+# ssh-agent setup.
+# Modified version of Joseph Reagle's script from http://mah.everybody.org/docs/ssh
+SSH_ENV="$HOME/.ssh/env"
+ssh-agent-init() {
+    # Don't echo anything, and put assignments on their own line so that the
+    # file works as a systemd EnvironmentFile=.
+    /usr/bin/ssh-agent | sed -E 's/^echo/#echo/; s/; */\n/g' > "${SSH_ENV}"
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" >/dev/null
+    /usr/bin/ssh-add
+}
+# Warn about a stale SSH_ENV on shell start.
+if [[ -f "${SSH_ENV}" ]]; then
+    . "${SSH_ENV}" >/dev/null
+    # ps ${SSH_AGENT_PID} doesn't work under cywgin
+    ps -e -o pid,comm | egrep " *$SSH_AGENT_PID +ssh-agent\$" >/dev/null ||
+    echo 'stale ssh-agent env'
+fi
+
 sec2hms() {
     local secs=${1:?No seconds given}
     local h m s
