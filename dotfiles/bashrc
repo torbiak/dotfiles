@@ -385,7 +385,7 @@ clipargs() { xsel -ib <<<"$*"; }
 # Pipe the --help output of a command to less.
 hl() { "$@" --help 2>&1 | less; }
 
-[ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
+[ -e ~/.bash_completion ] && . ~/.bash_completion
 
 export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
 
