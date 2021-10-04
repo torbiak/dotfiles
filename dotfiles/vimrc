@@ -678,6 +678,26 @@ function! HOrC(filepath)
 endfunction
 nn <leader>o :call HOrC(expand('%'))<cr>
 
+" Evaluate arguments as globs and set the unnamed register to the resulting
+" newline-separated list of filenames.
+"
+" Intended for easily finding files and accurately copying their paths into a
+" document, instead of going to a shell and using the OS's copy-paste
+" functionality. Another crude but effective way to do this (without globbing)
+" while still using filename completion is to read in the results of `echo`,
+" like `:r !echo ~/.bash<TAB>`.
+com! -nargs=* -complete=file YankFilepaths let @" = join(GlobEach([<f-args>]), "\n")
+function! GlobEach(patterns)
+    let files = []
+    for pattern in a:patterns
+        for file in glob(pattern, 0, 1)
+            let f = substitute(file, '^\V' .. escape(expand("$HOME"), '\'), '\~', "")
+            cal add(files, f)
+        endfor
+    endfor
+    return files
+endfunction
+
 " Plugin configuration
 " ====================
 set rtp+=/usr/share/doc/fzf/examples,~/.fzf
