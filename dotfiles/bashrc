@@ -387,6 +387,7 @@ hl() { "$@" --help 2>&1 | less; }
 
 [ -e ~/.bash_completion ] && . ~/.bash_completion
 
+[[ -e ~/.fzf_key_bindings.bash ]] && . ~/.fzf_key_bindings.bash
 export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
 
 [ -e ~/.bashrc.local ] && . ~/.bashrc.local
