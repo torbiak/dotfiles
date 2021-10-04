@@ -13,9 +13,6 @@
 [submodule "dotfiles/vim/bundle/mediawiki.vim"]
 	path = dotfiles/vim/bundle/mediawiki.vim
 	url = https://github.com/chikamichi/mediawiki.vim.git
-[submodule "dotfiles/vim/bundle/pyflakes-vim"]
-	path = dotfiles/vim/bundle/pyflakes-vim
-	url = https://github.com/kevinw/pyflakes-vim.git
 [submodule "dotfiles/vim/bundle/syntastic"]
 	path = dotfiles/vim/bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git
