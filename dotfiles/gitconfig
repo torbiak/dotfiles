@@ -1,6 +1,6 @@
 [alias]
     d = diff
-    ci = commit
+    ci = commit -v
     co = checkout
     br = branch
     re = rebase
@@ -13,7 +13,7 @@
     pur = pull --rebase
     cp = cherry-pick
     ri = rebase -i
-    cm = commit --amend
+    cm = commit --amend -v
     cif = commit -am fixup
     dc = diff --cached
     rh = reset --hard
