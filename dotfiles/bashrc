@@ -1,3 +1,5 @@
+PATH=$HOME/bin:$HOME/code/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
+
 [[ "$-" == *i* ]] || return
 
 export CLICOLOR=1
@@ -384,8 +386,25 @@ hl() { "$@" --help 2>&1 | less; }
 
 [ -e $HOME/.bash_completion ] && . $HOME/.bash_completion
 
-[ -e ~/.fzf_key_bindings.bash ] && . ~/.fzf_key_bindings.bash
 export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
 
-[ -e $HOME/.bashrc.local ] && . $HOME/.bashrc.local
+[ -e ~/.bashrc.local ] && . ~/.bashrc.local
+
+dedupe_path() {
+    local -A seen
+    local paths
+    local IFS=$'\n'
+    for d in ${PATH//:/$'\n'}; do
+        # Filter out /usr/games and /usr/local/games since there's never
+        # anything in them, and I wouldn't need easy access to them anyway.
+        [[ -z "${seen[$d]}" && "$d" != *games ]] && paths+=("$d")
+        seen["$d"]=y
+    done
+    # Join paths with a colon.
+    IFS=:
+    set "${paths[@]}"
+    PATH="$*"
+}
+dedupe_path
+
 true
