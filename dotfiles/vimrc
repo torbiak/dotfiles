@@ -949,21 +949,21 @@ function! PipeEval(input)
     return substitute(result, '\v\n*$', '', 'g')  " Remove trailing newlines.
 endfunction
 function! PipeEvalOp(type)
-    " Get the text.
+    " Yank the text into the unnamed register, @@.
     if a:type ==# 'v' || a:type ==# 'V'
         normal! `<v`>y
-    elseif a:type ==# 'char' || a:type == 'line'
+    elseif a:type ==# 'char' || a:type ==# 'line'
         normal! `[v`]y
     else
         return
     endif
 
-    " If the input is multiline, paste the output below; otherwise paste the
+
+    " If the input is linewase, paste the output below; otherwise paste the
     " output inline.
-    " Is there more than one newline in the input?
-    let is_multiline = stridx(@@, "\n") != strridx(@@, "\n")
+    let is_linewise = a:type ==# 'V' || a:type ==# 'line'
     let @@ = PipeEval(@@)
-    if is_multiline
+    if is_linewise
         let @@ = "\n==\n" . @@
     else
         let @@ = ' = ' . @@
