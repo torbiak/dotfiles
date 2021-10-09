@@ -36,11 +36,21 @@ xkb_symbols "basic" {
 };
 EOF
 
-# configure the above layout as the default. This affects both X.org and
-# kernel ttys. From X you can apply this layout regardless what's in
-# /etc/default/keyboard with `setxkbmap -layout jat`.
-# After writing /etc/default/keyboard or ~/.keyboard appropriately
-# `setupcon -k` can be run from a tty to change the tty keyboard layout.
-sudo sed -i '/XKBLAYOUT/c XKBLAYOUT="jat"' /etc/default/keyboard
 
-setxkbmap -layout jat
+# Configure the above layout as the default.
+#
+# From X you can apply this layout with `setxkbmap -layout jat`.
+# On Debian, after writing /etc/default/keyboard or ~/.keyboard appropriately
+# `setupcon -k` can be run from a tty to change the tty keyboard layout.
+#
+# On other systemd-based systems, `localectl set-x11-keymap` can be used to
+# immediately and permanently change the X11 keymap. Apparently Debian is able
+# to convert X11 keymaps to console ones, but I haven't figured out how yet.
+if [[ -e /etc/default/keyboard ]]; then
+    # Debian-specific: /etc/default/keyboard
+    # This affects both X.org and kernel ttys.
+    sudo sed -i '/XKBLAYOUT/c XKBLAYOUT="jat"' /etc/default/keyboard
+    setxkbmap -layout jat  # Set the keymap for this session.
+else
+    localectl set-x11-keymap jat
+fi
