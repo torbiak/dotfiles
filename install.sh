@@ -74,7 +74,7 @@ cp-to-home() {
     for file in "${dotfiles[@]}"; do
         local trailing=""
         [[ -d "${file#.}" ]] && trailing='/'
-        rsync -r "${file#.}$trailing" "$HOME/$file"
+        rsync -r "dotfiles/${file#.}$trailing" "$HOME/$file"
     done
 }
 
