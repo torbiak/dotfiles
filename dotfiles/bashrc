@@ -67,13 +67,14 @@ bind 'set colored-stats on'
 
 stty -ixon -ixoff  # Try to disable flow control
 
-# increase max file descriptors so file-watching APIs don't run out of them.
 case $OSTYPE in
     cygwin|msys|mingw) :;;
-    *) ulimit -S -n 4096;;
+    *)
+        # increase max file descriptors so file-watching APIs don't run out of them.
+        ulimit -S -n 4096
+        ulimit -Sm 4000000  # Limit max resident memory to 4GB per process.
+    ;;
 esac
-
-ulimit -Sm 4000000  # Limit max resident memory to 4GB per process.
 
 
 ## Prompt
