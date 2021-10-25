@@ -95,7 +95,7 @@ cp-to-repo() {
         [[ -e "$HOME/$file" ]] || continue
         local trailing=""
         [[ -d "$HOME/$file" ]] && trailing='/'
-        rsync -r $HOME/$file$trailing $(repo-filepath $file)
+        rsync -r $HOME/$file$trailing "dotfiles/${file#.}"
     done
 }
 
