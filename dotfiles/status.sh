@@ -1,9 +1,11 @@
 #!/bin/bash
-logfile=~/.status.sh.log
 set -eu
-function status {
+
+logfile=~/.status.sh.log
+status() {
     local msg=""
-    local date=$(date '+%Y-%m-%d %H:%M %a')
+    local date
+    date=$(date '+%Y-%m-%d %H:%M %a')
 
     mixer="$(amixer -D pulse get Master)"
     [[ "$mixer" =~ [0-9]{1,3}% ]]
@@ -18,7 +20,7 @@ function status {
     }
     [[ $pct_charge -lt 20 && "$acpi" != *Charging* ]] && ding
 
-    new_msgs=$(ls ~/mail/new | wc -l)
+    new_msgs=$(find ~/mail/new -type f | wc -l)
     [[ "$new_msgs" -gt 0 ]] && msg+=" | $new_msgs new msgs"
 
     loadavg=$(awk '{if ($1 > 2) {print $1}}' /proc/loadavg)
@@ -50,11 +52,12 @@ while getopts "c" opt; do
     esac
 done
 
-status &>"$logfile"
-
-[[ -z "${cont:-}" ]] && exit 0
+if [[ -z "${cont:-}" ]]; then
+    status
+    exit 0
+fi
 
 while true; do
-    sleep 10
     status
+    sleep 10
 done &>>"$logfile"
