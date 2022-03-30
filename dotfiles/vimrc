@@ -456,10 +456,6 @@ function! Date()
 endfunction
 
 function! Timestamp()
-    return strftime("%Y-%m-%d %H:%M %a")
-endfunction
-
-function! TimestampIso()
     return strftime("%Y-%m-%dT%H:%M")
 endfunction
 
@@ -692,7 +688,7 @@ function! GlobEach(patterns)
     let files = []
     for pattern in a:patterns
         for file in glob(pattern, 0, 1)
-            let f = substitute(file, '^\V' .. escape(expand("$HOME"), '\'), '\~', "")
+            let f = substitute(file, '^\V' . escape(expand("$HOME"), '\'), '\~', "")
             cal add(files, f)
         endfor
     endfor
