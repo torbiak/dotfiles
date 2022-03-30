@@ -51,7 +51,10 @@ bind '"\ez": shell-backward-kill-word'
 bind '"\ee": edit-and-execute-command'
 bind '"\eh": shell-backward-word'
 bind '"\el": shell-forward-word'
-bind 'set revert-all-at-newline on'  # Disable persistent history changes.
+# Disable revert-all-at-newline for now since there's a long-standing bug in it
+# that causes a double-free and crash, usually when the previous command has
+# been modified.
+bind 'set revert-all-at-newline off'  # Disable persistent history changes.
 bind 'set completion-ignore-case on'
 bind 'set bell-style none'
 bind 'set show-all-if-ambiguous on'
