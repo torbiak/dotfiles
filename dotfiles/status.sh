@@ -42,6 +42,13 @@ status() {
         msg+=" | WORKOUT"
     fi
 
+    if [[ -e ~/status_msg ]]; then
+        for f in ~/status_msg/*; do
+            [[ -e "$f" ]] || continue
+            msg+=" | ${f##*/}"
+        done
+    fi
+
     xsetroot -name "$date | v$vol | b$pct_charge ${msg# }"
 }
 
