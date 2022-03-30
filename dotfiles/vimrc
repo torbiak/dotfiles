@@ -69,6 +69,7 @@ inoremap <C-F> <Right>
 " The default bindings for -, _, and + are stupid.
 nn - :cp<cr>
 nn + :cn<cr>
+nn _ :cc 1<cr>
 
 " Arglist
 nn <leader>n :wn<cr>
