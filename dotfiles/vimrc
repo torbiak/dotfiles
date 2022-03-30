@@ -41,7 +41,7 @@ set background=dark
 let g:solarized_italic=0
 colorscheme pablo
 set list
-set listchars=tab:»\ ,trail:\ ,
+set listchars=tab:»\ ,trail:·,
 
 " Emacs emulation in Cmdline mode.
 cnoremap <C-S> <C-D>
