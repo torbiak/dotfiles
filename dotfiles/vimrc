@@ -29,8 +29,8 @@ set cryptmethod=blowfish2
 set backupdir=~/tmp/vim,.
 ino jk <esc>
 let mapleader = 's'
-set vb t_vb=
 nn <leader> <nop>
+set vb t_vb=
 nn Y y$
 
 " Display
@@ -38,7 +38,6 @@ syntax enable
 set guioptions='cM'
 set t_Co=16
 set background=dark
-let g:solarized_italic=0
 colorscheme pablo
 set list
 set listchars=tab:»\ ,trail:·,
@@ -66,7 +65,7 @@ inoremap <C-B> <Left>
 inoremap <C-F> <Right>
 
 " Quickfix
-" The default bindings for -, _, and + are stupid.
+" I don't find the default bindings for -, _, and + useful.
 nn - :cp<cr>
 nn + :cn<cr>
 nn _ :cc 1<cr>
@@ -94,13 +93,13 @@ nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
-nn <leader>mm :Make<cr>
 nn <leader>x :source ~/source.vim<cr>
 nn <leader>8 :set sts=8 ts=8 sw=8 et<cr>
 nn <leader>4 :set sts=4 ts=4 sw=4 et<cr>
 nn <leader>2 :set sts=2 ts=2 sw=2 et<cr>
 nn <leader>y :let @y = @"<cr>
 nn <leader>$ "+y$
+
 
 " Formatting
 " j: remove comment markers when joining lines
@@ -109,31 +108,6 @@ set formatoptions+=jq
 " Don't insert two spaces after sentences when joining lines.
 set nojoinspaces
 
-
-" Filetypes
-" =========
-
-" The standard markdown plugin is lacking as of Vim7.4
-" Improvements in tpope/vim-markdown will eventually be merged upstream.
-function! MarkdownLevel()
-    let h = matchstr(getline(v:lnum), '^#\+')
-    if empty(h)
-        return "="
-    else
-        return ">" . len(h)
-    endif
-endfunction
-" md extension signifies markdown, not modula2
-au! filetypedetect BufNewFile,BufRead *.md
-au filetypedetect BufNewFile,BufRead *.md setlocal filetype=markdown
-au FileType markdown setlocal foldexpr=MarkdownLevel()
-au FileType markdown setlocal foldmethod=expr
-" Don't close folds when the filetype is detected.
-au FileType markdown setlocal foldlevel=10
-
-" gp extension is for gnuplot instead of the PARI/GP calculator.
-au! filetypedetect BufNewFile,BufRead *.gp
-au filetypedetect BufNewFile,BufRead *.gp setlocal filetype=gnuplot
 
 " Indenting
 " =========
@@ -429,6 +403,9 @@ function! Semicolon() range
         cal setline(i, line . ';')
     endfor
 endfunction
+command! -range Semicolon <line1>,<line2>call Semicolon()
+nn <leader>; :Semicolon<cr>
+vn <leader>; :Semicolon<cr>
 
 function! RedirToTab(cmd)
   redir => message
@@ -444,11 +421,6 @@ function! RedirToTab(cmd)
   endif
 endfunction
 command! -nargs=+ -complete=command RedirToTab call RedirToTab(<q-args>)
-
-command! -range Semicolon <line1>,<line2>call Semicolon()
-nn <leader>; :Semicolon<cr>
-vn <leader>; :Semicolon<cr>
-
 
 " Insert using CTRL-R and the expression register.
 function! Date()
@@ -511,7 +483,6 @@ function! QfNote(note_file)
     normal G$
 endfunction
 command! -nargs=? -complete=file QfNote cal QfNote(<f-args>)
-nn <leader>mc :QfNote ~/qfr<cr>
 
 
 " Idempotent table formatter.
@@ -603,7 +574,11 @@ function! PathToQuoted()
     let quoted = "'" . join(split(path, '/'), "', '"). "'"
     cal setline('.', strpart(line, 0, start - 1) . quoted . strpart(line, start + len - 1))
 endfunction
-no <leader>mq :call PathToQuoted()<cr>
+nn <leader>mq :call PathToQuoted()<cr>
+
+function! SnakeToCamel()
+    s/\v_([a-z])/\u\1/g
+endfunction
 
 " Join lines, trimming whitespace from all but the first.
 function! JoinNoWhitespace() range
@@ -697,6 +672,7 @@ endfunction
 
 " Plugin configuration
 " ====================
+" fzf
 set rtp+=/usr/share/doc/fzf/examples,~/.fzf
 " Change the split binding to be more mnemonic and match probe.
 let g:fzf_action = {
@@ -705,45 +681,7 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 nn <leader>z :FZF --exact<cr>
 
-let g:ConqueTerm_CWInsert = 1
 let g:NERDTreeDirArrows=0
-let g:pyflakes_use_quickfix = 0
-let g:CommandTMaxHeight = 20
-
-let g:slime_target = 'tmux'
-let g:slime_no_mappings = 1
-let g:slime_default_config = {"socket_name": "default", "target_pane": ":.1"}
-nmap <leader>a <Plug>SlimeParagraphSend
-
-let g:syntastic_mode_map = {'mode': 'passive'}
-let g:syntastic_python_checkers = ['flake8']
-
-" Rut
-let g:rut_projects = [{
-  \'pattern': '\v/bdmstest[0-9]?(/|$)',
-  \'test_dir': 'spec',
-  \'source2unit': ['\v.*lib/bdmstest/(.*/?)([^/]*)\.rb', 'spec/\1\2_spec.rb'],
-  \'unit2source': ['\v.*spec/(.*/)?([^/]*)_spec\.rb', 'lib/bdmstest/\1\2.rb'],
-  \'runner': 'bundle exec rspec',
-  \'errorformat': '%A %#Failure/Error:%.%#,%Z %## %f:%l:%m,%C%m',
-\}]
-
-"    Failure/Error: loader = LogLoad::SOAPSimulator.new(@sim.id, @sim.started_at, 'no_such_dir')
-"    ArgumentError:
-"      wrong number of arguments (3 for 1)
-"    # ./lib/bdmstest/log_load/soap_simulator.rb:12:in `initialize'
-
-" Vipyut
-let g:vipyut_projects = [
-    \ {
-        \ 'pattern': '\v/bdmstest[0-9]?(/|$)',
-        \ 'unittests': 'spec',
-        \ 'source2unit': ['\v.*/lib/bdmstest/(.*/?)([^/]*)\.rb', '\1\2_spec.rb'],
-        \ 'unit2source': ['\v.*/spec/(.*/)?([^/]*)_spec\.rb', 'lib/bdmstest/\1\2.rb'],
-        \ 'runner': 'bundle exec rspec -r jt/rspec_vim_formatter.rb -f VimFormatter',
-    \ },
-\]
-let g:vipyut_openOutputOnFail = 0
 
 " Probe
 let g:probe_ignore_files = ['\~$', '/_\?build$', '\.pyc$', 'freetds-.*', '\.class$', '/target$', '\.sw[pon]$', '\.\(o\|so\)$', '\(^\|/\)\.']
@@ -753,17 +691,6 @@ command! ProbeFindTc :cal probe#open(
     \ function('probe#tc#refresh'))
 nn <leader>d :ProbeFindFile<cr>
 nn <leader>f :ProbeFindInRepo<cr>
-
-" Jedi
-let g:jedi#goto_assignments_command = "<leader>jg"
-let g:jedi#goto_definitions_command = "<leader>jd"
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = "<leader>jn"
-let g:jedi#completions_command = "<C-Space>"
-let g:jedi#rename_command = "<leader>jr"
-let g:jedi#show_call_signatures = "0"
-let g:jedi#popup_on_dot = 0
-let g:jedi#popup_select_first = 0
 
 nn <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_type_go = {
@@ -811,61 +738,23 @@ let g:tagbar_type_markdown = {
 
 " Quickfix
 " ========
-function! GrepDiff(range, query, ...)
-    let grep_args = ''
-    if a:0 > 0
-        let grep_args = a:1
+function! Make(makeprg)
+    call MakeX(a:makeprg, v:none, 0)
+endfunction
+function! MakeX(makeprg, errorformat, jump)
+    let jump = a:jump == 0 ? '!' : ''
+    if a:errorformat != v:none
+        let &l:errorformat = a:errorformat
     endif
-    let &l:makeprg = printf("git diff --relative %s \\| linewise -rm \\| grep %s -E %s", a:range, grep_args, a:query)
-    make
+    let &l:makeprg = a:makeprg
+    exe printf('make%s', jump)
 endfunction
-command! -nargs=+ GrepDiff call GrepDiff(<f-args>)
-cabbrev GD GrepDiff
+nn <leader>mm :call Make('make')<cr>
 
-function! Cfind(...)
-    let saved_grepprg = &grepprg
-    let &grepprg = "cfind -n"
-    exe "grep " . join(a:000, ' ')
-    let &grepprg = saved_grepprg
-endfunction
-command! -nargs=+ Cfind call Cfind(<f-args>)
-cabbrev Cf Cfind
+com! MakeTest call Make('make test')
+nn <leader>mu :MakeTest<cr>
 
-function! Fifm(...)
-    let saved_grepprg = &grepprg
-    let &grepprg = "fifm"
-    exe "grep " . join(a:000, ' ')
-    let &grepprg = saved_grepprg
-endfunction
-command! -nargs=+ Fifm call Fifm(<f-args>)
-
-function! Pylint()
-    let &l:makeprg = "pylint -f parseable -i y -r n %"
-    let &l:efm = "%f:%l: %m"
-    make!
-endfunction
-command! Pl call Pylint()
-
-function! RBCheck(...)
-    let &l:makeprg = 'rb_check'
-    exe "make " . join(a:000, ' ')
-endfunction
-command! -nargs=* RBCheck call RBCheck(<f-args>)
-
-function! Pep()
-    let &l:makeprg = 'pep'
-    make %
-endfunction
-command! Pep call Pep(<f-args>)
-nn <leader>mp :cal Pep()<cr>
-
-function! GitTrailingWhitespace(...)
-    let prefix = util#trim(system("git rev-parse --show-prefix"))
-    let &l:makeprg = "git diff --check " . join(a:000)
-    let &l:efm = prefix . "%f:%l: %m"
-    make!
-endfunction
-command! -nargs=* Gtw call GitTrailingWhitespace('<args>')
+com! -nargs=* -complete=file Pyflakes call Make('pyflakes ' . (<q-args> == '' ? '%' : <q-args>))
 
 " Fill the quickfix list with pylint output. Run pylint on all the files
 " changed since the last commmit (default) or between given revisions, which
@@ -918,16 +807,11 @@ function! QuickfixGitDiff(...)
 endfunction
 command! -nargs=* Gdqf call QuickfixGitDiff('<args>')
 
-function! SilentMake(...)
-    if a:0 >= 1
-        " TODO: support more args
-        execute "silent! make! " . a:1
-    else
-        silent! make!
-    endif
-    redraw!
+function! ReadGitDiff()
+    0r !git diff
+    set filetype=diff
 endfunction
-com! -nargs=? Make call SilentMake(<f-args>)
+command! Gdr call ReadGitDiff()
 
 function! QuickfixConflicts()
     let files = util#trim(system("git status -s | grep '^\\(UU\\|AA\\)' | awk '{print $2}' | tr '\n' ' '"))
@@ -936,10 +820,8 @@ function! QuickfixConflicts()
 endfunction
 com! -nargs=0 Conflicts call QuickfixConflicts()
 
-function! SnakeToCamel()
-    s/\v_([a-z])/\u\1/g
-endfunction
-
+" Operator-pending evalutators
+" ============================
 let g:PipeEvalInterpreter = 'bc'
 function! PipeEval(input)
     let result = system(g:PipeEvalInterpreter, a:input . "\n")
@@ -954,7 +836,6 @@ function! PipeEvalOp(type)
     else
         return
     endif
-
 
     " If the input is linewase, paste the output below; otherwise paste the
     " output inline.
@@ -986,6 +867,47 @@ nnoremap <leader>ep :let g:PipeEvalInterpreter = 'python3'<cr>:set operatorfunc=
 nnoremap <leader>eP :let g:PipeEvalInterpreter = 'python3'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
 vnoremap <leader>ep :<c-u>let g:PipeEvalInterpreter = 'python3'<cr>:call PipeEvalOp(visualmode())<cr>
 
+function! VimEvalOp(type)
+    " Yank the text into the unnamed register, @@.
+    if a:type ==# 'v' || a:type ==# 'V'
+        normal! `<v`>y
+    elseif a:type ==# 'char' || a:type ==# 'line'
+        normal! `[v`]y
+    else
+        return
+    endif
+
+    let @@ = substitute(@@, '\v(^[ \t\n]+|[ \t\n]+$)', '', 'g')
+    let result = eval(@@)
+    if type(result) != v:t_string
+        let @@ = string(result)
+    else
+        let @@ = result
+    endif
+
+    " If the input is linewase, paste the output below; otherwise paste the
+    " output inline.
+    let is_linewise = a:type ==# 'V' || a:type ==# 'line'
+    if is_linewise
+        let @@ = "\n==\n" . @@
+    else
+        let @@ = ' = ' . @@
+    endif
+
+    " Paste the eval'd result.
+    if a:type ==# 'v' || a:type ==# 'V'
+        normal! `>p
+    elseif a:type ==# 'char' || a:type == 'line'
+        normal! `]p
+    endif
+endfunction
+" vim eval
+nnoremap <leader>ev :set operatorfunc=VimEvalOp<cr>g@
+nnoremap <leader>eV V:<c-u>call VimEvalOp(visualmode())<cr>
+vnoremap <leader>ev :call VimEvalOp(visualmode())<cr>
+
+" One-way operator-pending commands
+" =================================
 let g:PipeOpCmd = 'xsel -ib'
 let g:PipeOpOut = ''
 function! PipeOp(type)
@@ -1010,11 +932,43 @@ vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode
 nnoremap <leader>* :call append(line('.'), systemlist('xsel -op'))<cr>
 nnoremap <leader>+ :call append(line('.'), systemlist('xsel -ob'))<cr>
 
+" View images
+"
+" It seems more convenient to use <cfile> instead of expecting an operator for
+" the common case. For filenames with spaces you'll need to visually select it
+" first, unless it's on a line by itself, in which case the  `mV` binding is
+" appropriate.
+let g:ViewCmd = printf('sed "s^~^%s^" | feh --scale-down -f -', $HOME)  " Expand leading tildes.
+nnoremap <leader>mv :echo system(g:ViewCmd . ' ' . expand('<cfile>'))<cr>
+nnoremap <leader>mV :let g:PipeOpCmd = g:ViewCmd<cr>V:<c-u>call PipeOp(visualmode())<cr>:echo g:PipeOpOut<cr>
+vnoremap <leader>mv :<c-u>let g:PipeOpCmd = g:ViewCmd<cr>:call PipeOp(visualmode())<cr>:echo g:PipeOpOut<cr>
+
+
+" Filetypes
+" =========
+
+" The standard markdown plugin is lacking as of Vim7.4
+" Improvements in tpope/vim-markdown will eventually be merged upstream.
+function! MarkdownLevel()
+    let h = matchstr(getline(v:lnum), '^#\+')
+    if empty(h)
+        return "="
+    else
+        return ">" . len(h)
+    endif
+endfunction
+" md extension signifies markdown, not modula2
+au! filetypedetect BufNewFile,BufRead *.md
+au filetypedetect BufNewFile,BufRead *.md setlocal filetype=markdown
+
+" gp extension is for gnuplot instead of the PARI/GP calculator.
+au! filetypedetect BufNewFile,BufRead *.gp
+au filetypedetect BufNewFile,BufRead *.gp setlocal filetype=gnuplot
+
+" Group autocommands so they can be easily removed/refreshed.
 augroup vimrc
     " Remove all vimrc autocommands.
     autocmd!
-    autocmd FileType java iabbrev <buffer> sop System.out.println
-    autocmd FileType rust iabbrev <buffer> pl println!
 
     autocmd Filetype java setlocal sts=2 sw=2 ts=2
     autocmd Filetype ruby setlocal sts=2 sw=2 ts=2
@@ -1023,15 +977,26 @@ augroup vimrc
     autocmd Filetype c setlocal cindent indentexpr= noet
     autocmd Filetype cpp setlocal cindent indentexpr= noet
     autocmd Filetype python setlocal foldmethod=indent foldnestmax=2 foldlevel=99
+    au Filetype make setlocal sts=4 sw=4 ts=4 noet
 
+    " Abbreviations
+    autocmd FileType java iabbrev <buffer> sop System.out.println
+    autocmd FileType rust iabbrev <buffer> pl println!
+
+    " Key bindings to run filetype-specific unit tests and syntax checks
+    autocmd Filetype sh nn <leader>my :Shellcheck<cr>
+    autocmd Filetype python nn <leader>my :call Make('make mypy')<cr>
+
+    " Markdown
+    au FileType markdown setlocal foldexpr=MarkdownLevel()
+    au FileType markdown setlocal foldmethod=expr
+    " Don't close folds when the filetype is detected.
+    au FileType markdown setlocal foldlevel=10
     " Don't worry about underscores within words.
-    autocmd Filetype markdown syn clear markdownError
+    au Filetype markdown syn clear markdownError
     " Don't hilight italics. I want literal asterisks all the time in my notes
     " and italics don't denote enough emphasis to deserve hilighting anyway.
-    autocmd Filetype markdown syn clear markdownItalicDelimiter markdownItalic
-
-    autocmd Filetype make setlocal sts=4 sw=4 ts=4 noet
-
+    au Filetype markdown syn clear markdownItalicDelimiter markdownItalic
 augroup END
 
 

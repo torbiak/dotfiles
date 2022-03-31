@@ -13,12 +13,6 @@
 [submodule "dotfiles/vim/bundle/mediawiki.vim"]
 	path = dotfiles/vim/bundle/mediawiki.vim
 	url = https://github.com/chikamichi/mediawiki.vim.git
-[submodule "dotfiles/vim/bundle/syntastic"]
-	path = dotfiles/vim/bundle/syntastic
-	url = https://github.com/scrooloose/syntastic.git
-[submodule "dotfiles/vim/bundle/vim-slime"]
-	path = dotfiles/vim/bundle/vim-slime
-	url = https://github.com/jpalardy/vim-slime.git
 [submodule "dotfiles/vim/bundle/rut.vim"]
 	path = dotfiles/vim/bundle/rut.vim
 	url = git@github.com:torbiak/rut.vim.git
