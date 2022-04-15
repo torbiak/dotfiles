@@ -65,10 +65,21 @@ inoremap <C-B> <Left>
 inoremap <C-F> <Right>
 
 " Quickfix
-" I don't find the default bindings for -, _, and + useful.
+" I don't find the default bindings for -, _, and + useful, but I use the
+" quickfix list all the time.
 nn - :cp<cr>
 nn + :cn<cr>
-nn _ :cc 1<cr>
+function! JumpToFirstValidError()
+    let qflist = getqflist()
+    for i in range(len(qflist))
+        if qflist[i]['valid'] == v:true
+            exe printf(':cc %d', i+1)
+            return
+        endif
+    endfor
+endfunction
+nn _ :call JumpToFirstValidError()<cr>
+
 
 " Arglist
 nn <leader>n :wn<cr>
