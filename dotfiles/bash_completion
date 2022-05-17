@@ -70,3 +70,7 @@ complete -c command type which man
 
 # builtin completes on builtins
 complete -b builtin
+
+
+# jtorbiak-specific completions
+complete -C statusbar statusbar sb
