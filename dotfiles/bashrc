@@ -388,6 +388,25 @@ clipargs() { xsel -ib <<<"$*"; }
 # Pipe the --help output of a command to less.
 hl() { "$@" --help 2>&1 | less; }
 
+# Run StdIn
+#
+# Run a script based on the output of a command after opening it for editing.
+#
+# usage: <pipeline> | rsi
+rsi() {
+    [[ $# -gt 0 ]] && {
+        echo "usage: <pipeline> | rsi"
+        return 1
+    }
+    local script=~/rsi
+    # Write stdin to a file, and then redirect the stdio fds to a tty so that
+    # $EDITOR can work.
+    cat >"$script"
+    exec </dev/tty 1>/dev/tty 2>/dev/tty
+    "$EDITOR" "$script"
+    "$BASH" "$script"
+}
+
 [ -e ~/.bash_completion ] && . ~/.bash_completion
 
 [[ -e ~/.fzf_key_bindings.bash ]] && . ~/.fzf_key_bindings.bash
