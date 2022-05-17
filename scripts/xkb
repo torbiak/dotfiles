@@ -10,7 +10,7 @@
 set -euo pipefail
 
 # install the layout
-sudo cat >/usr/share/X11/xkb/symbols/jat <<'EOF'
+sudo tee /usr/share/X11/xkb/symbols/jat >/dev/null <<'EOF'
 partial default alphanumeric_keys function_keys modifier_keys
 xkb_symbols "basic" {
   // We need to include `us` and `inet` symbols first so that our changes
@@ -30,6 +30,7 @@ xkb_symbols "basic" {
   // for the list of available compositions. Compositions aren't defined for
   // en_CA.UTF-8, so if your locale was automatically set to that you may want
   // to change /etc/default/locale to en_US.UTF-8.
+  // On my 2013 Macbook Air it's the keyboard-backlight-down key.
   key <I238>  { [Multi_key] };
   // Use the weird "/A" Asus key on UX435 as a Multi_key, too.
   key <I248>  { [Multi_key] };
