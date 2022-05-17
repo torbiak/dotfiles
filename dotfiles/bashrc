@@ -8,7 +8,7 @@ export VISUAL=vim
 export HISTFILESIZE=100000
 export HISTSIZE=$HISTFILESIZE
 export HISTIGNORE="&:[ ]*:exit:l:ll:ls:histdel"
-export LANG="C.UTF-8"
+[[ "$LANG" == @(en_US.UTF-8|C|C.UTF-8|POSIX) ]] || export LANG="en_US.UTF-8"
 export LC_COLLATE=C  # Using the C locale can speed up some sorting and regex operations.
 export LESS="-# 60 -i -X -R"
 export LSCOLORS=dxfxcxdxbxegedabagacad
