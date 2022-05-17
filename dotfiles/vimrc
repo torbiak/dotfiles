@@ -955,6 +955,19 @@ nnoremap <leader>mV :let g:PipeOpCmd = g:ViewCmd<cr>V:<c-u>call PipeOp(visualmod
 vnoremap <leader>mv :<c-u>let g:PipeOpCmd = g:ViewCmd<cr>:call PipeOp(visualmode())<cr>:echo g:PipeOpOut<cr>
 
 
+" Make a new window and format a man page for it.
+function! Man(man_args, win_mods)
+    exe printf('%s new', a:win_mods)
+    setlocal bufhidden=unload " unload buf when no longer displayed
+    setlocal buftype=nofile   " buffer is not related to any file
+    setlocal nowrap           " don't soft-wrap
+    setlocal nobuflisted      " don't show up in the buffer list
+    exe printf('0r !MANWIDTH=%d man %s', winwidth(0), a:man_args)
+    0
+endfunction
+com! -nargs=+ Man call Man(<q-args>, <q-mods>)
+
+
 " Filetypes
 " =========
 
