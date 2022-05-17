@@ -1008,7 +1008,7 @@ augroup vimrc
     autocmd FileType rust iabbrev <buffer> pl println!
 
     " Key bindings to run filetype-specific unit tests and syntax checks
-    autocmd Filetype sh nn <leader>my :Shellcheck<cr>
+    autocmd Filetype sh nn <leader>my :call Make('shellcheck -f gcc %')<cr>
     autocmd Filetype python nn <leader>my :call Make('make mypy')<cr>
 
     " Markdown
