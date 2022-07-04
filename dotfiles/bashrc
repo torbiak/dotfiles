@@ -34,6 +34,7 @@ alias egrep='egrep --color=auto'
 alias dfh='df -hT -x tmpfs -x devtmpfs'
 alias ipb='ip -br'
 alias sudoh='sudo --preserve-env=HOME'
+alias python3='python3 -q'
 
 shopt -s histappend checkwinsize cmdhist extglob failglob cdable_vars
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
