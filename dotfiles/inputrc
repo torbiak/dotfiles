@@ -4,3 +4,23 @@ set bell-style none
 set show-all-if-ambiguous on
 C-p: history-search-backward
 C-n: history-search-forward
+
+$if python
+    # wrap line in less()
+    "\eh": "\C-ahelp(\C-e)"
+
+    # wrap line in help()
+    "\el": "\C-aless(\C-e)"
+
+    # wrap line in os.system()
+    "\es": "\C-aos.system(\C-e)"
+
+    # remove outermost call
+    "\eu": "\C-a\C-](\C-f\C-u\C-e\e\C-])\C-k"
+
+    # wrap line in single-quotes
+    "\e'": "\C-a'\C-e'"
+
+    # surround line in double-quotes
+    "\e\"": "\C-a\"\C-e\""
+$endif

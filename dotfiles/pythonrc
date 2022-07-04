@@ -1,22 +1,85 @@
-import atexit
+from pathlib import Path
+import ctypes
 import os
-import re
 import readline
 import rlcompleter
-import socket
-import _socket
 import sys
-import time
 
-# python3.4+ does this by default, and ipython stores history in sqlite.
-# See https://docs.python.org/3/library/site.html#rlcompleter-config
-if sys.version_info < (3, 4) and 'get_ipython' not in globals():
-    history = os.path.expanduser('~/.python_history')
-    if os.path.exists(history):
-        readline.read_history_file(history)
-    readline.parse_and_bind('tab: complete')
-    atexit.register(readline.write_history_file, history)
+import __main__
 
+class Completer(rlcompleter.Completer):
+    """ A readline completer for quoted filenames and python namespaces.
+
+    Provides the same completions as the default completer, and enables
+    readline's filename completion inside single or double quotes.
+    """
+
+    def __init__(self):
+        super().__init__(__main__.__dict__)
+
+        # Access some readline vars that the python interface doesn't provide.
+        libreadline = ctypes.CDLL(readline.__file__)
+        self.rl_attempted_completion_over = ctypes.c_int.in_dll(libreadline, "rl_attempted_completion_over")
+
+        # Need to remove slash (`/`) and tilde from delims so filename
+        # completion can work. There's some tension between allowing more
+        # characters in filenames versus not breaking up python tokens
+        # appropriately.
+        readline.set_completer_delims(' \t\n`!@#$%^&*()=+[{]}\\|;:\'",<>?')
+
+    def find_matches(self, text: str) -> list[str]:
+        line = readline.get_line_buffer()
+        begidx = readline.get_begidx()
+        cursor_pos = begidx + len(text)
+
+        # escapes: save cursor, cursor to top-left corner, clear line, restore cursor
+        #print(f'\033[s\033[H\033[2K{text=},{line=},{cursor_pos=},{begidx=}\n\033[u', end='')
+
+        if begidx > 0 and line[begidx-1] in '\'"':
+            # Do filename completion if the char before the text to be
+            # completed is a quote.
+
+            # Normally readline falls back to filename completion if there are
+            # no other matches, but python's readline bindings disable that by
+            # setting rl_attempted_completion_over=1 before calling the
+            # registered completer function (see cpython/Modules/readline.c).
+            self.rl_attempted_completion_over.value = 0
+            return []
+        elif "." in text:
+            return self.attr_matches(text)
+        else:
+            return self.global_matches(text)
+
+    def complete(self, text: str, state: int) -> str:
+        if state == 0:
+            try:
+                self.matches = self.find_matches(text)
+            except Exception as e:
+                print('\n' + e)
+        try:
+            return self.matches[state]
+        except IndexError:
+            return None
+
+def init_repl():
+    import atexit
+    import readline
+    # python3.4+ does this by default, and ipython stores history in sqlite.
+    # See https://docs.python.org/3/library/site.html#rlcompleter-config
+    if sys.version_info < (3, 4) and 'get_ipython' not in globals():
+        history = os.path.expanduser('~/.python_history')
+        if os.path.exists(history):
+            readline.read_history_file(history)
+        readline.parse_and_bind('tab: complete')
+        atexit.register(readline.write_history_file, history)
+
+    readline.set_completer(Completer().complete)
+
+    green='\001\033[32m\002'
+    red = '\001\033[31m\002'
+    reset = '\001\033[0m\002'
+    sys.ps1 = '%s>>>%s ' % (green, reset)
+init_repl()
 
 def t(*args):
     import timeit
@@ -25,7 +88,7 @@ def t(*args):
 def xf(filepath, main=False):
     """ eXecute File in the global scope. Be careful.
 
-    If main is False, then change __name__ by so that blocks gaurded by `if
+    If main is False, then change __name__ so that blocks guarded by `if
     __name__ == '__main__'` aren't executed.
 
     """
