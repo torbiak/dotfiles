@@ -25,7 +25,9 @@ set more
 set backup
 set shellslash
 set cryptmethod=blowfish2
-" Make sure ~/tmp/vim exists.
+if exists("*mkdir")
+    cal mkdir(expand('~/tmp/vim'), 'p')
+endif
 set backupdir=~/tmp/vim,.
 ino jk <esc>
 let mapleader = 's'
