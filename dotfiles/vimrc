@@ -612,6 +612,61 @@ command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
 nn <leader>J :JoinNoWhitespace<cr>
 vn <leader>J :JoinNoWhitespace<cr>
 
+" Extract strings from a buffer using a regex.
+"
+" Match a regex against a range of lines, convert each list of submatches to a
+" string using the given FuncRef, and set the unnamed register to the
+" resulting strings, with each on its own line.
+"
+" Extract(re, [func])
+"
+" re
+"   regular expression with capture groups. Use a single-quoted string to
+"   avoid doubling backslashes
+" func
+"   A FuncRef, or more likely a lambda expression, to combine submatches into
+"   strings to be added to the returned list. The list of submatches is given
+"   as the first argument. By default the entire match is returned.
+"
+" For example, with these lines:
+"
+"   foo(a, b)
+"   foo(c, d)
+"
+" calling this:
+"
+"   %Extract('\vfoo\((\w+), (\w+)', {m -> m[1] . m[2])})
+"
+" results in @" being set to:
+"
+"   a b
+"   c d
+"
+" Use varargs instead of a default argument for the func parameter to be
+" compatible with Vim 8.0, which has lambdas but not default args.
+if has('lambda')
+    function! Extract(re, ...) range
+        if a:0 == 0
+            let Func = {m -> m[0]}
+        elseif a:0 == 1
+            let Func = a:1
+        else
+            throw "Extract expects only one extra arg"
+        endif
+        let l = []
+        let lines = getline(a:firstline, a:lastline)
+        " Going linewise in vimscript is probably pretty slow, but if we
+        " combine the lines into a single string then line breaks are kind of
+        " ignored (see `:h string-match`). Using the :substitute command
+        " instead might be faster but it'd be awkward to get a list of
+        " submatches then.
+        for line in lines
+            cal substitute(line, a:re, {m -> [add(l, Func(m)), m[0]][1]}, 'g')
+        endfor
+        cal setreg('"', join(l, "\n"), 'l')
+    endfunction
+endif
+
 " Assign-and-increase function intended to be used when making substitutions
 " using the expression register. For example, to replace 'X's with
 " 1, 2, 3, ...: let i=1 | s/X/\=Inc(1)/g
