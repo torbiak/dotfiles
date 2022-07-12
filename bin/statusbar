@@ -69,16 +69,23 @@ cont() {
     done
 }
 
-now() {
-    local msg=${1:?No msg given}
-    later "$msg"
-    paplay ~/dotfiles/sounds/xylofon.wav &
-}
-
-later() {
+todo() {
+    OPTIND=0
+    local sound=
+    while getopts "hs" opt; do
+        case "$opt" in
+        h) echo "$usage"; exit 0;;
+        s) sound=yes;;
+        *) exit 1;;
+        esac
+    done
+    shift $((OPTIND-1))
     local msg=${1:?No msg given}
     touch "$msg_dir/$msg"
     once
+    if [[ "$sound" ]]; then
+        paplay ~/dotfiles/sounds/xylofon.wav &
+    fi
 }
 
 did() {
@@ -119,11 +126,11 @@ once
     update statusbar once
 cont
     update statusbar continuously
-now <msg>
-    add a short message to display in the statusbar and play a sound. The sound
-    can be useful when this command is invoked via cron or at.
-later <msg>
-    add a short message to display in the statusbar
+todo [-s] <msg>
+    add a short message to display in the statusbar. 
+    -s
+        play a sound. The sound can be useful when this command is invoked via
+        cron or at.
 did <msg>
     clear message from the statusbar"
 
