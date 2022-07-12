@@ -25,7 +25,7 @@ set more
 set backup
 set shellslash
 set cryptmethod=blowfish2
-if exists("*mkdir")
+if exists("*mkdir") && !isdirectory(expand('~/tmp/vim'))
     cal mkdir(expand('~/tmp/vim'), 'p')
 endif
 set backupdir=~/tmp/vim,.
