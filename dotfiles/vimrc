@@ -832,6 +832,8 @@ function! MakeX(makeprg, errorformat, jump)
     let &l:makeprg = a:makeprg
     exe printf('make%s', jump)
 endfunction
+" "Make" the current file with the given "compiler".
+com! -nargs=* Mf :call Make(<q-args> . ' %')
 nn <leader>mm :call Make('make')<cr>
 
 com! MakeTest call Make('make test')
