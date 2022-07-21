@@ -66,6 +66,13 @@ cnoremap <esc>M <C-P>
 inoremap <C-B> <Left>
 inoremap <C-F> <Right>
 
+" Open balanced surroundings.
+ino ;{ {<cr>}<esc>O
+ino ;[ []<esc>i
+ino ;( ()<esc>i
+ino ;" ""<esc>i
+ino ;' ''<esc>i
+
 " Quickfix
 " I don't find the default bindings for -, _, and + useful, but I use the
 " quickfix list all the time.
