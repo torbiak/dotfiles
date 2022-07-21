@@ -718,6 +718,21 @@ function! HOrC(filepath)
 endfunction
 nn <leader>o :call HOrC(expand('%'))<cr>
 
+" Open a file and search for a regex.
+"
+" Expects a "link" formatted like {<filename>:<regex>} to be under the cursor.
+function! GoAndSearch()
+    let saved_unnamed_reg = @"
+    normal yi{
+    let m = matchlist(@", '\v([^:]+):(.*)')
+    let filename = m[1]
+    let regex = m[2]
+    exe 'new ' . filename
+    cal search(regex)
+    let @" = saved_unnamed_reg
+endfunction
+nn <leader>mg :call GoAndSearch()<cr>
+
 " Evaluate arguments as globs and set the unnamed register to the resulting
 " newline-separated list of filenames.
 "
