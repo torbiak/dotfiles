@@ -4,6 +4,7 @@ import os
 import readline
 import rlcompleter
 import sys
+import warnings
 
 import __main__
 
@@ -35,20 +36,22 @@ class Completer(rlcompleter.Completer):
         # escapes: save cursor, cursor to top-left corner, clear line, restore cursor
         #print(f'\033[s\033[H\033[2K{text=},{line=},{cursor_pos=},{begidx=}\n\033[u', end='')
 
-        if begidx > 0 and line[begidx-1] in '\'"':
-            # Do filename completion if the char before the text to be
-            # completed is a quote.
+        with warnings.catch_warnings():
+            warnings.simplefilter(action='ignore')
+            if begidx > 0 and line[begidx-1] in '\'"':
+                # Do filename completion if the char before the text to be
+                # completed is a quote.
 
-            # Normally readline falls back to filename completion if there are
-            # no other matches, but python's readline bindings disable that by
-            # setting rl_attempted_completion_over=1 before calling the
-            # registered completer function (see cpython/Modules/readline.c).
-            self.rl_attempted_completion_over.value = 0
-            return []
-        elif "." in text:
-            return self.attr_matches(text)
-        else:
-            return self.global_matches(text)
+                # Normally readline falls back to filename completion if there are
+                # no other matches, but python's readline bindings disable that by
+                # setting rl_attempted_completion_over=1 before calling the
+                # registered completer function (see cpython/Modules/readline.c).
+                self.rl_attempted_completion_over.value = 0
+                return []
+            elif "." in text:
+                return self.attr_matches(text)
+            else:
+                return self.global_matches(text)
 
     def complete(self, text: str, state: int) -> str:
         if state == 0:
