@@ -114,8 +114,28 @@ nn <leader>vs :source ~/.vimrc<cr>
 nn <c-j> <c-w>j
 nn <c-k> <c-w>k
 
+" Yank/paste
+" Paste yanks.
+nn <leader>p "0p
+nn <leader>P "0P
+" Yank to the clipboard.
+nn <leader>$ "+y$
+
+" Tab widths
+nn <leader>8 :set sts=8 ts=8 sw=8 et<cr>
+nn <leader>4 :set sts=4 ts=4 sw=4 et<cr>
+nn <leader>2 :set sts=2 ts=2 sw=2 et<cr>
+
+" Jump between methods
+"
+" ]m works for opening-brace-at-beginning-of-line C functions like ]], as well
+" as cuddled opening braces for Java-style methods, so make it more
+" convenient.
+nn ]] ]m
+nn [[ [m
+
 " Various conveniences
-nn <leader>p :set paste!<cr>
+nn <leader>mp :set paste!<cr>
 nn <leader>h :noh<cr>
 nn <leader>g :grep <cword><cr>
 nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
@@ -123,11 +143,7 @@ nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
 nn <leader>x :source ~/source.vim<cr>
-nn <leader>8 :set sts=8 ts=8 sw=8 et<cr>
-nn <leader>4 :set sts=4 ts=4 sw=4 et<cr>
-nn <leader>2 :set sts=2 ts=2 sw=2 et<cr>
 nn <leader>y :let @y = @"<cr>
-nn <leader>$ "+y$
 
 
 " Formatting
