@@ -254,7 +254,7 @@ options:
     local IFS=$'\t\n'  # Needed for the only_dirs filtering.
     while getopts ":hn:amcsrd" opt; do
         case "$opt" in
-        h) echo "$usage"; exit 0;;
+        h) echo "$usage"; return 0;;
         a) ls_opts+=(-u); let ++nsorts;;
         m) let ++nsorts;;
         c) ls_opts+=(-c); let ++nsorts;;
