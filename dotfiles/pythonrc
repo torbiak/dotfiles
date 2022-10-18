@@ -105,8 +105,8 @@ def t(*args):
 def xf(filepath, main=False):
     """ eXecute File in the global scope. Be careful.
 
-    If main is False, then change __name__ so that blocks guarded by `if
-    __name__ == '__main__'` aren't executed.
+    If main is False, then change __name__ so that blocks guarded by
+    `if __name__ == '__main__'` aren't executed.
 
     """
     try:
