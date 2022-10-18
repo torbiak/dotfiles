@@ -77,7 +77,7 @@
         \echo "$table" >>/tmp/d
         SELECT c.name [column_name]
             ,t.name AS [type_name]
-            ,c.max_length
+            ,case when t.name = 'nvarchar' then c.max_length / 2 else c.max_length end [maxlen]
             ,c.is_nullable [null]
         FROM sys.columns AS c
         JOIN sys.types AS t ON c.user_type_id=t.user_type_id
