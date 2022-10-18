@@ -11,6 +11,6 @@ xsetroot -bg black
 xrdb -merge ~/.Xresources
 xbindkeys
 
-~/dotfiles/statusbar cont &
+~/dotfiles/bin/statusbar cont &
 
 exec dwm
