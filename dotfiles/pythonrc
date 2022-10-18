@@ -81,7 +81,8 @@ def init_repl():
     green='\001\033[32m\002'
     red = '\001\033[31m\002'
     reset = '\001\033[0m\002'
-    sys.ps1 = '%s>>>%s ' % (green, reset)
+    bell = '\001\a\002'
+    sys.ps1 = '%s%s>>>%s ' % (bell, green, reset)
 init_repl()
 
 def t(*args):
