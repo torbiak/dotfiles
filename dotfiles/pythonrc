@@ -85,6 +85,19 @@ def init_repl():
     sys.ps1 = '%s%s>>>%s ' % (bell, green, reset)
 init_repl()
 
+def history(max_lines=-1):
+    """ View readline history in less. """
+    total = readline.get_current_history_length()
+    if max_lines == -1:
+        # default value prints everything
+        max_lines = total
+    lines = []
+    if max_lines > 0:
+        for i in range(total - max_lines, total):
+            lines.append(readline.get_history_item(i + 1))
+    if lines:
+        less('\n'.join(lines))
+
 def t(*args):
     import timeit
     return timeit.Timer(*args).timeit()
