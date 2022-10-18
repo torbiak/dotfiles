@@ -168,3 +168,29 @@ def freshen_prefix(prefix):
         del sys.modules[m]
     for m in mods:
         importlib.import_module(m)
+
+
+import json
+
+class Encoder(json.JSONEncoder):
+    def default(self, obj):
+        """ Return a serializable object derived from obj. """
+        try:
+            return obj.__dict__
+        except AttributeError:
+            return repr(obj)
+
+def pp(obj):
+    """ Pretty-print a Python object to stdout. """
+    print(pf(obj))
+
+
+def pf(obj):
+    """ Pretty-print a Python object as a string.
+
+    I much prefer how the json package formats things compared to pprint.
+    """
+    return json.dumps(obj, indent=4, cls=Encoder)
+
+def pless(obj):
+    less(pf(obj))
