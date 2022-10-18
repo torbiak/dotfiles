@@ -12,7 +12,7 @@ complete -A directory -o bashdefault -o default cd
 # sudo, nohup, etc, completing commands and falling back to the defaults is
 # enough for me. See _command_offset in debian's bash_completion script for the
 # full-featured approach.
-complete -F commands_then_default -o filenames sudo nohup obg
+complete -F commands_then_default -o filenames sudo nohup obg cronic
 
 commands_then_default() {
     local IFS=$'\t\n'
@@ -74,3 +74,5 @@ complete -b builtin
 
 # jtorbiak-specific completions
 complete -C statusbar statusbar sb
+complete -C jteg jteg
+complete -C atj atj
