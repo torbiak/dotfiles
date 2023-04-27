@@ -136,9 +136,13 @@ def history(max_lines=-1):
     if lines:
         less('\n'.join(lines), ['+G'])
 
-def t(*args):
+def ezbench(func, n=None):
     import timeit
-    return timeit.Timer(*args).timeit()
+    timer = timeit.Timer(func)
+    if n is None:
+        n, _ = timer.autorange()
+    elapsed = timer.timeit(n)
+    return dict(iterations=n, elapsed=elapsed)
 
 def xf(filepath, main=False):
     """ eXecute File in the global scope. Be careful.
