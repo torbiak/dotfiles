@@ -222,15 +222,48 @@ garc() {
     git add -u
     git rebase --continue
 }
+
 # git submodule update
 gsu() {
     repoRoot=$(git rev-parse --show-toplevel)
     # execute in a subshell so we don't have to save the cwd
     (cd $repoRoot; git submodule update)
 }
+
 # git add -p
 gap() {
     git add -p "$@"
+}
+
+alias gff=git-fixup-fuzzy
+git-fixup-fuzzy() {
+    # If awk is in the pipeline with fzf then awk will be blocking on read(),
+    # so on Ctrl-C it would get EINT from the syscall and exit with 0 instead
+    # of receiving a SIGINT, and the entire pipeline would pass, unless we set
+    # pipefail so bash considers the pipeline failed due to fzf exiting due to
+    # SIGINT.
+    local -
+    set -o pipefail
+    local sha
+    sha=$(
+        git log --decorate --oneline \
+            | fzf --with-nth=2.. --no-sort --preview='git show --stat {+1}' --layout=reverse \
+            | awk '{print $1}'
+    ) &&
+    git commit --fixup="$sha"
+}
+
+alias grf=git-rebase-fuzzy
+git-rebase-fuzzy() {
+    local -
+    set -o pipefail
+    local sha
+    sha=$(
+        git log --decorate --oneline \
+            | fzf --with-nth=2.. --no-sort --preview='git show --stat {+1}' --layout=reverse \
+            | awk '{print $1}'
+    ) &&
+    git rebase -i "$sha"^
 }
 
 most() {
