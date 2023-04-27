@@ -175,8 +175,7 @@ def import_charting():
         import jat.pandas_lt as pandas
     except:
         import pandas
-    import seaborn
-    globals().update(np=numpy, mpl=matplotlib, plt=matplotlib.pyplot, pd=pandas, sns=seaborn)
+    globals().update(np=numpy, mpl=matplotlib, plt=matplotlib.pyplot, pd=pandas)
 
 def less(arg):
     import subprocess
