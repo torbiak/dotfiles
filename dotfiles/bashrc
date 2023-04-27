@@ -425,6 +425,17 @@ clipargs() { xsel -ib <<<"$*"; }
 # Pipe the --help output of a command to less.
 hl() { "$@" --help 2>&1 | less; }
 
+redline() {
+    local pattern=${1:?No pattern given}; shift
+    awk -v pattern="$pattern" '{
+        if (match($0, pattern)) {
+            print "\033[31;1m" $0
+        } else {
+            print "\033[0m" $0
+        }
+    }' "$@"
+}
+
 # Run StdIn
 #
 # Run a script based on the output of a command after opening it for editing.
