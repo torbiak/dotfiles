@@ -64,6 +64,44 @@ class Completer(rlcompleter.Completer):
         except IndexError:
             return None
 
+terminal_colors = {
+    'black': '\001\033[30m\002',
+    'red': '\001\033[31m\002',
+    'green': '\001\033[32m\002',
+    'yellow': '\001\033[33m\002',
+    'blue': '\001\033[34m\002',
+    'magenta': '\001\033[35m\002',
+    'cyan': '\001\033[36m\002',
+    'white': '\001\033[37m\002',
+    'reset' : '\001\033[0m\002',
+}
+
+def static_prompt(msg: str) -> str:
+    green = terminal_colors['green']
+    yellow = terminal_colors['yellow']
+    reset = terminal_colors['reset']
+    bell = '\001\a\002'
+    return f'{bell}{yellow}{msg}{green}>>>{reset} '
+
+class WorkingDirPrompt:
+    """ A prompt-generator that shows part of the working dir path.
+
+    To use, assign an instance to sys.ps1:
+
+        >>> sys.ps1 = WorkingDirPrompt(1)
+    """
+    def __init__(self, path_components: int) -> None:
+        self.path_components = path_components
+
+    def __str__(self) -> str:
+        green = terminal_colors['green']
+        yellow = terminal_colors['yellow']
+        reset = terminal_colors['reset']
+        bell = '\001\a\002'
+
+        wd = '/'.join(Path.cwd().parts[-self.path_components:])
+        return f'{bell}{yellow}{wd}{green}>>>{reset} '
+
 def init_repl():
     import atexit
     import readline
@@ -78,7 +116,7 @@ def init_repl():
 
     readline.set_completer(Completer().complete)
 
-    green='\001\033[32m\002'
+    green = '\001\033[32m\002'
     red = '\001\033[31m\002'
     reset = '\001\033[0m\002'
     bell = '\001\a\002'
