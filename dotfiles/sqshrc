@@ -55,7 +55,7 @@
 \set keyword_dynamic=1
 # Just tab-complete on User tables and Views for now.
 # For details about sysobjects see: https://docs.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-sysobjects-transact-sql
-\set keyword_query="select name from sysobjects where xtype in ('U', 'V') order by name"
+\set keyword_query="select name from sys.objects where type in ('U', 'V') order by name"
 
 # Every CSV column sent to miller must have a column heading.
 \alias gopsv="\go -m csv -p out | sql-mlr -- --ocsvlite --ofs pipe cat"
