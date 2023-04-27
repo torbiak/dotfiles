@@ -1,0 +1,61 @@
+#!/bin/bash
+# Wrapper for at(1), mostly for listing job IDs along with their commands.
+
+set -euo pipefail
+
+# List jobs. Display the last non-empty line of each job's script as that job's
+# command.
+ls() {
+    local last_line
+    local id dow month dom tod year queue
+    while read -r id dow month dom tod year queue _; do
+        [[ "$id" ]] || continue
+        last_line=$(at -c "$id" | awk '!/^$/ {last = $0} END {print last}')
+        echo "$id $dow $month $dom $tod $year $queue    $last_line"
+    done <<<"$(atq)"
+}
+
+clear() {
+    local ids
+    mapfile -t ids <<<"$(atq | awk '{print $1}')"
+    atrm "${ids[@]}"
+}
+
+bash_tab_completion() {
+    # shellcheck disable=SC2034  # unused variable
+    local cmd=$1; shift
+    local cword=$1; shift
+    # shellcheck disable=SC2034  # unused variable
+    local prev_word=$1; shift
+    compgen -W "ls clear" "$cword"
+}
+
+if [[ $# -eq 3 && -v COMP_TYPE ]]; then
+    bash_tab_completion "$@"
+    exit 0
+fi
+
+usage="atj [<options>] <cmd>
+
+options:
+    -h  show help
+
+commands:
+    ls
+        list jobs
+    clear
+        remove all jobs"
+
+while getopts "h" opt; do
+    case "$opt" in
+    h) echo "$usage"; exit 0;;
+    *) exit 1;;
+    esac
+done
+
+if [[ $# -eq 0 ]]; then
+    echo "$usage" >&2
+    exit 1
+fi
+
+"$@"
