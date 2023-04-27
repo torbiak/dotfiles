@@ -1125,6 +1125,8 @@ augroup vimrc
     " Don't hilight italics. I want literal asterisks all the time in my notes
     " and italics don't denote enough emphasis to deserve hilighting anyway.
     au Filetype markdown syn clear markdownItalicDelimiter markdownItalic
+
+    au Filetype ps1 ino ;c {<cr>[CmdletBinding()]<cr>param()<cr>}<esc>ko
 augroup END
 
 
