@@ -134,7 +134,7 @@ def history(max_lines=-1):
         for i in range(total - max_lines, total):
             lines.append(readline.get_history_item(i + 1))
     if lines:
-        less('\n'.join(lines))
+        less('\n'.join(lines), ['+G'])
 
 def t(*args):
     import timeit
