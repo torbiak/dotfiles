@@ -177,20 +177,25 @@ def import_charting():
         import pandas
     globals().update(np=numpy, mpl=matplotlib, plt=matplotlib.pyplot, pd=pandas)
 
-def less(arg):
+def less(stdin, args=None):
     import subprocess
 
-    tostr = getattr(arg, 'to_string', None)
+    if isinstance(args, str):
+        raise ValueError('args should be an iterable of str, not a str')
+
+    tostr = getattr(stdin, 'to_string', None)
     if tostr:
-        arg = tostr()
+        stdin_bytes = tostr().encode()
+    elif isinstance(stdin, bytes):
+        stdin_bytes = stdin
+    else:
+        stdin_bytes = str(stdin).encode()
 
-    if type(arg) not in (str, bytes):
-        arg = str(arg)
+    cmdline = ['less']
+    if args is not None:
+        cmdline.extend(args)
 
-    if type(arg) == str:
-        arg = arg.encode()
-
-    subprocess.run(['less'], input=arg)
+    subprocess.run(cmdline, input=stdin_bytes)
 
 def clip(arg):
     import subprocess
