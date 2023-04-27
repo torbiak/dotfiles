@@ -747,6 +747,10 @@ function! GoAndSearch()
     let saved_unnamed_reg = @"
     normal yi{
     let m = matchlist(@", '\v([^:]+):(.*)')
+    if len(m) == 0
+        echohl ErrorMsg | echo 'unexpected link format' | echohl None
+        return
+    endif
     let filename = m[1]
     let regex = m[2]
     exe 'new ' . filename
