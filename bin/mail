@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+shopt -s nullglob
+
+maildirs=(~/mail/{new,cronic})
+cmd=${1:?No command given}
+case "$cmd" in
+ls) find "${maildirs[@]}" -type f -printf "%f\n" | column;;
+rm)
+    findcmd=(find "${maildirs[@]}" -type f)
+    "${findcmd[@]}" -printf "%f\n" | column
+    "${findcmd[@]}" -exec rm -I {} +
+;;
+head) find "${maildirs[@]}" -type f -printf '# %f\n' -exec sed '10q' {} \; ;;
+cat) find "${maildirs[@]}" -type f -printf '\n# %f\n' -exec cat {} \; | less -F;;
+*) echo "bad command: $cmd" 1>&2; exit 1;;
+esac
+statusbar once

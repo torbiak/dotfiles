@@ -30,7 +30,7 @@ once() {
     }
     [[ $pct_charge -lt 20 && "$acpi" != *Charging* ]] && ding
 
-    new_msgs=$(find ~/mail/new -type f | wc -l)
+    new_msgs=$(find ~/mail/{cronic,new} -type f | wc -l)
     [[ "$new_msgs" -gt 0 ]] && msg+=" | $new_msgs new msgs"
 
     loadavg=$(awk '{if ($1 > 2) {print $1}}' /proc/loadavg)
