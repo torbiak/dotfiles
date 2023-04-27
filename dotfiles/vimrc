@@ -609,6 +609,12 @@ function! SnakeToCamel()
     s/\v_([a-z])/\u\1/g
 endfunction
 
+function! ArgsOnSeparateLines()
+    let base_indent = matchstr(getline('.'), '\v^[ \t]*')
+    let indent = base_indent . repeat(' ', shiftwidth())
+    silent s/\v, /\=",\n" . indent/g
+endfunction
+
 " Join lines, trimming whitespace from all but the first.
 function! JoinNoWhitespace() range
     let pos = getpos('.')
