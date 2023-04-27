@@ -657,7 +657,7 @@ vn <leader>J :JoinNoWhitespace<cr>
 "
 " calling this:
 "
-"   %Extract('\vfoo\((\w+), (\w+)', {m -> m[1] . m[2])})
+"   %cal Extract('\vfoo\((\w+), (\w+)', {m -> m[1] . m[2])})
 "
 " results in @" being set to:
 "
