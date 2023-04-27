@@ -1082,7 +1082,7 @@ function! Man(man_args, win_mods)
     " pipe in the formatted manpage
     exe printf('silent 0r !MANWIDTH=%d man %s', winwidth(0), a:man_args)
     " set a descriptive name
-    exe printf('silent file man %s', a:man_args)
+    exe printf('silent file %s', fnameescape('man ' . a:man_args))
     0
 endfunction
 com! -nargs=+ Man call Man(<q-args>, <q-mods>)
