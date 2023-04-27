@@ -452,8 +452,8 @@ endfunction
 command! -nargs=+ -complete=command RedirToTab call RedirToTab(<q-args>)
 
 " Insert using CTRL-R and the expression register.
-function! Date()
-    return strftime("%Y-%m-%d %a")
+function! Date(days_offset=0)
+    return strftime("%Y-%m-%d %a", localtime() + 86000 * a:days_offset)
 endfunction
 
 function! Timestamp()
