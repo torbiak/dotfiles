@@ -31,7 +31,7 @@ alias j='jobs'
 alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
 alias irssi='TERM=screen-256color irssi'
 alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
+alias egrep='grep -E --color=auto'
 alias dfh='df -hT -x tmpfs -x devtmpfs'
 alias ipb='ip -br'
 alias sudoh='sudo --preserve-env=HOME'
@@ -136,7 +136,7 @@ ssh-agent-init() {
 if [[ -f "${SSH_ENV}" ]]; then
     . "${SSH_ENV}" >/dev/null
     # ps ${SSH_AGENT_PID} doesn't work under cywgin
-    ps -e -o pid,comm | egrep " *$SSH_AGENT_PID +ssh-agent\$" >/dev/null ||
+    ps -e -o pid,comm | grep -E " *$SSH_AGENT_PID +ssh-agent\$" >/dev/null ||
     echo 'stale ssh-agent env'
 fi
 
