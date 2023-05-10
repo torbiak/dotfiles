@@ -479,6 +479,10 @@ function! Date(...)
     return strftime("%Y-%m-%d %a", localtime() + 86000 * days_offset)
 endfunction
 
+function! Today()
+    return Date(0)
+endfunction
+
 function! Timestamp()
     return strftime("%Y-%m-%dT%H:%M")
 endfunction
