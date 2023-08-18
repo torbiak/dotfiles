@@ -31,9 +31,6 @@
 [submodule "dotfiles/vim/bundle/nim.vim"]
 	path = dotfiles/vim/bundle/nim.vim
 	url = git://github.com/zah/nim.vim.git
-[submodule "dotfiles/vim/bundle/rust.vim"]
-	path = dotfiles/vim/bundle/rust.vim
-	url = https://github.com/rust-lang/rust.vim.git
 [submodule "dotfiles/vim/bundle/vim-abolish"]
 	path = dotfiles/vim/bundle/vim-abolish
 	url = https://github.com/tpope/vim-abolish.git
