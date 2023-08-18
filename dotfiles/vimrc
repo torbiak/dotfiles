@@ -1174,14 +1174,21 @@ augroup vimrc
     autocmd Filetype python setlocal foldmethod=indent foldnestmax=2 foldlevel=99
     au Filetype make setlocal sts=4 sw=4 ts=4 noet
 
+    autocmd Filetype rust let &l:makeprg = 'cargo build'
+    autocmd Filetype rust setlocal nosi  " smartindent was being enabled despite filtype indent:OFF
+
     " Abbreviations
     autocmd FileType java iabbrev <buffer> sop System.out.println
     autocmd FileType rust iabbrev <buffer> pl println!
 
     " Key bindings to run filetype-specific unit tests and syntax checks
-    autocmd Filetype sh nn <leader>my :call Make('shellcheck -f gcc %')<cr>
-    autocmd Filetype python nn <leader>my :call Make('make mypy')<cr>
+    autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %')<cr>
+    autocmd Filetype python nn <buffer> <leader>my :call Make('make mypy')<cr>
 
+    autocmd Filetype rust nn <buffer> <leader>mu :call Make('cargo test')<cr>
+    autocmd Filetype rust nn <buffer> <leader>mU :call Make('cargo test --bin ' . expand('%:t:r'))<cr>
+    autocmd Filetype rust nn <buffer> <leader>my :call Make('cargo clippy')<cr>
+    autocmd Filetype rust nn <buffer> <leader>mr :call PipeShellToScratch('*cargo run*', 'cargo run --bin ' . expand('%:t:r'), '')<cr>
     " Markdown
     au FileType markdown setlocal foldexpr=MarkdownLevel()
     au FileType markdown setlocal foldmethod=expr
