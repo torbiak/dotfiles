@@ -1112,6 +1112,32 @@ function! Man(man_args, win_mods)
 endfunction
 com! -nargs=+ Man call Man(<q-args>, <q-mods>)
 
+" Display shell command output in a scratch window.
+"
+" win_mods control window splitting and placement and can be:
+"     [vertical] [leftabove|rightbelow|topleft|botright]
+function! PipeShellToScratch(buffer_name, cmd, win_mods) abort
+    let saved_win = winnr()
+    let windows = win_findbuf(bufnr(a:buffer_name))
+    if len(windows) > 0
+        " Move the cursor to the first window with our buffer name.
+        exe win_id2win(windows[0]) . 'wincmd w'
+        silent 0,$d  " Clear the window.
+    else
+        exe printf('%s new', a:win_mods)
+        " Set the buffer name.
+        exe printf('silent file %s', fnameescape(a:buffer_name))
+        setlocal bufhidden=unload " unload buf when no longer displayed
+        setlocal buftype=nofile   " buffer is not related to any file
+        setlocal nowrap           " don't soft-wrap
+        setlocal nobuflisted      " don't show up in the buffer list
+    endif
+    " pipe in the output from the shell command
+    exe printf('silent 0r !%s', a:cmd)
+    " Go back to the saved window
+    exe saved_win . 'wincmd w'
+endfunction
+com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-mods>)
 
 " Filetypes
 " =========
