@@ -879,16 +879,23 @@ function! Make(makeprg)
 endfunction
 function! MakeX(makeprg, errorformat, jump)
     let jump = a:jump == 0 ? '!' : ''
+    let errorformat_orig = &l:errorformat
     if a:errorformat != v:none
         let &l:errorformat = a:errorformat
     endif
+    let makeprg_orig = &l:makeprg
     let &l:makeprg = a:makeprg
-    exe printf('make%s', jump)
+    try
+        exe printf('make%s', jump)
+    finally
+        let &l:errorformat = errorformat_orig
+        let &l:makeprg = makeprg_orig
+    endtry
 endfunction
 " "Make" the current file with the given "compiler".
 com! -nargs=* Mf :call Make(<q-args> . ' %')
 com! -nargs=* Make :call Make(<q-args>)
-nn <leader>mm :call Make('make')<cr>
+nn <leader>mm :call Make(&makeprg)<cr>
 
 com! MakeTest call Make('make test')
 nn <leader>mu :MakeTest<cr>
@@ -906,9 +913,16 @@ function! PylintGit(...)
     for path in pathsFromRepoRoot
         call add(paths, strpart(path, prefixLength))
     endfor
+    let makeprg_orig = &l:makeprg
     let &l:makeprg = "pylint -f parseable -i y -r n " . join(paths, ' ')
+    let efm_orig = &l:efm
     let &l:efm = "%f:%l: %m"
-    make!
+    try
+        make!
+    finally
+        let &l:makeprg = makeprg_orig
+        let &l:efm = efm_orig
+    endtry
 endfunction
 command! -nargs=* Pg call PylintGit('<args>')
 
