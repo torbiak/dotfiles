@@ -46,8 +46,13 @@ endif
 " Display
 syntax enable
 set guioptions='cM'
-set t_Co=16
+set t_Co=16  " Use terminal color palette instead of the broader 256-color space.
 set background=dark
+augroup my_colorscheme
+    au!
+    " Always use a transparent background
+    au ColorScheme * hi Normal ctermbg=NONE
+augroup END
 colorscheme pablo
 set list
 set listchars=tab:»\ ,trail:·,
@@ -228,10 +233,6 @@ endfunction
 
 " Spelling
 " ========
-" The default red background is frequently illegible. Just do reverse instead.
-highlight clear SpellBad
-highlight SpellBad term=reverse cterm=reverse gui=undercurl guisp=Red
-
 function! ToggleSpell()
     if !&spell
         set spellcapcheck=
