@@ -1,16 +1,16 @@
-"amixer set Master toggle; amixer set Headphone unmute; amixer set Speaker unmute; statusbar once"
+"pamixer -t; statusbar once"
     XF86AudioMute
 
-"amixer set Master 5%-; statusbar once"
+"pamixer -d 5; statusbar once"
     XF86AudioLowerVolume
 
-"amixer set Master 5%+; statusbar once"
+"pamixer -i 5; statusbar once"
     XF86AudioRaiseVolume
 
-"sudo light -s sysfs/backlight/intel_backlight -U 10"
+"brightnessctl s 5%-"
     XF86MonBrightnessDown
 
-"sudo light -s sysfs/backlight/intel_backlight -A 10"
+"brightnessctl s 5%+"
     XF86MonBrightnessUp
 
 "xclip -o -selection primary | xclip -selection clipboard"
@@ -18,6 +18,3 @@
 
 "slock"
     Mod4 + Shift + l
-
-"touch ~/.last_workout; statusbar once"
-    Mod4 + Shift + w
