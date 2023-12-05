@@ -42,7 +42,7 @@ if [[ $# -eq 3 && -v COMP_TYPE ]]; then
     exit 0
 fi
 
-usage="jtex [<options>] <topic>
+usage="jteg [<options>] <topic>
 
 options:
     -h  show help
