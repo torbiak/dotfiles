@@ -1206,13 +1206,13 @@ augroup vimrc
     autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %')<cr>
     autocmd Filetype python nn <buffer> <leader>my :call Make('make mypy')<cr>
     " Rust
-    autocmd Filetype rust nn <buffer> <leader>mc :call Make('cargo check')<cr>
+    autocmd Filetype rust nn <buffer> <leader>mc :call Make('cargo check --tests')<cr>
     autocmd Filetype rust nn <buffer> <leader>mu :call Make('cargo test')<cr>
     autocmd Filetype rust nn <buffer> <leader>mU :call Make('cargo test --bin ' . expand('%:t:r'))<cr>
     autocmd Filetype rust nn <buffer> <leader>my :call Make('cargo clippy')<cr>
     autocmd Filetype rust nn <buffer> <leader>mY :call Make('./lint')<cr>
     autocmd Filetype rust nn <buffer> <leader>mr :terminal cargo run<cr>
-    autocmd Filetype rust nn <buffer> <leader>mR :exe 'terminal cargo run --bin ' . expand('%:t:r')
+    autocmd Filetype rust nn <buffer> <leader>mR :exe 'terminal cargo run --bin ' . expand('%:t:r')<cr>
 augroup END
 
 
