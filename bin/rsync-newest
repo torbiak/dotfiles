@@ -1,0 +1,69 @@
+#!/bin/bash
+set -eu
+
+sync() {
+    local host=${1:?No host given}; shift
+    local src=${1:?No src dir given}; shift
+    local dst=${1:?No dst dir given}; shift
+    local bytes=${1:?No byte capacity given}; shift
+    ssh "$host" 'bash -s' "$src" >"$tmpdir/metadata" <<'EOF' || return 1
+find "$1" -type f -printf '%Ts\t%s\t%P\n'
+EOF
+
+    sort -k 1nr -k 2n "$tmpdir/metadata" | awk -F $'\t' -v cap="$bytes" '{
+        total_size += $2
+        if (total_size > cap) {
+            exit 0
+        }
+        print $3
+    }' | sort >"$tmpdir/new" &&
+    find "$dst" -type f -printf "%P\n" | sort >"$tmpdir/existing" &&
+    comm -13 "$tmpdir/new" "$tmpdir/existing" >"$tmpdir/remove" &&
+    comm -23 "$tmpdir/new" "$tmpdir/existing" >"$tmpdir/copy" ||
+    return 1
+
+    {
+        sed 's/^/x /' "$tmpdir/remove"
+        sed 's/^/> /' "$tmpdir/copy"
+    } | less
+
+    read -p "Continue? [yN] "
+    [[ "$REPLY" == y ]] || exit 0
+
+    (
+        cd "$dst"
+        xargs -r -d $'\n' rm <"$tmpdir/remove"
+        find . -type d -empty -exec rm -d {} +
+    )
+    rsync -tiz --files-from="$tmpdir/copy" -R "$host:$src" "$dst"
+}
+
+usage="\
+usage: rsync-newest <host:src> <dst> <capacity>
+
+capacity is parsed by numfmt, so can use SI or IEC suffixes like K, M, G, Ki,
+Mi, Gi, etc.
+"
+while getopts "h" opt; do
+    case "$opt" in
+    h) echo "$usage"; exit 0;;
+    *) exit 1;;
+    esac
+done
+shift $((OPTIND-1))
+[[ $# -eq 3 ]] || {
+    echo "$usage" >&2
+    exit 1
+}
+raw_src=$1; shift
+dst=$1; shift
+raw_capacity=$1; shift
+
+host=${raw_src%%:*}
+src=${raw_src#*:}
+capacity=$(numfmt --from=auto "$raw_capacity")
+
+tmpdir=$(mktemp -dt rsync-newest.XXXXXX) || exit 1
+trap 'rm -rf "$tmpdir"' EXIT
+
+sync "$host" "$src" "$dst" "$capacity"
