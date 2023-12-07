@@ -123,7 +123,7 @@ once
 cont
     update statusbar continuously
 todo [-s] <msg>
-    add a short message to display in the statusbar. 
+    add a short message to display in the statusbar.
     -s
         play a sound. The sound can be useful when this command is invoked via
         cron or at.
