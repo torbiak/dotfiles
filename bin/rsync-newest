@@ -33,7 +33,7 @@ EOF
     (
         cd "$dst"
         xargs -r -d $'\n' rm <"$tmpdir/remove"
-        find . -type d -empty -exec rm -d {} +
+        find . -mindepth 1 -type d -empty -exec rm -d {} +
     )
     rsync -tiz --files-from="$tmpdir/copy" -R "$host:$src" "$dst"
 }
