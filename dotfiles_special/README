@@ -1,0 +1,2 @@
+The dotfiles_special dir is for dotfiles that can't be installed in the usual
+way. They'll generally have a corresponding script under install.d/.
