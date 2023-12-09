@@ -1,0 +1,6 @@
+pausing=2
+utf8=true
+subfont-text-scale=2
+
+# avoid `connect: no such file` and `do_connect()` messages
+nolirc=true
