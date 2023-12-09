@@ -27,7 +27,7 @@ case $OSTYPE in
     linux-gnu | cygwin) alias ls='ls --color=auto';;
 esac
 alias l='ls -F'
-alias ll='ls -l'
+alias ll='ls -lh'
 alias j='jobs'
 alias ocaml='ledit -x -h ~/.ocaml_history ocaml'
 alias irssi='TERM=screen-256color irssi'
