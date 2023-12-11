@@ -1,4 +1,4 @@
-PATH=$HOME/bin:$HOME/dotfiles/bin:$HOME/code/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
+PATH=$HOME/bin:$HOME/dotfiles/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
 
 [[ "$-" == *i* ]] || return
 
@@ -16,7 +16,6 @@ export LS_COLORS='di=1;35:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
 export PAGER=less
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
-export GOPATH=$HOME/code/go
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 export BC_ENV_ARGS="-l $HOME/.bcrc"
 export DISPLAY=:0
