@@ -38,6 +38,7 @@ alias sudoh='sudo --preserve-env=HOME'
 alias python3='python3 -q'
 alias unp='unp -U'
 alias feh='feh -.'
+alias ncdu='ncdu --color off'
 
 shopt -s histappend checkwinsize cmdhist extglob failglob cdable_vars
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
