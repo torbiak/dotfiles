@@ -1,0 +1,1 @@
+OPTIONS=color,altmeta,showexp,pickup_types:$?!/="+,pickup_thrown,time,autoquiver
