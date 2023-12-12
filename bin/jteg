@@ -22,6 +22,16 @@ eg:
 EOF
 }
 
+xargs() {
+    cat <<'EOF'
+For newline-delimited args:
+
+    xargs -rd '\n'
+    -r  don't run if empty
+    -d  specify delimiter
+EOF
+}
+
 # bash tab completion.
 # Recommended completion spec: complete -C statusbar statusbar sb
 bash_tab_completion() {
