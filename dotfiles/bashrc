@@ -165,6 +165,11 @@ up() {
     cd "${BASH_REMATCH[0]}"
 }
 
+# Lines2Args: give piped lines as args to the given command.
+l2a() {
+    xargs -rd '\n' "$@"
+}
+
 # Create a new tmux window with the same working directory as the current shell.
 # I prefer to think of splitting vertically as using a vertical splitter, as in
 # vim and most other tools, not as splitting the vertical space as in tmux, so
