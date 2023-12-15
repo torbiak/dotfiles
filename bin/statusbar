@@ -77,8 +77,12 @@ todo() {
     done
     shift $((OPTIND-1))
     local msg=${1:?No msg given}
-    touch "$msg_dir/$msg"
-    once
+
+    mkdir -p "$msg_dir" &&
+    touch "$msg_dir/$msg" &&
+    once ||
+    return 1
+
     if [[ "$sound" ]]; then
         paplay ~/dotfiles/sounds/xylofon.wav &
     fi
