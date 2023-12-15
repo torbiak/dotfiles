@@ -28,7 +28,12 @@ once() {
     ((pct_charge < 30)) && {
         [[ "$acpi" = *Charging* ]] && msg+=" | BATTERY LOW" || msg+=" | BATTERY DISCHARGING"
     }
-    [[ $pct_charge -lt 20 && "$acpi" != *Charging* ]] && ding
+    if [[ "$pct_charge" -lt 20 && "$acpi" != *Charging* && ! -e ~/.drain_me ]]; then
+        ding &
+    elif [[ "$pct_charge" -le 5 && "$acpi" != *Charging* ]]; then
+        [[ -e ~/.drain_me ]] && rm ~/.drain_me
+        ding &
+    fi
 
     new_msgs=$(find ~/mail/{cronic,new} -type f | wc -l)
     [[ "$new_msgs" -gt 0 ]] && msg+=" | $new_msgs new msgs"
