@@ -383,7 +383,7 @@ edmv() {
 
 # note commit push
 ncp() {
-    git commit -am "update from $(hostname)" && git push
+    git commit -am "update from $HOSTNAME" && git push
 }
 
 timer() {
