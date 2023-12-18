@@ -333,6 +333,13 @@ sat() {
     fi
 }
 
+# edit binary in PATH
+ebin() {
+    local path
+    path=$(type -p "${1:?binary not given}") || return 1
+    "$EDITOR" "$path"
+}
+
 # Generate a script to rename/remove a bunch of files.
 #
 # Edit a list of destinations in an editor, then review the generated script
