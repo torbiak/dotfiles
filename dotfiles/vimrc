@@ -580,7 +580,7 @@ function! Table(sep, opts) range
         let fields = []
         for [i, field] in util#enumerate(split(line, a:sep))
             let field = substitute(field, ' *(.{-}) *', '\1', "")
-            if get(alignment, i, i == 0 ? 'l' : 'r') == 'l'
+            if get(alignment, i, 'l') == 'l'
                 let format = printf('%%-%ds', max_len[i])
             else
                 let format = printf('%%%ds', max_len[i])
