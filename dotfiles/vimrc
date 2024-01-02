@@ -52,6 +52,11 @@ augroup my_colorscheme
     au!
     " Always use a transparent background
     au ColorScheme * hi Normal ctermbg=NONE
+
+    au ColorScheme * hi DiffAdd ctermfg=DarkGreen ctermbg=Black
+    au ColorScheme * hi DiffChange ctermfg=DarkYellow ctermbg=Black
+    au ColorScheme * hi DiffDelete ctermfg=DarkRed ctermbg=Black
+    au ColorScheme * hi DiffText ctermfg=DarkYellow ctermbg=Blue
 augroup END
 colorscheme pablo
 set list
