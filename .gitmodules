@@ -3,7 +3,7 @@
 	url = git@github.com:torbiak/probe.git
 [submodule "dotfiles/vim/bundle/fugitive"]
 	path = dotfiles/vim/bundle/fugitive
-	url = git://github.com/tpope/vim-fugitive.git
+	url = https://github.com/tpope/vim-fugitive.git
 [submodule "dotfiles/vim/bundle/gundo.vim"]
 	path = dotfiles/vim/bundle/gundo.vim
 	url = https://github.com/sjl/gundo.vim.git
@@ -30,7 +30,7 @@
 	url = https://github.com/tpope/vim-surround.git
 [submodule "dotfiles/vim/bundle/nim.vim"]
 	path = dotfiles/vim/bundle/nim.vim
-	url = git://github.com/zah/nim.vim.git
+	url = https://github.com/zah/nim.vim.git
 [submodule "dotfiles/vim/bundle/vim-abolish"]
 	path = dotfiles/vim/bundle/vim-abolish
 	url = https://github.com/tpope/vim-abolish.git
