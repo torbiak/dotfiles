@@ -128,8 +128,6 @@ nn <c-k> <c-w>k
 " Paste yanks.
 nn <leader>p "0p
 nn <leader>P "0P
-" Yank to the clipboard.
-nn <leader>$ "+y$
 
 " Tab widths
 nn <leader>8 :set sts=8 ts=8 sw=8 et<cr>
@@ -1087,6 +1085,8 @@ endfunction
 " connection to X has been broken.
 nnoremap <leader>c :let g:PipeOpCmd = 'xsel -ib'<cr>:set operatorfunc=PipeOp<cr>g@
 nnoremap <leader>C :let g:PipeOpCmd = 'xsel -ib'<cr>V:<c-u>call PipeOp(visualmode())<cr>
+" Copy to end of line, not including the newline.
+nnoremap <leader>$ :let g:PipeOpCmd = 'xsel -ib'<cr>vg_:<c-u>call PipeOp(visualmode())<cr>
 vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode())<cr>
 nnoremap <leader>* :call append(line('.'), systemlist('xsel -op'))<cr>
 nnoremap <leader>+ :call append(line('.'), systemlist('xsel -ob'))<cr>
