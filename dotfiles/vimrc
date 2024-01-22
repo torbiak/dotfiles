@@ -160,6 +160,8 @@ nn <leader>y :let @y = @"<cr>
 set formatoptions+=jq
 " Don't insert two spaces after sentences when joining lines.
 set nojoinspaces
+" Don't use Q for Ex mode, use it for formatting.
+noremap Q gq
 
 
 " Indenting
