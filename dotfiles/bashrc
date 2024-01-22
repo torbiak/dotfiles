@@ -436,8 +436,22 @@ rgl() {
 
 clipargs() { xsel -ib <<<"$*"; }
 
-# Pipe the --help output of a command to less.
-hl() { "$@" --help 2>&1 | less; }
+# Try to pipe the help/usage of a program to less.
+h() {
+    # Try --help|-h and look at both stdout and stderr, since some programs
+    # don't have help options but print help on stderr if an unsupported option
+    # is given. Close stdin so programs don't just wait for input.
+    # Some interesting cases:
+    # - lsof has -h but not --help
+    # - lsmod doesn't support --help|-h
+    local usage rc
+    usage=$("$1" --help 0<&- 2>&1) || usage=$("$1" -h 0<&- 2>&1)
+    rc=$?
+    [[ "$rc" -eq 127 ]] && echo "$usage" && return 1  # command not found
+    [[ -z "$usage" ]] && return 1
+    echo "$usage" 0<&- | less
+    ((rc != 0)) && echo "$1 exited with $rc" >&2
+}
 
 redline() {
     local pattern=${1:?No pattern given}; shift

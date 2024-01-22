@@ -77,3 +77,4 @@ complete -C statusbar statusbar sb
 complete -C jteg jteg
 complete -C atj atj
 complete -C wifi wifi
+complete -c command h
