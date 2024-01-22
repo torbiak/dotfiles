@@ -457,9 +457,9 @@ redline() {
     local pattern=${1:?No pattern given}; shift
     awk -v pattern="$pattern" '{
         if (match($0, pattern)) {
-            print "\033[31;1m" $0
+            print "\033[31m" $0 "\033[0m"
         } else {
-            print "\033[0m" $0
+            print $0
         }
     }' "$@"
 }
