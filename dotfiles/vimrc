@@ -46,9 +46,9 @@ endif
 " Display
 syntax enable
 set guioptions='cM'
-set t_Co=16  " Use terminal color palette instead of the broader 256-color space.
+set t_Co=16  " Use terminal color palette instead of 8 or 24-bit.
 set background=dark
-augroup my_colorscheme
+augroup color_mods
     au!
     " Always use a transparent background
     au ColorScheme * hi Normal ctermbg=NONE
