@@ -60,7 +60,7 @@ augroup color_mods
     au ColorScheme * hi DiffAdd ctermfg=DarkGreen ctermbg=Black
     au ColorScheme * hi DiffChange ctermfg=DarkYellow ctermbg=Black
     au ColorScheme * hi DiffDelete ctermfg=DarkRed ctermbg=Black
-    au ColorScheme * hi DiffText ctermfg=DarkYellow ctermbg=Blue
+    au ColorScheme * hi DiffText ctermfg=Black ctermbg=DarkYellow
 augroup END
 colorscheme pablo
 set list
