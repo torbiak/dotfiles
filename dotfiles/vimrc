@@ -46,12 +46,16 @@ endif
 " Display
 syntax enable
 set guioptions='cM'
-set t_Co=16  " Use terminal color palette instead of 8 or 24-bit.
+set t_Co=16  " Use terminal color palette instead of 8-bit color.
 set background=dark
 augroup color_mods
     au!
-    " Always use a transparent background
-    au ColorScheme * hi Normal ctermbg=NONE
+    " Use the default background color for dark 4-bit schemes.
+    au ColorScheme * {
+        if str2nr(&t_Co) == 16 && &background ==# 'dark'
+            hi Normal ctermbg=NONE
+        endif
+    }
 
     au ColorScheme * hi DiffAdd ctermfg=DarkGreen ctermbg=Black
     au ColorScheme * hi DiffChange ctermfg=DarkYellow ctermbg=Black
