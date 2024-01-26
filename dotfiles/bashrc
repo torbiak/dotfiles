@@ -485,7 +485,7 @@ rsi() {
 
 [ -e ~/.bash_completion ] && . ~/.bash_completion
 
-[[ -e ~/.fzf_key_bindings.bash ]] && . ~/.fzf_key_bindings.bash
+[[ -e ~/.fzf/key_bindings.bash ]] && . ~/.fzf/key_bindings.bash
 export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
 
 [ -e ~/.bashrc.local ] && . ~/.bashrc.local
