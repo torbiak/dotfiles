@@ -50,17 +50,17 @@ set t_Co=16  " Use terminal color palette instead of 8-bit color.
 set background=dark
 augroup color_mods
     au!
-    " Use the default background color for dark 4-bit schemes.
+    " Use the default fg/bg colors for dark 4-bit schemes.
     au ColorScheme * {
         if str2nr(&t_Co) == 16 && &background ==# 'dark'
-            hi Normal ctermbg=NONE
+            hi Normal ctermfg=NONE ctermbg=NONE
         endif
     }
 
-    au ColorScheme * hi DiffAdd ctermfg=DarkGreen ctermbg=Black
-    au ColorScheme * hi DiffChange ctermfg=DarkYellow ctermbg=Black
-    au ColorScheme * hi DiffDelete ctermfg=DarkRed ctermbg=Black
-    au ColorScheme * hi DiffText ctermfg=Black ctermbg=DarkYellow
+    au ColorScheme * hi DiffAdd cterm=NONE ctermfg=DarkGreen ctermbg=DarkGrey
+    au ColorScheme * hi DiffChange cterm=NONE ctermfg=DarkYellow ctermbg=DarkGrey
+    au ColorScheme * hi DiffDelete cterm=NONE ctermfg=DarkRed ctermbg=DarkGrey
+    au ColorScheme * hi DiffText cterm=NONE ctermfg=Black ctermbg=DarkYellow
 augroup END
 colorscheme pablo
 set list
