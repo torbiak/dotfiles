@@ -4,7 +4,11 @@ for ((i=0; i < ${1:-1}; i++)); do
     if which paplay &>/dev/null; then
         # Use paplay since it lets us give a volume.
         # Volume is in [0, 65535].
-        paplay --volume 45500 "$sound" &>/dev/null
+        case "$HOSTNAME" in
+        jair) vol=65500;;
+        *) vol=45500;;
+        esac
+        paplay --volume "$vol" "$sound" &>/dev/null
     else
         aplay "$sound" &>/dev/null
     fi
