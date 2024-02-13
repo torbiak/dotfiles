@@ -48,21 +48,26 @@ syntax enable
 set guioptions='cM'
 set t_Co=16  " Use terminal color palette instead of 8-bit color.
 set background=dark
+function ModColorScheme()
+    " Customize colorscheme when using 4-bit color.
+    if str2nr(&t_Co) == 16 && g:colors_name !=# 'forbit'
+        hi Normal ctermfg=NONE ctermbg=NONE cterm=NONE
+
+        hi Visual ctermfg=black ctermbg=cyan cterm=NONE
+        hi Search ctermfg=black ctermbg=darkgreen cterm=NONE
+        hi IncSearch ctermfg=black ctermbg=lightyellow cterm=bold
+
+        hi DiffAdd ctermfg=darkgreen ctermbg=black cterm=NONE
+        hi DiffChange ctermfg=darkyellow ctermbg=black cterm=NONE
+        hi DiffDelete ctermfg=darkred ctermbg=black cterm=NONE
+        hi DiffText ctermfg=black ctermbg=darkyellow cterm=bold
+    endif
+endfunction
 augroup color_mods
     au!
-    " Use the default fg/bg colors for dark 4-bit schemes.
-    au ColorScheme * {
-        if str2nr(&t_Co) == 16 && &background ==# 'dark'
-            hi Normal ctermfg=NONE ctermbg=NONE
-        endif
-    }
-
-    au ColorScheme * hi DiffAdd cterm=NONE ctermfg=DarkGreen ctermbg=DarkGrey
-    au ColorScheme * hi DiffChange cterm=NONE ctermfg=DarkYellow ctermbg=DarkGrey
-    au ColorScheme * hi DiffDelete cterm=NONE ctermfg=DarkRed ctermbg=DarkGrey
-    au ColorScheme * hi DiffText cterm=NONE ctermfg=Black ctermbg=DarkYellow
+    au ColorScheme * call ModColorScheme()
 augroup END
-colorscheme pablo
+colorscheme forbit
 set list
 set listchars=tab:»\ ,trail:·,
 
@@ -815,6 +820,17 @@ function! GlobEach(patterns)
     endfor
     return files
 endfunction
+
+function! SynGroup()
+    let l:s = synID(line('.'), col('.'), 1)
+    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+endfun
+nn <leader>5 :call SynGroup()<cr>
+
+function! SynStack()
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+nn <leader>6 :call SynStack()<cr>
 
 " Plugin configuration
 " ====================
