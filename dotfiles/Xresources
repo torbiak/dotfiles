@@ -17,7 +17,8 @@
 *color7: #818a94
 *color15: #9aa4ad
 
-xterm*font: -*-terminus-medium-*-*-*-14-*-*-*-*-*-*-*
+xterm*faceName: Go Mono
+xterm*faceSize: 13
 XTerm.VT100.eightBitInput: false
 XTerm*bellIsUrgent: true
 
