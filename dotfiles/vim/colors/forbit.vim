@@ -39,7 +39,7 @@ hi WarningMsg ctermfg=darkred ctermbg=NONE cterm=NONE
 hi SignColumn ctermfg=lightcyan ctermbg=black cterm=NONE
 hi ColorColumn ctermfg=white ctermbg=darkgrey cterm=NONE
 hi FoldColumn ctermfg=NONE ctermbg=black cterm=NONE
-hi Folded ctermfg=lightblue ctermbg=NONE cterm=NONE
+hi Folded ctermfg=darkblue ctermbg=NONE cterm=bold
 hi CursorColumn ctermfg=NONE ctermbg=NONE cterm=underline
 hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
 hi CursorLineNr ctermfg=darkyellow ctermbg=NONE cterm=underline
