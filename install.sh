@@ -74,7 +74,8 @@ cp-to-repo() {
 }
 
 special() {
-    install_cmusrc ||
+    install_cmusrc &&
+    install_fontconfig ||
     return 1
 }
 
@@ -82,6 +83,12 @@ install_cmusrc() {
     local cmus_config=~/.cmus
     mkdir -p "$cmus_config" &&
     ln -s "$abs_repo_path/dotfiles_special/cmusrc" "$cmus_config/rc"
+}
+
+install_fontconfig() {
+    local fontconfig=~/.config/fontconfig
+    mkdir -p "$fontconfig" &&
+    ln -s "$abs_repo_path/dotfiles_special/fonts.conf" "$fontconfig/fonts.conf"
 }
 
 
