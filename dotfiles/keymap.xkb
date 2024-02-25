@@ -1,0 +1,32 @@
+// Following the approach at https://wiki.archlinux.org/title/X_keyboard_extension#Local_XKB_folder
+xkb_keymap {
+xkb_keycodes {
+    include "evdev+aliases(qwerty)"
+};
+xkb_types {
+    include "complete"
+};
+xkb_compat {
+    include "complete"
+};
+xkb_symbols {
+    include "pc"
+    include "us(basic)"
+    include "inet(evdev)"
+    include "ctrl(nocaps)"
+
+    // Compose/Multi_key
+    //
+    // See /usr/share/X11/locale/en_US.UTF-8/Compose for the list of available
+    // compositions. Compositions aren't defined for en_CA.UTF-8, so if your
+    // locale was automatically set to that you may want to change
+    // /etc/default/locale to en_US.UTF-8.
+    //
+    // 2013 Macbook Air: use the keyboard-backlight-down key.
+    key <I238>  { [Multi_key] };
+    // Asus UX435: use the weird "/A" Asus key
+    key <I248>  { [Multi_key] };
+    // Framework 13 Ryzen: use the Framework/F12 key.
+    key <I234> { [Multi_key] };
+};
+};
