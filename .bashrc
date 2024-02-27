@@ -464,6 +464,23 @@ redline() {
     }' "$@"
 }
 
+# Set the terminal's background color using the OSC 11 escape sequence,
+# supported by many xterm-influenced terminals. Useful for marking a terminal
+# as being for a remote machine or for root or something.
+bg-color() {
+    local raw_color=${1:?No color given}; shift
+    local color
+    case "$raw_color" in
+    \#*) color=$raw_color;;
+    r|red) color='#251515';;
+    g|green) color='#072824';;
+    b|blue) color='#101f2f';;
+    black) color='#000000';;
+    *) echo "unexpected color: $color" >&2; return 1;;
+    esac
+    echo -e "\e]11;$color\a"
+}
+
 # Run StdIn
 #
 # Run a script based on the output of a command after opening it for editing.
