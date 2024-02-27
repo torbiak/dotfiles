@@ -22,7 +22,7 @@ set_custom() {
     mk_tty_keymap &&
     sudo localectl set-keymap --no-convert jat &&
     sudo localectl set-x11-keymap --no-convert us '' '' ctrl:nocaps &&
-    xkbcomp "$repo_dir"/dotfiles/keymap.xkb "$DISPLAY" 2>/dev/null
+    xkbcomp "$repo_dir"/dx/keymap.xkb "$DISPLAY" 2>/dev/null
 }
 
 set_builtin() {

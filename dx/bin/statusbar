@@ -89,7 +89,7 @@ todo() {
     return 1
 
     if [[ "$sound" ]]; then
-        paplay ~/dotfiles/sounds/xylofon.wav &
+        paplay ~/dx/sounds/xylofon.wav &
     fi
 }
 

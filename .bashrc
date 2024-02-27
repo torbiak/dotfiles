@@ -1,4 +1,4 @@
-PATH=$HOME/bin:$HOME/dotfiles/bin:$HOME/code/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
+PATH=$HOME/bin:$HOME/dx/bin:$HOME/code/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
 
 [[ "$-" == *i* ]] || return
 

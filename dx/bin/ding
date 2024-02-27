@@ -1,5 +1,5 @@
 #!/bin/bash
-sound=~/dotfiles/sounds/phone-outgoing-calling.oga
+sound=~/dx/sounds/phone-outgoing-calling.oga
 for ((i=0; i < ${1:-1}; i++)); do
     if which paplay &>/dev/null; then
         # Use paplay since it lets us give a volume.
