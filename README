@@ -1,4 +1,0 @@
-INSTALL
-Clone somewhere under a home directory (git clone --recursive) and run
-install.sh to set up symlinks in $HOME. Existing configurations will be backed
-up to $HOME/dotfile_$DATE.bak.tar.gz.

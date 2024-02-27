@@ -1,4 +1,6 @@
-dotfiles/vim/.netrwhist
-*.swp
+*$py.class
+*.pyc
+*.sw[opn]
 *~
+.tags
 tags
