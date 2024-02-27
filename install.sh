@@ -1,18 +1,37 @@
 #!/bin/bash
 
-# Installs dotfiles to $HOME.
+# Install dotfiles to $HOME.
 # The dotfiles repo should be somewhere under $HOME.
-# If the repo directory is moved this script will need to be run again.
+# If the repo directory is moved symlinks will need to be recreated.
+#
+# Since moving to stow, we're using its terminology for "package", "target",
+# etc.
 
 set -euo pipefail
 
 # Create symlinks ($HOME -> $DOTFILES_REPO)
-symlink() {
-    delete_preexisting || return 1
-    for file in "${dotfiles[@]}"; do
-        ln -s "$home_to_repo_dir/dotfiles/${file#.}" "$HOME/$file" || return 1
-    done
+stow() {
+    inhibit_folding &&
+    command stow --dotfiles -t ~/ dotfiles
 }
+
+# Delete and remake symlinks, pruning obsolete ones.
+restow() {
+    # Inhibit folding will usually be unnecessary, but do it in case new
+    # nofold_dirs have been added since `stow` was run on this machine.
+    inhibit_folding &&
+    command stow -R --dotfiles -t ~/ dotfiles
+}
+
+inhibit_folding() {
+    # Inhibit folding for certain dirs that will also hold aliens.
+    local nofold_dirs=(
+        ~/.config
+        ~/.cmus
+    )
+    mkdir -p "${nofold_dirs[@]}"
+}
+
 
 delete_preexisting() {
     # Some rm implementations (eg BusyBox) fail when not given any args, so
@@ -20,8 +39,8 @@ delete_preexisting() {
     (("${#existing[@]}")) || return 0
     local f rc
     rc=0
-    for f in "${existing[@]}"; do
-        f=$HOME/$f
+    for ftgt in "${existing[@]}"; do
+        f=$HOME/$ftgt
         if [[ -d "$f" && ! -L "$f" ]]; then
             # Removing dirs from a home directory is scary.
             echo "Refusing to remove directory $f"
@@ -45,10 +64,11 @@ backup() {
 # use cp-to-repo and run `git diff`. rsync is used since there can be lots of
 # files under dotdirs, like plugins under .vim.
 cp-to-home() {
-    for file in "${dotfiles[@]}"; do
-        local trailing=""
-        [[ -d "${file#.}" ]] && trailing='/'
-        rsync -r "dotfiles/${file#.}$trailing" "$HOME/$file"
+    for fpkg in "${dotfiles[@]}"; do
+        local trailing="" ftgt
+        ftgt=$(p2t "$fpkg")
+        [[ -d "$fpkg" ]] && trailing='/'
+        rsync -r "dotfiles/$fpkg$trailing" "$HOME/$ftgt"
     done
 }
 
@@ -61,58 +81,46 @@ cp-to-repo() {
         echo "Repo has changes. Commit them before continuing."
         return 1
     fi
-    for file in "${dotfiles[@]}"; do
-        if [[ -L "$HOME/$file" ]]; then
-            echo "$file is a symlink. Do you really want to copy it to the repo?"
+    for fpkg in "${dotfiles[@]}"; do
+        local ftgt
+        ftgt=$(p2t "$fpkg")
+        if [[ -L "$HOME/$ftgt" ]]; then
+            echo "$ftgt is a symlink. Do you really want to copy it to the repo?"
             return 1
         fi
-        [[ -e "$HOME/$file" ]] || continue
+        [[ -e "$HOME/$ftgt" ]] || continue
         local trailing=""
-        [[ -d "$HOME/$file" ]] && trailing='/'
-        rsync -r "$HOME/$file$trailing" "dotfiles/${file#.}"
+        [[ -d "$HOME/$ftgt" ]] && trailing='/'
+        rsync -r "$HOME/$ftgt$trailing" "dotfiles/$fpkg"
     done
 }
 
-special() {
-    install_cmusrc &&
-    install_fontconfig ||
-    return 1
+# Package2Target, eg: dot-vimrc -> .vimrc
+p2t() {
+    local fpkg=${1:?No file given}; shift
+    echo "${fpkg/#dot-/.}"
 }
 
-install_cmusrc() {
-    local cmus_config=~/.cmus
-    mkdir -p "$cmus_config" &&
-    ln -s "$abs_repo_path/dotfiles_special/cmusrc" "$cmus_config/rc"
-}
-
-install_fontconfig() {
-    local fontconfig=~/.config/fontconfig
-    mkdir -p "$fontconfig" &&
-    ln -s "$abs_repo_path/dotfiles_special/fonts.conf" "$fontconfig/fonts.conf"
+# Target2Package, eg: .vimrc -> dot-vimrc
+t2p() {
+    local ftgt=${1:?No file given}; shift
+    echo "${ftgt/#./dot-}"
 }
 
 
-abs_repo_path=$(cd "${BASH_SOURCE%/*}"; pwd)
-if [[ "$abs_repo_path" != $HOME* ]]; then
-    # shellcheck disable=SC2016
-    echo 'dotfiles repo should be under $HOME' 1>&2
-    exit 1
-fi
-home_to_repo_dir=${abs_repo_path#$HOME/}
+# Array of dotfiles tracked in the repo.
+pushd dotfiles >/dev/null
+dotfiles=(*)
+popd >/dev/null
 
-# Array of dotfile basenames tracked in the repo.
-dotfiles=()
-for f in dotfiles/*; do
-    dotfiles+=(."${f#*/}")
-done
-
-# dotfile basenames that already exist in $HOME.
+# Existing files in $HOME that correspond to dotfiles in the repo.
 existing=()
-for file in "${dotfiles[@]}"; do
-    [[ -e "$HOME/$file" || -L "$HOME/$file" ]] && existing+=("$file")
+for fpkg in "${dotfiles[@]}"; do
+    ftgt=$(p2t "$fpkg")
+    [[ -e "$HOME/$ftgt" || -L "$HOME/$ftgt" ]] && existing+=("$ftgt")
 done
 
-usage="install.sh symlink|cp-to-home|cp-to-repo|special"
+usage="install stow|restow|cp-to-home|cp-to-repo"
 while getopts 'h' opt; do
     case "$opt" in
     h) echo "$usage"; exit 0;;
