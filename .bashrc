@@ -1,3 +1,6 @@
+# Disable warnings about non-constant sources.
+# shellcheck shell=bash disable=SC1090
+
 PATH=$HOME/bin:$HOME/dx/bin:$HOME/code/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
 
 [[ "$-" == *i* ]] || return
@@ -96,7 +99,9 @@ prompt1() {
 
     local git_sub_cmd="gitBranch"
     # Use the prompt function that ships with git if it's available.
-    local git_exec_path=$(git --exec-path) &&
+    local git_exec_path
+    # shellcheck disable=SC1091
+    git_exec_path=$(git --exec-path) &&
     [[ -f "$git_exec_path"/git-sh-prompt ]] &&
     . "$git_exec_path"/git-sh-prompt &&
     export GIT_PS1_SHOWDIRTYSTATE=yes &&
@@ -138,6 +143,7 @@ ssh-agent-init() {
 if [[ -f "${SSH_ENV}" ]]; then
     . "${SSH_ENV}" >/dev/null
     # ps ${SSH_AGENT_PID} doesn't work under cywgin
+    # shellcheck disable=SC2009
     ps -e -o pid,comm | grep -E " *$SSH_AGENT_PID +ssh-agent\$" >/dev/null ||
     echo 'stale ssh-agent env'
 fi
@@ -145,12 +151,12 @@ fi
 sec2hms() {
     local secs=${1:?No seconds given}
     local h m s
-    let 'h = secs / 3600'
-    let 'm = (secs % 3600) / 60'
-    let 's = secs % 60'
-    [[ $h -gt 0 ]] && printf ${h}h
-    [[ $m -gt 0 ]] && printf ${m}m
-    printf ${s}s
+    ((h = secs / 3600))
+    ((m = (secs % 3600) / 60))
+    ((s = secs % 60))
+    [[ $h -gt 0 ]] && echo -n "${h}h"
+    [[ $m -gt 0 ]] && echo -n "${m}m"
+    echo -n "${s}s"
 }
 
 # cd to a directory further up your path that contains the given pattern.
@@ -162,7 +168,7 @@ up() {
         return
     fi
     [[ "$PWD" =~ .*$1[^/]*/ ]] || return 1
-    cd "${BASH_REMATCH[0]}"
+    cd "${BASH_REMATCH[0]}" || return 1
 }
 
 # Lines2Args: give piped lines as args to the given command.
@@ -187,11 +193,12 @@ alias tv=tmux-vsplit
 # Delete from offset to end of history: histdel OFFSET
 # Delete from offset to another offset: histdel OFFSET OFFSET
 histdel() {
-    local last=$(history | tail -n 1 | awk '{print $1}')
+    local last
+    last=$(history | tail -n 1 | awk '{print $1}')
     local start=${1:-$last}
     local end=${2:-$((last+1))}
     while [[ $start -lt $end ]]; do
-        history -d $start
+        history -d "$start"
         end=$((end-1))
     done
 }
@@ -217,11 +224,11 @@ suf() {
 gitBranch() {
     branch_name=$(git symbolic-ref -q HEAD 2>/dev/null || true)
     branch_name=${branch_name##refs/heads/}
-    echo $branch_name
+    echo "$branch_name"
 }
 
 gitTrackingBranch() {
-    git rev-parse --symbolic-full-name --abbrev-ref @{upstream}
+    git rev-parse --symbolic-full-name --abbrev-ref '@{upstream}'
 }
 
 # git add rebase continue
@@ -232,9 +239,9 @@ garc() {
 
 # git submodule update
 gsu() {
+    local repoRoot
     repoRoot=$(git rev-parse --show-toplevel)
-    # execute in a subshell so we don't have to save the cwd
-    (cd $repoRoot; git submodule update)
+    (cd "$repoRoot" && git submodule update)
 }
 
 # git add -p
@@ -284,42 +291,45 @@ options:
 -c          sort by ctime
 -s          sort by size
 -r          reverse order (thus, "least")
--d          filter out non-directory files'
-
-
+-d          only use dirs
+-f          only use files'
     local OPTIND=0
     local ls_opts=()
-    local nsorts=0
-    local n=1
-    local only_dirs=0
-    while getopts ":hn:amcsrd" opt; do
+    local n=1 only_dirs only_files
+    while getopts ":hn:amcsrdf" opt; do
         case "$opt" in
         h) echo "$usage"; return 0;;
-        a) ls_opts+=(-u); let ++nsorts;;
-        m) let ++nsorts;;
-        c) ls_opts+=(-c); let ++nsorts;;
-        s) ls_opts+=(-S); let ++nsorts;;
-        r) ls_opts+=(-r); let ++nsorts;;
-        d) only_dirs=1;;
+        a) ls_opts+=(-u);;
+        m) ;;
+        c) ls_opts+=(-c);;
+        s) ls_opts+=(-S);;
+        r) ls_opts+=(-r);;
         n) n=$OPTARG;;
+        d) only_dirs=yes;;
+        f) only_files=yes;;
         *) echo "unexpected option: $opt" >&2; return 1;;
         esac
     done
-    [[ "$nsorts" -gt 1 ]] && {
-        echo "multiple sorts given" >&2
-        return 1
-    }
     shift $((OPTIND-1))
-    [[ $# -eq 0 ]] && set *
-    local IFS=$'\t\n'  # Needed for the only_dirs filtering.
-    [[ "$only_dirs" -ne 0 ]] && {
-        set $(for f in "$@"; do [[ -d "$f" ]] && echo "$f"; done)
-    }
-    ls -dt "${ls_opts[@]}" "$@" | sed -n -e "${n}p"
+    [[ $# -eq 0 ]] && set ./*
+    local filtered=()
+    if [[ "$only_dirs" ]]; then
+        for f in "$@"; do
+            [[ -d "$f" ]] && filtered+=("$f")
+        done
+    elif [[ "$only_files" ]]; then
+        for f in "$@"; do
+            [[ -f "$f" ]] && filtered+=("$f")
+        done
+    else
+        filtered=("$@")
+    fi
+    # shellcheck disable=2012
+    ls -dt "${ls_opts[@]}" "${filtered[@]}" | sed -n -e "${n}p"
 }
 
 cdmost() {
-    cd "$(most -d "$@")"
+    cd "$(most -d "$@")" || return 1
 }
 
 
@@ -329,7 +339,7 @@ sat() {
     if [[ "$hostname" == localhost ]]; then
         screen -xRR
     else
-        ssh -t $hostname screen -xRR
+        ssh -t "$hostname" screen -xRR
     fi
 }
 
@@ -352,9 +362,10 @@ ebin() {
 # available.
 edmv() {
     [[ $# -eq 0 ]] && return 0
-    local src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
-    local dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
-    local script=$(mktemp --tmpdir edmvscript.XXXXXXX)
+    local src dst script
+    src=$(mktemp --tmpdir edmvsrc.XXXXXXX)
+    dst=$(mktemp --tmpdir edmvdst.XXXXXXX)
+    script=$(mktemp --tmpdir edmvscript.XXXXXXX)
     echo "set -eu" >"$script"
     for f in "$@"; do echo "$f"; done > "$src"
     cp "$src" "$dst"
@@ -395,10 +406,11 @@ ncp() {
 
 timer() {
     local dur=${1:?No duration given}
-    local start=$(date +%s)
-    local left=$dur
+    local start left
+    start=$(date +%s)
+    left=$dur
     while (( left > 0 )); do
-        printf "\r%4d" $left
+        printf "\r%4d" "$left"
         sleep 1
         left=$((start + dur - $(date +%s)))
     done
@@ -512,9 +524,7 @@ dedupe_path() {
     local paths
     local IFS=$'\n'
     for d in ${PATH//:/$'\n'}; do
-        # Filter out /usr/games and /usr/local/games since there's never
-        # anything in them, and I wouldn't need easy access to them anyway.
-        [[ -z "${seen[$d]}" && "$d" != *games ]] && paths+=("$d")
+        [[ -z "${seen[$d]}" ]] && paths+=("$d")
         seen["$d"]=y
     done
     # Join paths with a colon.
