@@ -17,6 +17,7 @@
     cif = commit -am fixup
     dc = diff --cached
     rh = reset --hard
+    pushf = push --force-with-lease
 [color]
     ui = auto
     diff = auto
