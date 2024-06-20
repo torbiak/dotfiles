@@ -1201,7 +1201,7 @@ augroup vimrc
     autocmd Filetype ruby setlocal sts=2 sw=2 ts=2
     autocmd Filetype lisp filetype indent on
     autocmd Filetype go setlocal noet
-    autocmd Filetype c setlocal cindent indentexpr= noet
+    autocmd Filetype c setlocal cindent indentexpr= sts=4 sw=4 ts=4 noet
     autocmd Filetype cpp setlocal cindent indentexpr= noet
     autocmd Filetype python setlocal foldmethod=indent foldnestmax=2 foldlevel=99
     au Filetype make setlocal sts=4 sw=4 ts=4 noet
