@@ -854,6 +854,7 @@ command! ProbeFindTc :cal probe#open(
 nn <leader>d :ProbeFindFile<cr>
 nn <leader>f :ProbeFindInRepo<cr>
 
+" Tagbar
 nn <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
@@ -897,6 +898,12 @@ let g:tagbar_type_markdown = {
     \ },
     \ 'sort': 0,
 \ }
+
+" vim-go
+let g:go_fmt_autosave = 0
+let g:go_mod_autosave = 0
+let g:go_template_use_pkg = 1
+
 
 " Quickfix
 " ========
@@ -1200,7 +1207,8 @@ augroup vimrc
     autocmd Filetype java setlocal sts=2 sw=2 ts=2
     autocmd Filetype ruby setlocal sts=2 sw=2 ts=2
     autocmd Filetype lisp filetype indent on
-    autocmd Filetype go setlocal noet
+    autocmd Filetype go setlocal sts=4 sw=4 ts=4 noet
+    autocmd Filetype gomod setlocal sts=4 sw=4 ts=4 noet
     autocmd Filetype c setlocal cindent indentexpr= sts=4 sw=4 ts=4 noet
     autocmd Filetype cpp setlocal cindent indentexpr= noet
     autocmd Filetype python setlocal foldmethod=indent foldnestmax=2 foldlevel=99
