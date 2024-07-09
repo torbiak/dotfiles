@@ -450,6 +450,15 @@ clipargs() { xsel -ib <<<"$*"; }
 
 # Try to pipe the help/usage of a program to less.
 h() {
+    # Programs with a `help` subcommand that prints help for the other
+    # subcommands.
+    if [[ $# -gt 1 && $1 = @(go|pip|git|cargo) ]]; then
+        "$1" help "$2" | less
+        return
+    fi
+
+    # Everything else.
+    #
     # Try --help|-h and look at both stdout and stderr, since some programs
     # don't have help options but print help on stderr if an unsupported option
     # is given. Close stdin so programs don't just wait for input.
