@@ -71,6 +71,16 @@ colorscheme forbit
 set list
 set listchars=tab:»\ ,trail:·,
 
+" Enable bracketed-paste for screen/tmux. Bracketed-paste isn't advertised via
+" terminfo, so AFAICT vim only sets the relevant t_* settings if the builtin
+" 'xterm' terminal is used or if you set them yourself.
+if &term =~ '\v^(screen|tmux)'
+  let &t_BE = "\e[?2004h"
+  let &t_BD = "\e[?2004l"
+  exec "set t_PS=\e[200~"
+  exec "set t_PE=\e[201~"
+endif
+
 " Emacs emulation in Cmdline mode.
 cnoremap <C-S> <C-D>
 cnoremap <C-A> <Home>
