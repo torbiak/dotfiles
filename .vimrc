@@ -1249,7 +1249,8 @@ augroup vimrc
 
     " Key bindings to run filetype-specific unit tests and syntax checks
     autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %')<cr>
-    autocmd Filetype python nn <buffer> <leader>my :call Make('make mypy')<cr>
+    autocmd Filetype python nn <buffer> <leader>my :call Make('mypy %')<cr>
+    autocmd Filetype python nn <buffer> <leader>mu :call Make('python3 -munittest %')<cr>
     " Rust
     autocmd Filetype rust nn <buffer> <leader>mc :call Make('cargo check --tests')<cr>
     autocmd Filetype rust nn <buffer> <leader>mu :call Make('cargo test')<cr>
