@@ -276,14 +276,6 @@ nn <leader>= :call ToggleSpell()<cr>
 
 " Functions
 " =========
-function! SourceRange() range
-    let tmpsofile = tempname()
-    call writefile(getline(a:firstline, a:lastline), l:tmpsofile)
-    execute "source " . l:tmpsofile
-    call delete(l:tmpsofile)
-endfunction
-command! -range Source <line1>,<line2>call SourceRange()
-
 " Rename buffer's file.
 function! Rename(dst)
     let old = expand('%')
