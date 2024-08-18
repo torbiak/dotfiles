@@ -51,6 +51,11 @@ set -o histexpand
 
 bind C-p:history-search-backward
 bind C-n:history-search-forward
+# The default binding for C-w (unix-word-rubuout) is too useful to overwrite,
+# so use C-x C-w even though it conflicts with the default binding for
+# write-file in emacs.
+bind '"\C-x\C-w": kill-region'
+bind '"\ew": copy-region-as-kill'
 bind '"\ev": redraw-current-line'
 bind '"\em": menu-complete'
 bind '"\eM": menu-complete-backward'

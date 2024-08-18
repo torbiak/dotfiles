@@ -82,27 +82,32 @@ if &term =~ '\v^(screen|tmux)'
 endif
 
 " Emacs emulation in Cmdline mode.
-cnoremap <C-S> <C-D>
 cnoremap <C-A> <Home>
-cnoremap <C-B> <Left>
-cnoremap <C-D> <Del>
 cnoremap <C-E> <End>
+cnoremap <C-B> <Left>
 cnoremap <C-F> <Right>
-cnoremap <C-N> <Down>
+cnoremap <C-D> <Del>
 cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
 cnoremap <esc>b <S-Left>
 cnoremap <esc>f <S-Right>
 cnoremap <esc><bs> <C-w>
+
+" Emacs emulation in insert mode.
+inoremap <C-A> <Home>
+inoremap <C-E> <End>
+inoremap <C-B> <Left>
+inoremap <C-F> <Right>
+inoremap <C-D> <Del>
+inoremap <esc>b <S-Left>
+inoremap <esc>f <S-Right>
+inoremap <esc><bs> <C-w>
 
 " Cycle forward/backward through wildmode matches.
 cnoremap <M-m> <C-N>
 cnoremap <esc>m <C-N>
 cnoremap <M-M> <C-P>
 cnoremap <esc>M <C-P>
-
-" Forward/Back in insert mode
-inoremap <C-B> <Left>
-inoremap <C-F> <Right>
 
 " Open balanced surroundings.
 ino ;{ {<cr>}<esc>O
