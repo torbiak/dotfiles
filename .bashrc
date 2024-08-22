@@ -51,19 +51,19 @@ set -o histexpand
 
 bind C-p:history-search-backward
 bind C-n:history-search-forward
-# The default binding for C-w (unix-word-rubuout) is too useful to overwrite,
-# so use C-x C-w even though it conflicts with the default binding for
-# write-file in emacs.
-bind '"\C-x\C-w": kill-region'
+bind '"C-w": kill-region'
 bind '"\ew": copy-region-as-kill'
-bind '"\ev": redraw-current-line'
+bind '"\el": redraw-current-line'
 bind '"\em": menu-complete'
 bind '"\eM": menu-complete-backward'
-bind '"\ex": shell-kill-word'
-bind '"\ez": shell-backward-kill-word'
-bind '"\ee": edit-and-execute-command'
-bind '"\eh": shell-backward-word'
-bind '"\el": shell-forward-word'
+# Unbind keys that use \eO as a prefix.
+for key in D H F C B A; do
+    bind -r '\eO'"$key"
+done
+bind '"\ep": shell-kill-word'
+bind '"\eo": shell-backward-kill-word'
+bind '"\eP": shell-forward-word'
+bind '"\eO": shell-backward-word'
 # Disable revert-all-at-newline for now since there's a long-standing bug in it
 # that causes a double-free and crash, usually when the previous command has
 # been modified.
