@@ -176,6 +176,7 @@ nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
 nn <leader>x :source ~/source.vim<cr>
 nn <leader>y :let @y = @"<cr>
+nn <leader>mr :!./%<cr>
 
 
 " Formatting
