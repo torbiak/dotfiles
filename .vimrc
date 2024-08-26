@@ -310,7 +310,7 @@ function! PlusExecutable()
 endfunction
 command! Px cal PlusExecutable()
 
-" Count lines in range.
+" Count lines in range. g C-g does something similar.
 command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 
 " Diff current buffer with what's on disk.
@@ -817,6 +817,8 @@ nn <leader>mg :call GoAndSearch()<cr>
 " functionality. Another crude but effective way to do this (without globbing)
 " while still using filename completion is to read in the results of `echo`,
 " like `:r !echo ~/.bash<TAB>`.
+"
+" See also :h i_CTRL-X_CTRL-F, for completing filenames in insert mode.
 com! -nargs=* -complete=file YankFilepaths let @" = join(GlobEach([<f-args>]), "\n")
 function! GlobEach(patterns)
     let files = []
