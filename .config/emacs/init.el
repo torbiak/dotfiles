@@ -304,18 +304,18 @@ the current window."
   (let* ((read-answer-short t)
          (what (read-answer "What? "
                             '(("applied" ?a "applied date")
-                              ("rejected" ?r "rejected date")))))
-    (let ((beg (line-beginning-position))
-          (end (line-end-position)))
-      (when (use-region-p)
-        (setq start (region-beginning))
-        (setq end (region-end)))
-      (save-excursion
-        (goto-char beg)
-        (while (< (point) end)
-          (goto-char (line-end-position))
-          (unless (jat/blank-line-p)
-            (insert (format " %s=%s" what (format-time-string "%Y-%m-%d"))))
+                              ("rejected" ?r "rejected date"))))
+         (ts (format " %s=%s" what (format-time-string "%Y-%m-%d"))))
+    (save-excursion
+      (save-restriction
+        (if (use-region-p)
+            (narrow-to-region (region-beginning) (region-end))
+          (narrow-to-region (line-beginning-position) (line-end-position)))
+        (goto-char (point-min))
+        (while (< (point) (point-max))
+          (when (not (jat/blank-line-p))
+            (goto-char (line-end-position))
+            (insert ts))
           (forward-line))))))
 
 (defun jat/jobs-find-related ()
