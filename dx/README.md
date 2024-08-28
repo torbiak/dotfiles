@@ -24,6 +24,7 @@ List repo files, maybe to give to xargs. The list is limited based on the workin
 
 Clone to a another system. This is awkward since you'll most likely already have some dotfiles, and thus git will refuse to use `$HOME` as the worktree. So clone the worktree to a temp dir, rsync its contents into `$HOME`, and then the temp dir can be deleted. (git creates an OS-agnostic symlink at tmpdotfiles/.git pointing at ~/.dotfiles, which we want to exclude.)
 
-    git clone --recurse-submodules --separate-git-dir="$HOME/.dotfiles" git@github.com/torbiak/dotfiles tmpdotfiles
-    rsync -ril --exclude '/.git' ~/tmpdotfiles ~/
+    git clone --recurse-submodules --separate-git-dir="$HOME/.dotfiles" git@github.com:torbiak/dotfiles tmpdotfiles
+    # TODO: if we exclude .git dirs for submodules, does `submodule update --init` recreate them?
+    rsync -ril --exclude '.git' ~/tmpdotfiles/ ~/
     rm -rf ~/tmpdotfiles
