@@ -170,6 +170,24 @@
 ;;; is much, much more common.
 (global-set-key (kbd "M-k") 'jat/copy-line)
 
+(defun jat/kill-region-or-thing-at-point (beg end)
+  "If a region is active kill it, or kill the thing (word/symbol) at point"
+  (interactive "r")
+  (unless (region-active-p)
+    (save-excursion
+      (setq beg (re-search-backward "\\_<" nil t))
+      (setq end (re-search-forward "\\_>" nil t))))
+  (kill-ring-save beg end))
+(global-set-key (kbd "M-w") 'jat/kill-region-or-thing-at-point)
+
+(defun jat/kill-region-or-backward-word ()
+  "If the region is active and non-empty, call `kill-region'.
+  Otherwise, call `backward-kill-word'."
+  (interactive)
+  (call-interactively
+   (if (use-region-p) 'kill-region 'backward-kill-word)))
+(global-set-key (kbd "C-w") 'jat/kill-region-or-backward-word)
+
 (defun jat/switch-to-alternate-buffer ()
   "Switch back and forth between the current and previous buffer in
 the current window."
