@@ -14,7 +14,12 @@
 
 (use-package markdown-mode
   :ensure t
-  :mode ("\\.md\\'" . markdown-mode))
+  :mode ("\\.md\\'" . markdown-mode)
+  ;; Individual list items in markdown are defined as paragraphs,
+  ;; which really messes me up, since I move by paragraphs constantly.
+  :bind (("M-{" . markdown-backward-block)
+         ("M-}" . markdown-forward-block)))
+
 
 
 ;; https://github.com/mkleehammer/surround
@@ -35,9 +40,6 @@
 (when (display-graphic-p)
     (global-unset-key (kbd "C-z")))
 
-;;; Modeline
-(column-number-mode t)
-
 ;;; Misc
 (setq-default help-window-select t)     ; Select the help window.
 (repeat-mode t)
@@ -45,6 +47,7 @@
 (global-whitespace-mode t)
 (global-auto-revert-mode t)
 (fido-vertical-mode t)
+(column-number-mode t)                  ; add column number to modeline
 
 ;;; Python
 (setq-default python-check-command "mypy")
@@ -60,9 +63,6 @@
 (setq-default indent-tabs-mode nil)
 (setq whitespace-style '(face trailing tabs tab-mark))
 (setq-default tab-width 4)
-;; Flip C-o and C-M-o
-(global-set-key (kbd "C-o") 'split-line)
-(global-set-key (kbd "C-M-o") 'open-line)
 
 ;;; isearch
 ;; In isearch, have DEL always remove characters from the search
@@ -74,9 +74,14 @@
 ;; like list-buffers does.
 (global-set-key (kbd "C-x C-b") 'buffer-menu)
 
-;;; Movement
-;;; Don't require two spaces after a period to end a sentence for M-a/M-e movement.
+;;; Movement Don't require two spaces after a period to end a sentence
+;;; for M-a/M-e movement, among other things.
 (setq-default sentence-end-double-space nil)
+;; Override the defaults for {next,previous}-error, since M-g really
+;; strains the fingers.
+(global-set-key (kbd "M-_") 'previous-error)
+(global-set-key (kbd "M-+") 'next-error)
+
 
 ;;; Window movement
 (global-set-key (kbd "C-c h")  'windmove-left)
