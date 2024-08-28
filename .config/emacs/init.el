@@ -57,7 +57,8 @@
 
 ;;; Fonts
 (set-face-attribute 'fixed-pitch-serif nil :family  "Monospace")
-(set-face-attribute 'default nil :height 140)
+(let ((height (if (string= (system-name) "jair") 90 140)))
+  (set-face-attribute 'default nil :height height))
 
 ;;; Indentation
 (setq-default indent-tabs-mode nil)
