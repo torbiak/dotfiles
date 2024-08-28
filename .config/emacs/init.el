@@ -285,3 +285,48 @@ the current window."
   (forward-line -1)
   (indent-according-to-mode))
 (global-set-key (kbd "C-o") 'jat/open-line-above)
+
+;;; Jobs mode
+(define-minor-mode jobs-mode
+  "Job mode."
+  ;; The initial value.
+  nil
+  ;; The indicator for the mode line.
+  " Jobs"
+  ;; The minor mode bindings.
+  '(("\C-ct" . jat/jobs-append-timestamp)
+    ("\C-cg" . jat/jobs-find-related)))
+;;(add-to-list 'auto-mode-alist '("\\/jobs\\'" . jobs-mode))
+
+(defun jat/jobs-append-timestamp ()
+  (interactive)
+  (let* ((read-answer-short t)
+         (what (read-answer "What? "
+                            '(("applied" ?a "applied date")
+                              ("rejected" ?r "rejected date")))))
+    (let ((beg (line-beginning-position))
+          (end (line-end-position)))
+      (when (use-region-p)
+        (setq start (region-beginning))
+        (setq end (region-end)))
+      (save-excursion
+        (goto-char beg)
+        (while (< (point) end)
+          (goto-char (line-end-position))
+          (unless (jat/blank-line-p)
+            (insert (format " %s=%s" what (format-time-string "%Y-%m-%d"))))
+          (forward-line))))))
+
+(defun jat/jobs-find-related ()
+  (interactive)
+  (let* ((job (substring (thing-at-point 'list) 1 -1))
+         (read-answer-short t)
+         (what (read-answer "What? "
+                           '(("listing" ?l "job description")
+                             ("coverletter" ?c "coverletter")
+                             ("prep" ?p "interview prep"))))
+        (file (cond
+               ((string= what "listing") (format "~/proj/job2024/listings/%s.txt" job))
+               ((string= what "coverletter") (format "~/jlp/resume/coverletters/%s.md" job))
+               ((string= what "prep") (format "~/jlp/resume/prep/%s.md" job)))))
+    (find-file file)))
