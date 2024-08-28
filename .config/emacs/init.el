@@ -277,10 +277,11 @@ the current window."
     (insert-file-contents filePath)
     (split-string (buffer-string) "\n" t)))
 
-
-;; TODO
-;; completion styles
-
-;; (defun jat/icomplete-styles ()
-;;   (setq-local completion-styles '(flex)))
-;; (add-hook 'icomplete-minibuffer-setup-hook 'jat/icomplete-styles)
+(defun jat/open-line-above ()
+  "Starts a new line above the current line."
+  (interactive)
+  (move-beginning-of-line 1)
+  (newline)
+  (forward-line -1)
+  (indent-according-to-mode))
+(global-set-key (kbd "C-o") 'jat/open-line-above)
