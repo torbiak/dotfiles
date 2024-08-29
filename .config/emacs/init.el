@@ -342,6 +342,13 @@ the current window."
                ((string= what "prep") (format "~/jlp/resume/prep/%s.md" job)))))
     (find-file file)))
 
+(defun jat/mb-clean-usage ()
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (when (use-region-p) (narrow-to-region (region-beginning) (region-end)))
+      (replace-regexp "Usage [0-9] \\|\\\"" ""))))
+
 (defun jat/rename-current-file ()
   "Rename and visit the current file."
   (interactive)
