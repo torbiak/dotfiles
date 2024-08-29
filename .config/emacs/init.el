@@ -341,3 +341,24 @@ the current window."
                ((string= what "coverletter") (format "~/jlp/resume/coverletters/%s.md" job))
                ((string= what "prep") (format "~/jlp/resume/prep/%s.md" job)))))
     (find-file file)))
+
+(defun jat/rename-current-file ()
+  "Rename and visit the current file."
+  (interactive)
+  (let* ((old (file-name-nondirectory (buffer-file-name)))
+         (new (expand-file-name
+               (read-file-name (format "Rename %s to: " old)))))
+    (if (null (file-writable-p new))
+        (user-error "New file not writable: %s" new))
+    (rename-file (buffer-file-name) new 1)
+    (find-alternate-file new)))
+
+(defun jat/delete-current-file ()
+  "Delete the current file and kill the buffer."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if filename
+        (progn
+          (delete-file filename)
+          (kill-buffer))
+      (message "No file associated with current buffer"))))
