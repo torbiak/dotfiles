@@ -115,6 +115,11 @@
  '((emacs-lisp . t)
    (python . t)))
 
+(defun jat/visit-emacs-init ()
+  (interactive)
+  (find-file (concat user-emacs-directory "init.el")))
+(global-set-key (kbd "C-c i") 'jat/visit-emacs-init)
+
 ;;; Append to register ?a
 (defun jat/append-to-reg-a ()
   (interactive)
