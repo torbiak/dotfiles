@@ -65,7 +65,7 @@
 
 ;;; Fonts
 (set-face-attribute 'fixed-pitch-serif nil :family  "Monospace")
-(let ((height (if (string= (system-name) "jair") 90 140)))
+(let ((height (if (string= (system-name) "jair") 90 135)))
   (set-face-attribute 'default nil :height height))
 
 ;;; Indentation
