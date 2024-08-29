@@ -52,7 +52,8 @@
   `((".*" "~/tmp/emacs/lockfile/" t)))
 
 ;;; Misc
-(setq-default help-window-select t)     ; Select the help window.
+(setq-default help-window-select t)     ; Select help windows on creation.
+(setq initial-scratch-message nil)
 (repeat-mode t)
 (delete-selection-mode t)               ; self-insert commands replace an active region.
 (global-whitespace-mode t)
