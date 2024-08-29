@@ -41,12 +41,15 @@
     (global-unset-key (kbd "C-z")))
 
 ;;; Backups
-;; Save backups and autosaves under ~/tmp/emacs.
+;; Save backups, autosaves, and lockfiles under ~/tmp/emacs.
 (setq backup-directory-alist `(("." . "~/tmp/emacs/backup")))
 (mkdir "~/tmp/emacs/autosave/" t)
 (setq auto-save-file-name-transforms
   `((".*" "~/tmp/emacs/autosave/" t)))
 (setf kill-buffer-delete-auto-save-files t)
+(mkdir "~/tmp/emacs/lockfile/" t)
+(setq lock-file-name-transforms
+  `((".*" "~/tmp/emacs/lockfile/" t)))
 
 ;;; Misc
 (setq-default help-window-select t)     ; Select the help window.
