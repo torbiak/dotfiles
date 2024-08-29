@@ -40,6 +40,14 @@
 (when (display-graphic-p)
     (global-unset-key (kbd "C-z")))
 
+;;; Backups
+;; Save backups and autosaves under ~/tmp/emacs.
+(setq backup-directory-alist `(("." . "~/tmp/emacs/backup")))
+(mkdir "~/tmp/emacs/autosave/" t)
+(setq auto-save-file-name-transforms
+  `((".*" "~/tmp/emacs/autosave/" t)))
+(setf kill-buffer-delete-auto-save-files t)
+
 ;;; Misc
 (setq-default help-window-select t)     ; Select the help window.
 (repeat-mode t)
