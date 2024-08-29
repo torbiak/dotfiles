@@ -86,17 +86,10 @@
 ;;; Movement Don't require two spaces after a period to end a sentence
 ;;; for M-a/M-e movement, among other things.
 (setq-default sentence-end-double-space nil)
-;; Override the defaults for {next,previous}-error, since M-g really
+;; Add new bindings for {next,previous}-error, since M-g really
 ;; strains the fingers.
 (global-set-key (kbd "M-_") 'previous-error)
 (global-set-key (kbd "M-+") 'next-error)
-
-
-;;; Window movement
-(global-set-key (kbd "C-c h")  'windmove-left)
-(global-set-key (kbd "C-c l") 'windmove-right)
-(global-set-key (kbd "C-c k")    'windmove-up)
-(global-set-key (kbd "C-c j")  'windmove-down)
 
 ;;; Format tables with columns separated by two or more spaces. Isn't
 ;;; idempotent since it doesn't keep at least two spaces, though.
