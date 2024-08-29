@@ -17,10 +17,10 @@
   :mode ("\\.md\\'" . markdown-mode)
   ;; Individual list items in markdown are defined as paragraphs,
   ;; which really messes me up, since I move by paragraphs constantly.
-  :bind (("M-{" . markdown-backward-block)
-         ("M-}" . markdown-forward-block)))
-
-
+  :bind (:map markdown-mode-map
+         ("M-{" . markdown-backward-block)
+         ("M-}" . markdown-forward-block)
+         ("M-h" . markdown-mark-block)))
 
 ;; https://github.com/mkleehammer/surround
 (use-package surround
