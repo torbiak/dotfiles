@@ -1,39 +1,39 @@
-[submodule "dotfiles/vim/bundle/probe"]
+[submodule "vim/bundle/probe"]
 	path = .vim/bundle/probe
 	url = git@github.com:torbiak/probe.git
-[submodule "dotfiles/vim/bundle/fugitive"]
+[submodule "vim/bundle/fugitive"]
 	path = .vim/bundle/fugitive
 	url = https://github.com/tpope/vim-fugitive.git
-[submodule "dotfiles/vim/bundle/gundo.vim"]
+[submodule "vim/bundle/gundo.vim"]
 	path = .vim/bundle/gundo.vim
 	url = https://github.com/sjl/gundo.vim.git
-[submodule "dotfiles/vim/bundle/nerdtree"]
+[submodule "vim/bundle/nerdtree"]
 	path = .vim/bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
-[submodule "dotfiles/vim/bundle/mediawiki.vim"]
+[submodule "vim/bundle/mediawiki.vim"]
 	path = .vim/bundle/mediawiki.vim
 	url = https://github.com/chikamichi/mediawiki.vim.git
-[submodule "dotfiles/vim/bundle/rut.vim"]
+[submodule "vim/bundle/rut.vim"]
 	path = .vim/bundle/rut.vim
 	url = git@github.com:torbiak/rut.vim.git
-[submodule "dotfiles/vim/bundle/vim-toml"]
+[submodule "vim/bundle/vim-toml"]
 	path = .vim/bundle/vim-toml
 	url = https://github.com/cespare/vim-toml.git
-[submodule "dotfiles/vim/bundle/tagbar"]
+[submodule "vim/bundle/tagbar"]
 	path = .vim/bundle/tagbar
 	url = https://github.com/majutsushi/tagbar.git
-[submodule "dotfiles/vim/bundle/vim-go"]
+[submodule "vim/bundle/vim-go"]
 	path = .vim/bundle/vim-go
 	url = https://github.com/fatih/vim-go.git
-[submodule "dotfiles/vim/bundle/vim-surround"]
+[submodule "vim/bundle/vim-surround"]
 	path = .vim/bundle/vim-surround
 	url = https://github.com/tpope/vim-surround.git
-[submodule "dotfiles/vim/bundle/nim.vim"]
+[submodule "vim/bundle/nim.vim"]
 	path = .vim/bundle/nim.vim
 	url = https://github.com/zah/nim.vim.git
-[submodule "dotfiles/vim/bundle/vim-abolish"]
+[submodule "vim/bundle/vim-abolish"]
 	path = .vim/bundle/vim-abolish
 	url = https://github.com/tpope/vim-abolish.git
-[submodule "dotfiles/vim/bundle/diffconflicts"]
+[submodule "vim/bundle/diffconflicts"]
 	path = .vim/bundle/diffconflicts
 	url = https://github.com/whiteinge/diffconflicts.git
