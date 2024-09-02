@@ -43,7 +43,28 @@
 (scroll-bar-mode -1)
 ;; With dwm I can't unsuspend a frame.
 (when (display-graphic-p)
-    (global-unset-key (kbd "C-z")))
+  (global-unset-key (kbd "C-z")))
+
+;;; Grep
+;; Just doing (setq grep-command <val>) won't work for the current session.
+(grep-apply-setting 'grep-command "rg --no-heading -nH ")
+(global-set-key (kbd "C-c g") 'jat/grep)
+;; The builtin grep function adds the symbol at point as well as a
+;; file pattern when called with a prefix argument. I almost never
+;; need to specify the files to search, but still want to append the
+;; symbol at point.
+(defun jat/grep (arg)
+  "Call (grep grep-command), with the option to modify the command first.
+
+If a prefix argument is given, append the current symbol at point
+to the command."
+  (interactive "P")
+  (let ((cmd grep-command))
+    (when arg (setq cmd (concat cmd (thing-at-point 'symbol) " ")))
+    (setq cmd (read-shell-command "grep: " cmd))
+    (grep cmd)))
+
+
 
 ;;; Backups
 ;; Save backups, autosaves, and lockfiles under ~/tmp/emacs.
