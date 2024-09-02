@@ -77,6 +77,16 @@ to the command."
 (setq lock-file-name-transforms
   `((".*" "~/tmp/emacs/lockfile/" t)))
 
+;;; Keyboard macros
+;; Amalgamate keyboard macro changes so they can be undone in a single step.
+(defun block-undo (fn &rest args)
+  (let ((marker
+         (prepare-change-group)))
+    (unwind-protect (apply fn args)
+      (undo-amalgamate-change-group marker))))
+(dolist (fn '(kmacro-call-macro kmacro-exec-ring-item))
+  (advice-add fn :around #'block-undo))
+
 ;;; Misc
 (setq-default help-window-select t)     ; Select help windows on creation.
 (setq initial-scratch-message nil)
@@ -84,8 +94,59 @@ to the command."
 (delete-selection-mode t)               ; self-insert commands replace an active region.
 (global-whitespace-mode t)
 (global-auto-revert-mode t)
-(fido-vertical-mode t)
 (column-number-mode t)                  ; add column number to modeline
+
+;;; Completion
+(setq completion-auto-help 'always)
+(setq-default completion-styles '(basic partial-completion flex))
+;; Use 'one-column for completions-format since
+;; minibuffer-next-completion still goes to the next column instead of
+;; the next row.
+(setq completions-format 'one-column)
+(setq read-file-name-completion-ignore-case t)
+(setq read-buffer-completion-ignore-case t)
+(define-key minibuffer-mode-map (kbd "M-m") 'minibuffer-next-completion)
+(define-key minibuffer-mode-map (kbd "M-M") 'minibuffer-previous-completion)
+
+;;; Tags
+(use-package citre
+  :defer t
+  :init
+  ;; This is needed in `:init' block for lazy load to work.
+  (require 'citre-config)
+  ;; Seems better to use citre-mode to override M-, and M-. than to
+  ;; have dedicated bindings for jump and jump-back, since the builtin
+  ;; xref features are still useful at least in elisp code.
+  ;;(global-set-key (kbd "C-c ]") 'citre-jump)
+  ;;(global-set-key (kbd "C-c o") 'citre-jump-back)
+  (global-set-key (kbd "C-c j") 'jat/citre-query-jump-complete))
+
+(defun jat/citre-query-jump-complete ()
+  "Do citre-query-jump, wth completions."
+  (interactive)
+  (citre-query-jump t))
+
+;;; History
+;;; Try to emulate history-search-{forward,backward} from libreadline.
+(defun jat/next-history-element-matching-prefix ()
+  "Go to the next history element that has the current input before point as its prefix."
+  (interactive)
+  (let* ((input-beg (+ (minibuffer-prompt-width) 1))
+         (input-pos (- (point) input-beg))
+         (prefix (substring (minibuffer-contents) 0 input-pos)))
+    (next-matching-history-element (concat "^" (regexp-quote prefix)) 1)
+    (goto-char (+ input-beg input-pos))))
+(define-key minibuffer-mode-map (kbd "C-n") 'jat/next-history-element-matching-prefix)
+
+(defun jat/previous-history-element-matching-prefix ()
+  "Go to the previous history element that has the current input before point as its prefix."
+  (interactive)
+  (let* ((input-beg (+ (minibuffer-prompt-width) 1))
+         (input-pos (- (point) input-beg))
+         (prefix (substring (minibuffer-contents) 0 input-pos)))
+    (previous-matching-history-element (concat "^" (regexp-quote prefix)) 1)
+    (goto-char (+ input-beg input-pos))))
+(define-key minibuffer-mode-map (kbd "C-p") 'jat/previous-history-element-matching-prefix)
 
 ;;; Python
 (setq-default python-check-command "mypy")
@@ -138,6 +199,7 @@ to the command."
  '((emacs-lisp . t)
    (python . t)))
 
+;;; Keybindings for important buffers.
 (defun jat/visit-emacs-init ()
   (interactive)
   (find-file (concat user-emacs-directory "init.el")))
@@ -149,10 +211,20 @@ to the command."
   (if (use-region-p)
       (append-to-register ?a (region-beginning) (region-end))
     (append-to-register ?a (line-beginning-position) (line-end-position))))
-(global-set-key (kbd "C-c a")  'jat/append-to-reg-a)
 ;; Use a separator when appending to a register.
 (setq register-separator ?+)
 (set-register register-separator "\n")
+
+;; Make saving/inserting a particular register easier, since C-x r s R
+;; is such a long sequence of keys, and I mostly only need one extra
+;; place to save text I want to use later.
+(defun jat/save-or-insert (arg)
+  "Save or insert register ?\", based on whether the region should be used."
+  (interactive "p")
+  (if (use-region-p)
+      (copy-to-register ?\" (region-beginning) (region-end))
+    (insert-register ?\" arg)))
+(global-set-key (kbd "C-c \"")  'jat/save-or-insert)
 
 ;;; Shift-style indentation
 (defun jat/shift-right (arg)
