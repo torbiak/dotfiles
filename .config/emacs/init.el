@@ -15,6 +15,11 @@
 (use-package markdown-mode
   :ensure t
   :mode ("\\.md\\'" . markdown-mode)
+  ;; Disable marking italics with stars, to make syntax-highlighting
+  ;; regexes more efficient. It's still slow, though.
+  :init (progn
+         (defconst markdown-regex-italic "\\(?:^\\|[^\\]\\)\\(?1:\\(?2:[_]\\)\\(?3:[^ \n\t\\]\\|[^ \n\t]\\(?:.\\|\n[^\n]\\)[^\\ ]\\)\\(?4:\\2\\)\\)")
+         (defconst markdown-regex-gfm-italic "\\(?:^\\|[^\\]\\)\\(?1:\\(?2:[_]\\)\\(?3:[^ \\]\\2\\|[^ ]\\(?:.\\|\n[^\n]\\)\\)\\(?4:\\2\\)\\)"))
   ;; Individual list items in markdown are defined as paragraphs,
   ;; which really messes me up, since I move by paragraphs constantly.
   :bind (:map markdown-mode-map
