@@ -1071,23 +1071,19 @@ function! VimEvalOp(type)
     elseif a:type ==# 'char' || a:type ==# 'line'
         normal! `[v`]y
     else
+        echo 'visual block mode'
         return
     endif
 
-    let @@ = substitute(@@, '\v(^[ \t\n]+|[ \t\n]+$)', '', 'g')
-    let result = eval(@@)
-    if type(result) != v:t_string
-        let @@ = string(result)
-    else
-        let @@ = result
-    endif
-
-    " If the input is linewase, paste the output below; otherwise paste the
-    " output inline.
     let is_linewise = a:type ==# 'V' || a:type ==# 'line'
+    " If the input is linewise, redirect the output and paste the output
+    " below; otherwise evaluate a single expression and paste the result
+    " inline.
     if is_linewise
-        let @@ = "\n==\n" . @@
+        let @@ = execute(@@)
+        let @@ = "\n==\n" . trim(@@)
     else
+        let @@ = string(eval(trim(@@)))
         let @@ = ' = ' . @@
     endif
 
@@ -1101,7 +1097,7 @@ endfunction
 " vim eval
 nnoremap <leader>ev :set operatorfunc=VimEvalOp<cr>g@
 nnoremap <leader>eV V:<c-u>call VimEvalOp(visualmode())<cr>
-vnoremap <leader>ev :call VimEvalOp(visualmode())<cr>
+vnoremap <leader>ev :<c-u>call VimEvalOp(visualmode())<CR>
 
 " One-way operator-pending commands
 " =================================
