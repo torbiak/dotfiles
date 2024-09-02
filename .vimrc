@@ -1184,6 +1184,38 @@ function! PipeShellToScratch(buffer_name, cmd, win_mods) abort
 endfunction
 com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-mods>)
 
+" Highlight patterns with a predefined color cycle.
+let g:highlight_groups = {}  " Make this global so it can be printed easily.
+let s:highlight_colors = [['black', 'magenta'], ['black', 'green'], ['white', 'blue'], ['black', 'cyan']]
+let s:highlight_name_prefix = 'jat'
+function! Highlight(pattern)
+    let key = max(keys(g:highlight_groups)) + 1
+    let [fg, bg] = s:highlight_colors[key % len(s:highlight_colors)]
+    let name = s:highlight_name_prefix .. string(key)
+    let g:highlight_groups[key] = a:pattern
+    exe $"syn match {name} /{a:pattern}/"
+    exe $"hi {name} ctermfg={fg} ctermbg={bg}"
+endfunction
+command! -nargs=1 Hl cal Highlight(<q-args>)
+
+function! HighlightRemove(key_str)
+    let name = s:highlight_name_prefix .. a:key_str
+    exe $"syn clear {name}"
+    exe $"hi clear {name}"
+    cal remove(g:highlight_groups, str2nr(a:key_str))
+endfunction
+function! HighlightListGroups(ArgLead, CmdLine, CursorPos)
+    return keys(g:highlight_groups)
+endfunction
+command! -nargs=1 -complete=customlist,HighlightListGroups HlRemove cal HighlightRemove(<f-args>)
+
+function! HighlightRemoveAll()
+    for k in keys(g:highlight_groups)
+        cal HighlightRemove(k)
+    endfor
+endfunction
+command! HlRemoveAll cal HighlightRemoveAll()
+
 " Filetypes
 " =========
 
