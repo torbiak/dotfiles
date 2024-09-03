@@ -1,0 +1,10 @@
+/* nth root
+    nr(x, n) = x^(1/n) = e^(ln(x) / n)
+    Since:
+        e^(ln(k)) = k
+    and:
+        ln(M^k) = k ln(M)
+*/
+define nr(val, root) {
+    return e(l(val) / root)
+}
