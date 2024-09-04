@@ -59,7 +59,7 @@
 
 (setq grep-save-buffers nil)
 (setq jat/grep-command "rg --no-heading -nH ")
-(setopt grep-command jat/grep-command)
+(eval-after-load 'grep '(grep-apply-setting 'grep-command jat/grep-command))
 
 ;; The builtin grep function adds the symbol at point as well as a
 ;; file pattern when called with a prefix argument. I almost never
