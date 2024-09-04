@@ -1026,31 +1026,36 @@ function! PipeEval(input)
     return substitute(result, '\v\n*$', '', 'g')  " Remove trailing newlines.
 endfunction
 function! PipeEvalOp(type)
-    " Yank the text into the unnamed register, @@.
-    if a:type ==# 'v' || a:type ==# 'V'
-        normal! `<v`>y
-    elseif a:type ==# 'char' || a:type ==# 'line'
-        normal! `[v`]y
+    let saved_reg = @"
+    let saved_mark = getpos("'x")
+    let visual = a:type ==# 'V' || a:type ==# 'v' || a:type ==# "\<c-v>"
+    let beg = getpos(visual ? "'<" : "'[")
+    let end = getpos(visual ? "'>" : "']")
+    let [beg_line, end_line] = [beg[1], end[1]]
+    let linewise = beg_line != end_line || a:type ==# 'V' || a:type ==# 'line'
+
+    " Yank input into @".
+    if linewise
+        exe $"{beg_line},{end_line}yank"
     else
-        return
+        let @" = getregion(beg, end)->join("\n")
     endif
 
-    " If the input is linewase, paste the output below; otherwise paste the
+    let @" = PipeEval(@")
+
+    " If the input is linewise, paste the output below; otherwise paste the
     " output inline.
-    let is_linewise = a:type ==# 'V' || a:type ==# 'line'
-    let @@ = PipeEval(@@)
-    if is_linewise
-        let @@ = "\n==\n" . @@
+    if linewise
+        let @" = "==\n" . @"
+        exe $"{end_line}put"
     else
-        let @@ = ' = ' . @@
+        let @" = ' = ' . @"
+        cal setpos("'x", end)
+        normal! `xp
     endif
 
-    " Paste the eval'd result.
-    if a:type ==# 'v' || a:type ==# 'V'
-        normal! `>p
-    elseif a:type ==# 'char' || a:type == 'line'
-        normal! `]p
-    endif
+    let @" = saved_reg
+    cal setpos("'x", saved_mark)
 endfunction
 " math eval
 nnoremap <leader>em :let g:PipeEvalInterpreter = 'bc'<cr>:set operatorfunc=PipeEvalOp<cr>g@
@@ -1066,34 +1071,36 @@ nnoremap <leader>eP :let g:PipeEvalInterpreter = 'python3'<cr>V:<c-u>call PipeEv
 vnoremap <leader>ep :<c-u>let g:PipeEvalInterpreter = 'python3'<cr>:call PipeEvalOp(visualmode())<cr>
 
 function! VimEvalOp(type)
-    " Yank the text into the unnamed register, @@.
-    if a:type ==# 'v' || a:type ==# 'V'
-        normal! `<v`>y
-    elseif a:type ==# 'char' || a:type ==# 'line'
-        normal! `[v`]y
+    let saved_reg = @"
+    let saved_mark = getpos("'x")
+    let visual = a:type ==# 'V' || a:type ==# 'v' || a:type ==# "\<c-v>"
+    let beg = getpos(visual ? "'<" : "'[")
+    let end = getpos(visual ? "'>" : "']")
+    let [beg_line, end_line] = [beg[1], end[1]]
+    let linewise = beg_line != end_line || a:type ==# 'V' || a:type ==# 'line'
+
+    " Yank input into @".
+    if linewise
+        exe $"{beg_line},{end_line}yank"
     else
-        echo 'visual block mode'
-        return
+        let @" = getregion(beg, end)->join("\n")
     endif
 
-    let is_linewise = a:type ==# 'V' || a:type ==# 'line'
-    " If the input is linewise, redirect the output and paste the output
-    " below; otherwise evaluate a single expression and paste the result
-    " inline.
-    if is_linewise
-        let @@ = execute(@@)
-        let @@ = "\n==\n" . trim(@@)
+    " If the input is linewise, paste the output below; otherwise paste the
+    " output inline.
+    if linewise
+        let @" = execute(@")
+        let @" = "==\n" . trim(@")
+        exe $"{end_line}put"
     else
-        let @@ = string(eval(trim(@@)))
-        let @@ = ' = ' . @@
+        let @" = string(eval(trim(@")))
+        let @" = ' = ' . @"
+        cal setpos("'x", end)
+        normal! `xp
     endif
 
-    " Paste the eval'd result.
-    if a:type ==# 'v' || a:type ==# 'V'
-        normal! `>p
-    elseif a:type ==# 'char' || a:type == 'line'
-        normal! `]p
-    endif
+    let @" = saved_reg
+    cal setpos("'x", saved_mark)
 endfunction
 " vim eval
 nnoremap <leader>ev :set operatorfunc=VimEvalOp<cr>g@
@@ -1105,17 +1112,25 @@ vnoremap <leader>ev :<c-u>call VimEvalOp(visualmode())<CR>
 let g:PipeOpCmd = 'xsel -ib'
 let g:PipeOpOut = ''
 function! PipeOp(type)
-    " Get the text.
-    if a:type ==# 'v' || a:type ==# 'V'
-        normal! `<v`>y
-    elseif a:type ==# 'char' || a:type == 'line'
-        normal! `[v`]y
+    let saved_reg = @"
+    " TODO: do blockwise selection instead of converting to linewise.
+    let visual = a:type ==# 'V' || a:type ==# 'v' || a:type ==# "\<c-v>"
+    let beg = getpos(visual ? "'<" : "'[")
+    let end = getpos(visual ? "'>" : "']")
+    let [beg_line, end_line] = [beg[1], end[1]]
+    let linewise = beg_line != end_line || a:type ==# 'V' || a:type ==# 'line'
+
+    " Yank input into @".
+    if linewise
+        exe $"{beg_line},{end_line}yank"
     else
-        return
+        let @" = getregion(beg, end)->join("\n")
     endif
 
     " Save the output so it can be retrieved via "= if needed.
-    let g:PipeOpOut = system(g:PipeOpCmd, @@)
+    let g:PipeOpOut = system(g:PipeOpCmd, @")
+
+    let @" = saved_reg
 endfunction
 
 " Copy/paste using xsel, for when clipboard support isn't available or the
