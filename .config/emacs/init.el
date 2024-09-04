@@ -45,10 +45,22 @@
 (when (display-graphic-p)
   (global-unset-key (kbd "C-z")))
 
+
+;;; search
+
+;; In isearch, have DEL always remove characters from the search
+;; string, instead of first visiting past locations. Avoids the need
+;; for C-M-d.
+(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
+(setopt reb-re-syntax 'string)
+
 ;;; Grep
-;; Just doing (setq grep-command <val>) won't work for the current session.
-(grep-apply-setting 'grep-command "rg --no-heading -nH ")
-(global-set-key (kbd "C-c g") 'jat/grep)
+
+(setq grep-save-buffers nil)
+(setq jat/grep-command "rg --no-heading -nH ")
+(setopt grep-command jat/grep-command)
+
 ;; The builtin grep function adds the symbol at point as well as a
 ;; file pattern when called with a prefix argument. I almost never
 ;; need to specify the files to search, but still want to append the
@@ -59,11 +71,12 @@
 If a prefix argument is given, append the current symbol at point
 to the command."
   (interactive "P")
-  (let ((cmd grep-command))
+  (let ((cmd jat/grep-command))
+    (message cmd)
     (when arg (setq cmd (concat cmd (thing-at-point 'symbol) " ")))
-    (setq cmd (read-shell-command "grep: " cmd))
+    (setq cmd (read-shell-command "search: " cmd))
     (grep cmd)))
-
+(global-set-key (kbd "C-c g") 'jat/grep)
 
 
 ;;; Backups
@@ -164,11 +177,7 @@ to the command."
 (setq whitespace-style '(face trailing tabs tab-mark))
 (setq-default tab-width 4)
 
-;;; isearch
-;; In isearch, have DEL always remove characters from the search
-;; string, instead of first visiting past locations. Avoids the need
-;; for C-M-d.
-(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
 
 ;; Open the buffer menu in the current window, instead of another one
 ;; like list-buffers does.
