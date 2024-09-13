@@ -84,6 +84,11 @@ if &term =~ '\v^(screen|tmux)'
 endif
 
 " Emacs emulation in Cmdline mode.
+"
+" Note that there's a small downside in mapping key sequences starting with
+" <esc>, since if you hit <esc> to exit the mode vim will need to wait for
+" another key or for 'timeout' to know whether you meant <esc> by itself or as
+" the start of another mapping. In practice I hardly ever notice this, though.
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
 cnoremap <C-B> <Left>
