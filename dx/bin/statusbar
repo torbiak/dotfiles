@@ -22,18 +22,16 @@ once() {
     mute=$(pamixer --get-mute)
     [[ "$mute" = true ]] && vol+=m
 
+    local acpi thresh
     acpi=$(acpi -b | grep -v 'rate information unavailable')
     [[ "$acpi" =~ [0-9]{1,3}% ]]
-    pct_charge=${BASH_REMATCH%\%}
+    local pct_charge=${BASH_REMATCH%\%}
     ((pct_charge < 30)) && {
         [[ "$acpi" = *Charging* ]] && msg+=" | BATTERY LOW" || msg+=" | BATTERY DISCHARGING"
     }
-    if [[ "$pct_charge" -lt 20 && "$acpi" != *Charging* && ! -e ~/.drain_me ]]; then
-        ding &
-    elif [[ "$pct_charge" -le 5 && "$acpi" != *Charging* ]]; then
-        [[ -e ~/.drain_me ]] && rm ~/.drain_me
-        ding &
-    fi
+    [[ -e ~/.drain_me ]] && thresh=20 || thresh=5
+    [[ "$pct_charge" -le "$thresh" && "$acpi" != *Charging* ]] && ding &
+    [[ ("$pct_charge" -gt 30 || "$pct_charge" -le 5) && -e ~/.drain_me ]] && rm ~/.drain_me
 
     new_msgs=$(find ~/mail/{cronic,new} -type f | wc -l)
     [[ "$new_msgs" -gt 0 ]] && msg+=" | $new_msgs new msgs"
