@@ -454,7 +454,7 @@ function! TemplateLinear(...) range
         let out = template
         for [pattern, replacements] in items(replacementLists)
             let repl = replacements[i]
-            let out = substitute(out, '\C' . pattern, repl, "g")
+            let out = substitute(out, pattern, repl, "g")
         endfor
 
         cal extend(lines, split(out, "\r"))
