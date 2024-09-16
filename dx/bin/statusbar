@@ -29,7 +29,7 @@ once() {
     ((pct_charge < 30)) && {
         [[ "$acpi" = *Charging* ]] && msg+=" | BATTERY LOW" || msg+=" | BATTERY DISCHARGING"
     }
-    [[ -e ~/.drain_me ]] && thresh=20 || thresh=5
+    [[ -e ~/.drain_me ]] && thresh=5 || thresh=20
     [[ "$pct_charge" -le "$thresh" && "$acpi" != *Charging* ]] && ding &
     [[ ("$pct_charge" -gt 30 || "$pct_charge" -le 5) && -e ~/.drain_me ]] && rm ~/.drain_me
 
@@ -148,6 +148,10 @@ shift $((OPTIND-1))
 
 (($# > 0)) || {
     echo "$usage" >&2
+    exit 1
+}
+[[ "$(type -t "$1")" == function ]] || {
+    echo "invalid command: $1" >&2
     exit 1
 }
 
