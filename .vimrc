@@ -3,6 +3,9 @@ set rtp-=~/vimfiles
 set rtp+=~/.vim
 
 let g:pathogen_disabled = ['vipyut']
+if hostname() == 'hatebox'
+    cal add(g:pathogen_disabled, 'vim-go')
+endif
 call pathogen#infect()
 call pathogen#helptags()
 
