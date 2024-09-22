@@ -1232,6 +1232,48 @@ endfunction
 cal MakeJatHighlightGroups()
 
 
+" Printf debugging
+" Generate printf-style debugging calls based on variable names on the current
+" line.
+
+function! DebugVarsC(sep=' ')
+    let indent_len = line('.')->indent()
+    let indent = &expandtab ? repeat(' ', indent_len) : repeat("\t", indent_len / &tabstop)
+    let words = getline('.')->split()
+    let formats = []
+    let vars = []
+    for w in words
+        let [_, var, spec; _] = matchlist(w, '\v(\w+)%(:(.*))?')
+        cal add(vars, var)
+        let spec = spec ?? 's'
+        if spec == 's'
+            cal add(formats, $"{var}=[%{spec}]")
+        else
+            cal add(formats, $"{var}=%{spec}")
+        endif
+    endfor
+    let format = formats->join(a:sep) . '\n'
+    let args = join(vars, ', ')
+    let line = $"{indent}printf(\"{format}\", {args});  // TODO: remove"
+    cal setline('.', line)
+endfunction
+
+function! DebugVarsPython(sep=' ')
+    let indent_len = line('.')->indent()
+    let indent = &expandtab ? repeat(' ', indent_len) : repeat("\t", indent_len / &tabstop)
+    let words = getline('.')->split()
+    let pieces = []
+    for w in words
+        " If no formatting was specified, add '=' to print the expr itself.
+        let suffix = (match(w, '\v[!:=]') == -1) ? '=' : ''
+        cal add(pieces, printf('{%s%s}', w, suffix))
+    endfor
+    let format = pieces->join(a:sep)
+    let line = $"{indent}print('{format}')  # TODO: remove"
+    cal setline('.', line)
+endfunction
+
+
 " Filetypes
 " =========
 
@@ -1292,10 +1334,12 @@ augroup vimrc
     " Powershell: make a new "advanced" function.
     au Filetype ps1 ino ;c {<cr>[CmdletBinding()]<cr>param()<cr>}<esc>ko
 
-    " Key bindings to run filetype-specific unit tests and syntax checks
+    " Key bindings for filetype-specific stuff.
     autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %')<cr>
     autocmd Filetype python nn <buffer> <leader>my :call Make('mypy %')<cr>
     autocmd Filetype python nn <buffer> <leader>mu :call Make('python3 -munittest %')<cr>
+    autocmd Filetype python nn <buffer> <leader>md :cal DebugVarsPython()<cr>
+    autocmd Filetype c nn <buffer> <leader>md :cal DebugVarsC()<cr>
     " Rust
     autocmd Filetype rust nn <buffer> <leader>mc :call Make('cargo check --tests')<cr>
     autocmd Filetype rust nn <buffer> <leader>mu :call Make('cargo test')<cr>
