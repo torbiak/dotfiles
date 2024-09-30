@@ -1044,7 +1044,7 @@ function! PipeEvalOp(type)
 
     " Yank input into @".
     if linewise
-        exe $"{beg_line},{end_line}yank"
+        silent exe $"{beg_line},{end_line}yank"
     else
         let @" = getregion(beg, end)->join("\n")
     endif
