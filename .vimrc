@@ -1148,8 +1148,8 @@ nnoremap <leader>C :let g:PipeOpCmd = 'xsel -ib'<cr>V:<c-u>call PipeOp(visualmod
 " Copy to end of line, not including the newline.
 nnoremap <leader>$ :let g:PipeOpCmd = 'xsel -ib'<cr>vg_:<c-u>call PipeOp(visualmode())<cr>
 vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode())<cr>
-nnoremap <leader>* :call append(line('.'), systemlist('xsel -op'))<cr>
-nnoremap <leader>+ :call append(line('.'), systemlist('xsel -ob'))<cr>
+nnoremap <leader>* :call append(line('.'), system('xsel -op')->trim()->split('\n'))<cr>
+nnoremap <leader>+ :call append(line('.'), system('xsel -ob')->trim()->split('\n'))<cr>
 inoremap <c-r>* <c-r>=trim(system('xsel -op'))<cr>
 inoremap <c-r>+ <c-r>=trim(system('xsel -ob'))<cr>
 
