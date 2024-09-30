@@ -315,7 +315,7 @@ endfunction
 command! -bar Delete call Delete()
 
 function! PlusExecutable()
-    silent! !chmod +x %
+    silent! !chmod +x %:S
     redraw!
 endfunction
 command! Px cal PlusExecutable()
@@ -327,7 +327,7 @@ command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 function! DiffBuffer()
     let tmp = tempname()
     let absPath = fnamemodify(expand('%'), ':p')
-    exe printf('w %s', tmp)
+    exe printf('w %s', fnameescape(tmp))
     echo system(printf('diff -u %s %s', absPath, tmp))
     cal delete(tmp)
 endfunction
@@ -550,7 +550,7 @@ function! QfLoad()
     if &autowrite
         write
     endif
-    let &l:grepprg = 'cat %'  " This won't work on Windows.
+    let &l:grepprg = 'cat %:S'  " This won't work on Windows.
     let &l:grepformat = '%A%f:%l:%m <<--,%Z--,%f:%l:%m,%+C%.%#,%.%#'
     grep!
 endfunction
@@ -946,7 +946,7 @@ function! MakeX(makeprg, errorformat, jump)
     endtry
 endfunction
 " "Make" the current file with the given "compiler".
-com! -nargs=* Mf :call Make(<q-args> . ' %')
+com! -nargs=* Mf :call Make(<q-args> . ' %:S')
 com! -nargs=* Make :call Make(<q-args>)
 nn <leader>mm :call Make(&makeprg)<cr>
 
@@ -1335,9 +1335,9 @@ augroup vimrc
     au Filetype ps1 ino ;c {<cr>[CmdletBinding()]<cr>param()<cr>}<esc>ko
 
     " Key bindings for filetype-specific stuff.
-    autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %')<cr>
-    autocmd Filetype python nn <buffer> <leader>my :call Make('mypy %')<cr>
-    autocmd Filetype python nn <buffer> <leader>mu :call Make('python3 -munittest %')<cr>
+    autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %:S')<cr>
+    autocmd Filetype python nn <buffer> <leader>my :call Make('mypy %:S')<cr>
+    autocmd Filetype python nn <buffer> <leader>mu :call Make('python3 -munittest %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>md :cal DebugVarsPython()<cr>
     autocmd Filetype c nn <buffer> <leader>md :cal DebugVarsC()<cr>
     " Rust
