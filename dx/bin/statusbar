@@ -111,7 +111,11 @@ bash_tab_completion() {
     if [[ "$prev_word" == "$cmd" ]]; then
         compgen -W "$(declare -F | awk '{print $(NF)}')" -X bash_tab_completion "$cword"
     elif [[ "$prev_word" == did ]]; then
-        compgen -W "$(for f in "$msg_dir"/*; do [[ -e "$f" ]] || continue; echo "${f##*/}"; done)" "$cword"
+        local abs rel
+        for abs in "$msg_dir"/*; do
+            rel=${abs##*/}
+            [[ "$rel" == "$cword"* ]] && printf "%q\n" "$rel"
+        done
     fi
 }
 
