@@ -527,6 +527,15 @@ rsi() {
     "$BASH" "$script"
 }
 
+dotfiles-begin() {
+    alias git=dotfiles
+    PS1="DOTFILES $PS1"
+}
+dotfiles-end() {
+    unalias git
+    PS1=${PS1#DOTFILES }
+}
+
 [ -e ~/.bash_completion ] && . ~/.bash_completion
 
 [[ -e ~/.fzf/key_bindings.bash ]] && . ~/.fzf/key_bindings.bash
