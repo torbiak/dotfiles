@@ -55,6 +55,9 @@
 
 (setopt reb-re-syntax 'string)
 
+;;; Dired
+(setq dired-kill-when-opening-new-dired-buffer t)
+
 ;;; Grep
 
 (setq grep-save-buffers nil)
