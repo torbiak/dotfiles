@@ -37,3 +37,6 @@
 [submodule "vim/bundle/diffconflicts"]
 	path = .vim/bundle/diffconflicts
 	url = https://github.com/whiteinge/diffconflicts.git
+[submodule ".vim/bundle/vim-easy-align"]
+	path = .vim/bundle/vim-easy-align
+	url = https://github.com/junegunn/vim-easy-align.git

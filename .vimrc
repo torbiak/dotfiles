@@ -863,6 +863,9 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 nn <leader>z :FZF --exact<cr>
 
+vmap <leader>a <Plug>(EasyAlign)
+nmap <leader>a <Plug>(EasyAlign)
+
 let g:NERDTreeDirArrows=0
 
 " Probe
