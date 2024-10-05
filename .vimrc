@@ -16,7 +16,8 @@ set encoding=utf-8
 set tags+=.tags
 set laststatus=2 ruler
 set sts=4 ts=8 sw=4 et
-set breakindent  " indent wrapped lines the same as the first
+" indent wrapped lines by the width of the bullet matched by formatlistpat
+set breakindent breakindentopt=list:-1
 set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wildmode=list
