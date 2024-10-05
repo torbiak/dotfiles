@@ -17,6 +17,7 @@ export LESS="-# 60 -i -X -R"
 export LSCOLORS=dxfxcxdxbxegedabagacad
 export LS_COLORS='di=1;35:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
 export PAGER=less
+export MANOPT='--nh --nj'  # Disable hyphenation and justification.
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
