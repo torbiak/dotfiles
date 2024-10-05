@@ -20,12 +20,19 @@
   :init (progn
          (defconst markdown-regex-italic "\\(?:^\\|[^\\]\\)\\(?1:\\(?2:[_]\\)\\(?3:[^ \n\t\\]\\|[^ \n\t]\\(?:.\\|\n[^\n]\\)[^\\ ]\\)\\(?4:\\2\\)\\)")
          (defconst markdown-regex-gfm-italic "\\(?:^\\|[^\\]\\)\\(?1:\\(?2:[_]\\)\\(?3:[^ \\]\\2\\|[^ ]\\(?:.\\|\n[^\n]\\)\\)\\(?4:\\2\\)\\)"))
-  ;; Individual list items in markdown are defined as paragraphs,
-  ;; which really messes me up, since I move by paragraphs constantly.
+  ;; Keep the usual behaviour for moving within lines and across
+  ;; paragraphs by removing a bunch of the remappings that
+  ;; markdown-mode defines.
   :bind (:map markdown-mode-map
-         ("M-{" . markdown-backward-block)
-         ("M-}" . markdown-forward-block)
-         ("M-h" . markdown-mark-block)))
+         ("<remap> <backward-paragraph>" . nil)
+         ("<remap> <forward-paragraph>" . nil)
+         ("<remap> <mark-paragraph>" . nil)
+         ("<remap> <move-beginning-of-line>" . nil)
+         ("<remap> <move-end-of-line>" . nil)))
+(defun jat/markdown-mode-setup ()
+  (setq paragraph-separate (default-value 'paragraph-separate))
+  (setq paragraph-start (default-value 'paragraph-start)))
+(add-hook 'markdown-mode-hook 'jat/markdown-mode-setup)
 
 ;; https://github.com/mkleehammer/surround
 (use-package surround
@@ -166,9 +173,9 @@ to the command."
 
 ;;; Python
 (setq-default python-check-command "mypy")
-(defun jat/python-mode-hook ()
+(defun jat/python-mode-setup ()
   (setq tab-width 4))
-(add-hook 'python-mode-hook 'jat/python-mode-hook)
+(add-hook 'python-mode-hook 'jat/python-mode-setup)
 
 ;;; Fonts
 (set-face-attribute 'fixed-pitch-serif nil :family  "Monospace")
@@ -196,14 +203,14 @@ to the command."
 
 ;;; Format tables with columns separated by two or more spaces. Isn't
 ;;; idempotent since it doesn't keep at least two spaces, though.
-(add-hook 'align-load-hook
-          (lambda ()
-            (add-to-list 'align-rules-list
-                         '(text-column-whitespace
-                           (regexp . "\\(\\s-\\{2,\\}\\)")
-                           (group  . 1)
-                           (modes  . align-text-modes)
-                           (repeat . t)))))
+(defun jat/align-two-or-more-spaces ()
+  (add-to-list 'align-rules-list
+               '(text-column-whitespace
+                 (regexp . "\\(\\s-\\{2,\\}\\)")
+                 (group  . 1)
+                 (modes  . align-text-modes)
+                 (repeat . t))))
+(add-hook 'align-load-hook 'jat/align-two-or-more-spaces)
 
 ;;; Active Babel languages
 (org-babel-do-load-languages
