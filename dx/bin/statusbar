@@ -102,7 +102,7 @@ help() {
 }
 
 # bash tab completion.
-# Recommended completion spec: complete -C statusbar statusbar sb
+# Recommended completion spec: complete -o filenames -C statusbar statusbar sb
 bash_tab_completion() {
     local cmd=$1; shift
     local cword=$1; shift
@@ -110,12 +110,13 @@ bash_tab_completion() {
 
     if [[ "$prev_word" == "$cmd" ]]; then
         compgen -W "$(declare -F | awk '{print $(NF)}')" -X bash_tab_completion "$cword"
-    elif [[ "$prev_word" == did ]]; then
-        local abs rel
-        for abs in "$msg_dir"/*; do
-            rel=${abs##*/}
-            [[ "$rel" == "$cword"* ]] && printf "%q\n" "$rel"
+    elif [[ "$COMP_LINE" == *" did "* ]]; then
+        local candidates=()
+        for f in "$msg_dir"/*; do
+            candidates+=("${f##*/}")
         done
+        local IFS=$'\n'
+        compgen -W "${candidates[*]}" "$cword"
     fi
 }
 

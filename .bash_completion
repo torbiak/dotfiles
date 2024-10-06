@@ -73,7 +73,7 @@ complete -b builtin
 
 
 # jtorbiak-specific completions
-complete -C statusbar statusbar sb
+complete -o filenames -C statusbar statusbar sb
 complete -C jteg jteg
 complete -C atj atj
 complete -C wifi wifi
