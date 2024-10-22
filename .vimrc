@@ -327,7 +327,7 @@ command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 " Diff current buffer with what's on disk.
 function! DiffBuffer()
     let tmp = tempname()
-    let absPath = fnamemodify(expand('%'), ':p')
+    let absPath = fnameescape(expand('%:p'))
     exe printf('w %s', fnameescape(tmp))
     echo system(printf('diff -u %s %s', absPath, tmp))
     cal delete(tmp)
