@@ -1353,6 +1353,9 @@ augroup vimrc
     autocmd Filetype rust nn <buffer> <leader>mY :call Make('./lint')<cr>
     autocmd Filetype rust nn <buffer> <leader>mr :terminal cargo run<cr>
     autocmd Filetype rust nn <buffer> <leader>mR :exe 'terminal cargo run --bin ' . expand('%:t:r')<cr>
+
+    autocmd Filetype java nn <buffer> <leader>mm :call Make('javac %:S')<cr>
+    autocmd Filetype java nn <buffer> <leader>mr :exe '!java %'<cr>
 augroup END
 
 
