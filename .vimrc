@@ -1149,6 +1149,7 @@ endfunction
 " connection to X has been broken.
 nnoremap <leader>c :let g:PipeOpCmd = 'xsel -ib'<cr>:set operatorfunc=PipeOp<cr>g@
 nnoremap <leader>C :let g:PipeOpCmd = 'xsel -ib'<cr>V:<c-u>call PipeOp(visualmode())<cr>
+nnoremap <leader>cc :let g:PipeOpCmd = 'xsel -ib'<cr>V:<c-u>call PipeOp(visualmode())<cr>
 " Copy to end of line, not including the newline.
 nnoremap <leader>$ :let g:PipeOpCmd = 'xsel -ib'<cr>vg_:<c-u>call PipeOp(visualmode())<cr>
 vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode())<cr>
