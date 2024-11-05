@@ -15,7 +15,7 @@ filetype plugin on
 set encoding=utf-8
 set tags+=.tags
 set laststatus=2 ruler
-set sts=4 ts=8 sw=4 et
+set sts=-1 ts=8 sw=4 et
 " indent wrapped lines by the width of the bullet matched by formatlistpat
 set breakindent breakindentopt=list:-1
 set ic hls smartcase incsearch
