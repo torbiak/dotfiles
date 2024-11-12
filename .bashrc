@@ -24,6 +24,7 @@ export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 export BC_ENV_ARGS="-l $HOME/.bcrc"
 export DISPLAY=:0
 export CMUS_HOME=~/.cmus
+export GROFF_TMAC_PATH=~/code/groff
 HISTTIMEFORMAT='%Y-%m-%dT%H:%M:%S '
 
 case $OSTYPE in
