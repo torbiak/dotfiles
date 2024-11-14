@@ -676,25 +676,6 @@ function! ArgsOnSeparateLines()
     silent s/\v, /\=",\n" . indent/g
 endfunction
 
-" Join lines, trimming whitespace from all but the first.
-function! JoinNoWhitespace() range
-    let pos = getpos('.')
-    let lastline = a:lastline
-    if a:firstline == lastline
-        let lastline += 1
-    endif
-    let lines = getline(a:firstline, lastline)
-    for i in range(1, len(lines) - 1)
-        let lines[i] = util#trim(lines[i])
-    endfor
-    cal setline(a:firstline, join(lines, ''))
-    exe printf("%d,%dd", a:firstline + 1, lastline)
-    call setpos('.', pos)
-endfunction
-command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
-nn <leader>J :JoinNoWhitespace<cr>
-vn <leader>J :JoinNoWhitespace<cr>
-
 " Extract strings from a buffer using a regex.
 "
 " Match a regex against a range of lines, convert each list of submatches to a
