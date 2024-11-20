@@ -40,6 +40,9 @@ nn <leader> <nop>
 set vb t_vb=
 nn Y y$
 
+" Don't treat bulleted lists like comments.
+set comments-=fb:-
+
 " This changes the behaviour of shellescape() and is necessary for the zip
 " plugin's s:Escape() function which surrounds filenames with double quotes.
 " noshellslash should probably be set when using vim on windows without
