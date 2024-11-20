@@ -1282,6 +1282,11 @@ au filetypedetect BufNewFile,BufRead *.md setlocal filetype=markdown
 au! filetypedetect BufNewFile,BufRead *.gp
 au filetypedetect BufNewFile,BufRead *.gp setlocal filetype=gnuplot
 
+" tmac, mom, ms are for groff instead of nroff
+au! filetypedetect BufNewFile,BufRead *.tmac
+au filetypedetect BufNewFile,BufRead *.tmac,*.mom,*.ms setlocal filetype=groff
+
+
 " Group autocommands so they can be easily removed/refreshed.
 augroup vimrc
     " Remove all vimrc autocommands.
@@ -1321,6 +1326,11 @@ augroup vimrc
     " Powershell: make a new "advanced" function.
     au Filetype ps1 ino ;c {<cr>[CmdletBinding()]<cr>param()<cr>}<esc>ko
 
+    " Groff
+    " Add more comment leaders. (These are the most common ones, right?)
+    " Don't take roff directives into account for paragraph motions.
+    au Filetype groff setlocal comments+=:\\\#,:\\\" paragraphs=
+
     " Key bindings for filetype-specific stuff.
     autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>my :call Make('mypy %:S')<cr>
@@ -1338,6 +1348,8 @@ augroup vimrc
 
     autocmd Filetype java nn <buffer> <leader>mm :call Make('javac %:S')<cr>
     autocmd Filetype java nn <buffer> <leader>mr :exe '!java %'<cr>
+
+    autocmd Filetype groff nn <buffer> <leader>mr :exe '!groff -ww -Tutf8 %'<cr>
 augroup END
 
 
