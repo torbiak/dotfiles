@@ -427,7 +427,12 @@ timer() {
 
 # Open in BackGround
 obg() {
-    nohup "$@" &> /dev/null & disown $!
+    "$@" &>/dev/null &
+    disown -h %%  # Don't SIGHUP. Like nohup, but with a builtin.
+    # Wait a bit in case the job errors out right away, so that we can get bash
+    # to print its status before the next prompt.
+    sleep 0.1
+    jobs %% &>/dev/null && disown %%
 }
 
 sleeptil() {
