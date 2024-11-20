@@ -16,8 +16,6 @@ set encoding=utf-8
 set tags+=.tags
 set laststatus=2 ruler
 set sts=-1 ts=8 sw=4 et
-" indent wrapped lines by the width of the bullet matched by formatlistpat
-set breakindent breakindentopt=list:-1
 set ic hls smartcase incsearch
 set showmatch matchtime=2  " paren-matching
 set wildmode=list
@@ -39,9 +37,6 @@ let mapleader = 's'
 nn <leader> <nop>
 set vb t_vb=
 nn Y y$
-
-" Don't treat bulleted lists like comments.
-set comments-=fb:-
 
 " This changes the behaviour of shellescape() and is necessary for the zip
 " plugin's s:Escape() function which surrounds filenames with double quotes.
@@ -201,6 +196,10 @@ set formatoptions+=jq
 set nojoinspaces
 " Don't use Q for Ex mode, use it for formatting.
 noremap Q gq
+" Indent wrapped lines by the width of the bullet matched by formatlistpat
+set breakindent breakindentopt=list:-1
+" Don't treat bulleted lists like comments.
+set comments-=fb:-
 
 
 " Indenting
