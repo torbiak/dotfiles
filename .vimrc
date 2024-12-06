@@ -339,7 +339,7 @@ function! NormalSurround(open, close)
     normal viW<esc>
     cal VisualSurround(a:open, a:close)
 endfunction
-nn <leader>mb :call NormalSurround('<tt>', '</tt>')<cr>
+"nn <leader>mb :call NormalSurround('<tt>', '</tt>')<cr>
 
 function! VisualSurround(open, close) range
     let startLine = getline("'<")
@@ -824,6 +824,16 @@ function! GlobEach(patterns)
     return files
 endfunction
 
+" Copy Javascript code to the clipboard in a format suitable for using as a
+" bookmarklet in Firefox.
+"
+" AFAICT only newlines need to be percent-encoded.
+function! CopyAsBookmarklet(start, end) abort
+    let text = getline(a:start, a:end)->join("%0A")
+    let text = $"javascript: (function() {{{text}}})()"
+    cal system('xsel -ib', text)
+endfunction
+
 function! SynGroup()
     let l:s = synID(line('.'), col('.'), 1)
     echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
@@ -1133,7 +1143,7 @@ nnoremap <leader>c :let g:PipeOpCmd = 'xsel -ib'<cr>:set operatorfunc=PipeOp<cr>
 nnoremap <leader>C :let g:PipeOpCmd = 'xsel -ib'<cr>V:<c-u>call PipeOp(visualmode())<cr>
 nnoremap <leader>cc :let g:PipeOpCmd = 'xsel -ib'<cr>V:<c-u>call PipeOp(visualmode())<cr>
 " Copy whole file.
-nnoremap <leader>% :silent w !xsel -ib<cr>
+nnoremap <leader>% :silent w !xsel -ib<cr>:echo "copied file to clipboard"<cr>
 " Copy to end of line, not including the newline.
 nnoremap <leader>$ :let g:PipeOpCmd = 'xsel -ib'<cr>vg_:<c-u>call PipeOp(visualmode())<cr>
 vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode())<cr>
@@ -1352,8 +1362,10 @@ augroup vimrc
     autocmd Filetype java nn <buffer> <leader>mr :exe '!java %'<cr>
 
     autocmd Filetype groff nn <buffer> <leader>mr :exe '!groff -ww -Tutf8 %'<cr>
-augroup END
 
+    autocmd Filetype javascript nn <buffer> <leader>mb :call CopyAsBookmarklet(0, line('$'))<cr>
+    autocmd Filetype javascript vn <buffer> <leader>mb :call CopyAsBookmarklet(line("'<"), line("'>"))<cr>
+augroup END
 
 " Tips
 "
