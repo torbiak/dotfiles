@@ -1163,6 +1163,8 @@ nnoremap <leader>mv :echo system(g:ViewCmd . ' ' . expand('<cfile>'))<cr>
 nnoremap <leader>mV :let g:PipeOpCmd = g:ViewCmd<cr>V:<c-u>call PipeOp(visualmode())<cr>:echo g:PipeOpOut<cr>
 vnoremap <leader>mv :<c-u>let g:PipeOpCmd = g:ViewCmd<cr>:call PipeOp(visualmode())<cr>:echo g:PipeOpOut<cr>
 
+" Open links or whatever.
+nnoremap <leader>mo :echo system('xdg-open ' . expand('<cfile>'))->trim()<cr>
 
 " Make a new window and format a man page for it.
 function! Man(man_args, win_mods)
