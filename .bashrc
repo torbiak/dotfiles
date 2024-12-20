@@ -426,13 +426,25 @@ timer() {
 }
 
 # Open in BackGround
+#
+# I want some feedback if the job fails right away, which is probably the most
+# common type of failure, so check if the job is still running a short time
+# later and print its output if it isn't.
 obg() {
-    "$@" &>/dev/null &
-    disown -h %%  # Don't SIGHUP. Like nohup, but with a builtin.
-    # Wait a bit in case the job errors out right away, so that we can get bash
-    # to print its status before the next prompt.
+    local tmp
+    tmp=$(mktemp --tmpdir obg.XXXXXXXX) || return 1
+
+    "$@" &>"$tmp" &
+
+    # Wait a bit in case the job errors out right away.
     sleep 0.1
-    jobs %% &>/dev/null && disown %%
+    if ps -p "$!" &>/dev/null; then
+        disown "$!"
+    else
+        echo "Job already exited. Output:"
+        cat "$tmp"
+    fi
+    rm "$tmp"  # Delete output file, possibly before the job is finished writing to it.
 }
 
 sleeptil() {
