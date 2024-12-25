@@ -1211,6 +1211,36 @@ function! PipeShellToScratch(buffer_name, cmd, win_mods) abort
 endfunction
 com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-mods>)
 
+" MungeAlone filters a range of lines using a Vim function, similar to
+" how :'<,'>!<cmd> would filter lines with a shell command (see :h :range!).
+"
+" It takes a range of lines, copies them to a new buffer, runs
+" the given function in that buffer, and then replaces the range in the
+" original buffer with the new buffer's contents.
+"
+" This is like "narrowing" in Emacs, so you can treat a range as if it was the
+" entire file and do things like global search/replace without worrying about
+" affecting the rest of the file.
+"
+" Usage example:
+"
+"     function! MyMunge(func) abort
+"       %s/foo/bar/g
+"     endfunction
+"     command -range MyMunge silent <line1>,<line2>call MungeAlone({-> MyMunge()})
+function! MungeAlone(func) range abort
+    let lines = getline(a:firstline, a:lastline)
+    new
+    setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nomodified
+    cal append(0, lines)
+    silent call a:func()
+    let processed = getline(0, line('$'))
+    " I hope we always go back to the previous window after quitting.
+    quit
+    exec $'{a:firstline},{a:lastline}d'
+    cal append(a:firstline - 1, processed)
+endfunction
+
 
 " Define highlight groups with characteristics similar to IncSearch to be used
 " with :match and matchadd()
