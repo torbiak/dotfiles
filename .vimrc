@@ -1229,16 +1229,17 @@ com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-mods>)
 "     endfunction
 "     command -range MyMunge silent <line1>,<line2>call MungeAlone({-> MyMunge()})
 function! MungeAlone(func) range abort
+    let saved_height = winheight(winnr())
     let lines = getline(a:firstline, a:lastline)
     new
     setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nomodified
     cal append(0, lines)
     silent call a:func()
     let processed = getline(0, line('$'))
-    " I hope we always go back to the previous window after quitting.
     quit
     exec $'{a:firstline},{a:lastline}d'
     cal append(a:firstline - 1, processed)
+    exe $"resize {saved_height}"
 endfunction
 
 
