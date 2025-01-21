@@ -1111,30 +1111,28 @@ nnoremap <leader>ev :set operatorfunc=VimEvalOp<cr>g@
 nnoremap <leader>eV V:<c-u>call VimEvalOp(visualmode())<cr>
 vnoremap <leader>ev :<c-u>call VimEvalOp(visualmode())<CR>
 
-" One-way operator-pending commands
-" =================================
-let g:PipeOpCmd = 'xsel -ib'
-let g:PipeOpOut = ''
-function! PipeOp(type)
-    let saved_reg = @"
-    " TODO: do blockwise selection instead of converting to linewise.
+" Get the current "selection", either visual or via a mapped operator ('[ and
+" ']).
+"
+" Designed to be called from an operatorfunc. See :h map-operator.
+" Can also be called in a normal context to get the current visual selection,
+" like `GetSelection(visualmode())`.
+function! GetSelection(type) abort
     let visual = a:type ==# 'V' || a:type ==# 'v' || a:type ==# "\<c-v>"
     let beg = getpos(visual ? "'<" : "'[")
     let end = getpos(visual ? "'>" : "']")
     let [beg_line, end_line] = [beg[1], end[1]]
     let linewise = beg_line != end_line || a:type ==# 'V' || a:type ==# 'line'
+    return getregion(beg, end, #{type: linewise ? 'V' : 'v'})->join("\n")
+endfunction
 
-    " Yank input into @".
-    if linewise
-        exe $"{beg_line},{end_line}yank"
-    else
-        let @" = getregion(beg, end)->join("\n")
-    endif
-
+" One-way operator-pending commands
+" =================================
+let g:PipeOpCmd = 'xsel -ib'
+let g:PipeOpOut = ''
+function! PipeOp(type)
     " Save the output so it can be retrieved via "= if needed.
-    let g:PipeOpOut = system(g:PipeOpCmd, @")
-
-    let @" = saved_reg
+    let g:PipeOpOut = system(g:PipeOpCmd, GetSelection(a:type))
 endfunction
 
 " Copy/paste using xsel, for when clipboard support isn't available or the
@@ -1158,10 +1156,10 @@ inoremap <c-r>+ <c-r>=trim(system('xsel -ob'))<cr>
 " the common case. For filenames with spaces you'll need to visually select it
 " first, unless it's on a line by itself, in which case the  `mV` binding is
 " appropriate.
-let g:ViewCmd = printf('sed "s^~^%s^" | feh --scale-down -f -', $HOME)  " Expand leading tildes.
-nnoremap <leader>mv :echo system(g:ViewCmd . ' ' . expand('<cfile>'))<cr>
-nnoremap <leader>mV :let g:PipeOpCmd = g:ViewCmd<cr>V:<c-u>call PipeOp(visualmode())<cr>:echo g:PipeOpOut<cr>
-vnoremap <leader>mv :<c-u>let g:PipeOpCmd = g:ViewCmd<cr>:call PipeOp(visualmode())<cr>:echo g:PipeOpOut<cr>
+let g:ViewCmd = 'feh --scale-down'
+nnoremap <leader>mv :echo system(g:ViewCmd . ' ' . expand('<cfile>') . ' &')<cr>
+nnoremap <leader>mV :<c-u>echo system(g:ViewCmd . ' ' . fnameescape(GetSelection(visualmode())) . ' &')<cr>
+vnoremap <leader>mv :<c-u>echo system(g:ViewCmd . ' ' . fnameescape(GetSelection(visualmode())) . ' &')<cr>
 
 " Open links or whatever.
 nnoremap <leader>mo :echo system('xdg-open ' . expand('<cfile>'))->trim()<cr>
