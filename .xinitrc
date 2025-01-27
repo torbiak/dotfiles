@@ -13,7 +13,7 @@ fi
 [[ -f ~/.Xmodmap ]] && xmodmap ~/.Xmodmap
 xrdb -merge ~/.Xresources
 [[ -f ~/.xbindkeysrc ]] && xbindkeys
-xsetroot -bg black
+xsetroot -solid black
 
 ~/dx/bin/statusbar cont &
 
