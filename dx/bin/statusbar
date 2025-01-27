@@ -58,7 +58,7 @@ once() {
         done
     fi
 
-    xsetroot -name "$date | v$vol | b$pct_charge ${msg# }"
+    xsetroot -name " $date | v$vol | b$pct_charge ${msg# }"
 }
 
 cont() {
