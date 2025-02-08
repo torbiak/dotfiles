@@ -924,23 +924,51 @@ let g:go_template_use_pkg = 1
 " Quickfix
 " ========
 function! Make(makeprg)
-    call MakeX(a:makeprg, v:none, 0)
+    call MakeX(#{makeprg: a:makeprg})
 endfunction
-function! MakeX(makeprg, errorformat, jump)
-    let jump = a:jump == 0 ? '!' : ''
-    let errorformat_orig = &l:errorformat
-    if a:errorformat != v:none
-        let &l:errorformat = a:errorformat
-    endif
+
+" MakeX() lets you override compiler options in a single function call,
+" allowing for conveniently mapping compilers to different keys.
+"
+" opts: dict with any subset of {compiler makeprg efm jump=0}
+"
+" For example to load the "jest" compiler runtime files and pickup the rather
+" complicated errorformat but to override makeprg:
+"
+"     MakeX(#{compiler: 'jest', makeprg: 'yarn jest'})
+function! MakeX(opts)
     let makeprg_orig = &l:makeprg
-    let &l:makeprg = a:makeprg
+    let errorformat_orig = &l:errorformat
+    let previous_compiler = v:none
+    if exists("b:current_compiler")
+        let previous_compiler = b:current_compiler
+    endif
+
+    if a:opts->has_key('compiler')
+        exe $"compiler {a:opts['compiler']}"
+    endif
+
+    let jump = a:opts->get('jump', 0) ? '' : '!'
+
+    if a:opts->has_key('makeprg')
+        let &l:makeprg = a:opts['makeprg']
+    endif
+
+    if a:opts->has_key('efm')
+        let &l:errorformat = a:opts['efm']
+    endif
+
     try
-        exe printf('make%s', jump)
+        exe $'make{jump}'
     finally
         let &l:errorformat = errorformat_orig
         let &l:makeprg = makeprg_orig
+        if previous_compiler != v:none
+            exe $'compiler {previous_compiler}'
+        endif
     endtry
 endfunction
+
 " "Make" the current file with the given "compiler".
 com! -nargs=* Mf :call Make(<q-args> . ' %:S')
 com! -nargs=* Make :call Make(<q-args>)
@@ -1374,12 +1402,17 @@ augroup vimrc
     " Don't take roff directives into account for paragraph motions.
     au Filetype groff setlocal comments+=:\\\#,:\\\" paragraphs=
 
+
     " Key bindings for filetype-specific stuff.
+
     autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %:S')<cr>
+
+    autocmd Filetype c nn <buffer> <leader>md :cal DebugVarsC()<cr>
+
     autocmd Filetype python nn <buffer> <leader>my :call Make('mypy %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>mu :call Make('python3 -munittest %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>md :cal DebugVarsPython()<cr>
-    autocmd Filetype c nn <buffer> <leader>md :cal DebugVarsC()<cr>
+
     " Rust
     autocmd Filetype rust nn <buffer> <leader>mc :call Make('cargo check --tests')<cr>
     autocmd Filetype rust nn <buffer> <leader>mu :call Make('cargo test')<cr>
@@ -1396,7 +1429,11 @@ augroup vimrc
 
     autocmd Filetype javascript nn <buffer> <leader>mb :call CopyAsBookmarklet(0, line('$'))<cr>
     autocmd Filetype javascript vn <buffer> <leader>mb :call CopyAsBookmarklet(line("'<"), line("'>"))<cr>
+
+    autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: 'yarn tsc --noEmit %:S'})<cr>
+    autocmd Filetype typescript nn <buffer> <leader>mu :call MakeX(#{compiler: 'jest', makeprg: 'yarn jest'})<cr>
 augroup END
+
 
 " Tips
 "
