@@ -546,11 +546,11 @@ rsi() {
 }
 
 dotfiles-begin() {
-    alias git=dotfiles
+    export GIT_DIR=~/.dotfiles
     PS1="DOTFILES $PS1"
 }
 dotfiles-end() {
-    unalias git
+    unset GIT_DIR
     PS1=${PS1#DOTFILES }
 }
 
