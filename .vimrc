@@ -163,9 +163,9 @@ nn <leader>p "0p
 nn <leader>P "0P
 
 " Tab widths
-nn <leader>8 :set sts=8 ts=8 sw=8 et<cr>
-nn <leader>4 :set sts=4 ts=4 sw=4 et<cr>
-nn <leader>2 :set sts=2 ts=2 sw=2 et<cr>
+nn <leader>8 :set ts=8 sw=8 et<cr>
+nn <leader>4 :set ts=4 sw=4 et<cr>
+nn <leader>2 :set ts=2 sw=2 et<cr>
 
 " Jump between methods
 "
@@ -269,7 +269,7 @@ endfunction
 nn <leader>i :call ToggleTorbijIndent()<cr>
 
 function! GnuC()
-  setlocal sw=2 sts=2 ts=8 et
+  setlocal sw=2 ts=8 et
   setlocal cinoptions=>2s,e-s,n-s,f0,{s,^-s,:s,=s,g0,+.5s,p2s,t0,(0 cindent
 endfunction
 
@@ -1364,15 +1364,17 @@ augroup vimrc
     autocmd!
 
     " Indentation settings.
-    autocmd Filetype java setlocal sts=2 sw=2 ts=2
-    autocmd Filetype ruby setlocal sts=2 sw=2 ts=2
+    autocmd Filetype java setlocal sw=2 et
+    autocmd Filetype ruby setlocal sw=2 et
     autocmd Filetype lisp filetype indent on
-    autocmd Filetype go setlocal sts=4 sw=4 ts=4 noet
-    autocmd Filetype gomod setlocal sts=4 sw=4 ts=4 noet
-    autocmd Filetype c setlocal cindent indentexpr= sts=4 sw=4 ts=4 et
-    autocmd Filetype cpp setlocal cindent indentexpr= sts=4 sw=4 ts=4 et
+    autocmd Filetype go setlocal sw=4 ts=4 noet
+    autocmd Filetype gomod setlocal sw=4 ts=4 noet
+    autocmd Filetype c setlocal cindent indentexpr= sw=4 et
+    autocmd Filetype cpp setlocal cindent indentexpr= sw=4 et
     autocmd Filetype python setlocal foldmethod=indent foldnestmax=2 foldlevel=99
-    au Filetype make setlocal sts=4 sw=4 ts=4 noet
+    au Filetype make setlocal sw=4 ts=4 noet
+    au Filetype typescript setlocal sw=2 et
+    au Filetype javascript setlocal sw=2 et
 
     " Rust
     " Note this block shouldn't be necessary or have any effect in Vim9+
