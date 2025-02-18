@@ -845,6 +845,20 @@ function! SynStack()
 endfunc
 nn <leader>6 :call SynStack()<cr>
 
+" Join lines, trimming whitespace from all but the first.
+function! JoinNoWhitespace() range abort
+    " Modify the range so that when JoinNoWhitespace() is called on a single
+    " line range it joins it with the next line.
+    let first = a:firstline
+    let last = first == a:lastline ? first + 1 : a:lastline
+    let joined = getline(first, last)
+        \->map({ i, line -> i == 0 ? line : line->trim('', 1) })
+        \->join('')
+    exe $'{first},{last}d'
+    cal append(first - 1, joined)
+endfunction
+command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
+
 " Plugin configuration
 " ====================
 " fzf
