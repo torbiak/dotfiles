@@ -1118,6 +1118,10 @@ vnoremap <leader>eb :<c-u>let g:PipeEvalInterpreter = 'bash -s'<cr>:call PipeEva
 nnoremap <leader>ep :let g:PipeEvalInterpreter = 'python3'<cr>:set operatorfunc=PipeEvalOp<cr>g@
 nnoremap <leader>eP :let g:PipeEvalInterpreter = 'python3'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
 vnoremap <leader>ep :<c-u>let g:PipeEvalInterpreter = 'python3'<cr>:call PipeEvalOp(visualmode())<cr>
+" node/javascript eval
+nnoremap <leader>ej :let g:PipeEvalInterpreter = 'node -'<cr>:set operatorfunc=PipeEvalOp<cr>g@
+nnoremap <leader>eJ :let g:PipeEvalInterpreter = 'node -'<cr>V:<c-u>call PipeEvalOp(visualmode())<cr>
+vnoremap <leader>ej :<c-u>let g:PipeEvalInterpreter = 'node -'<cr>:call PipeEvalOp(visualmode())<cr>
 
 function! VimEvalOp(type)
     let saved_reg = @"
@@ -1449,6 +1453,7 @@ augroup vimrc
     autocmd Filetype javascript nn <buffer> <leader>mb :call CopyAsBookmarklet(0, line('$'))<cr>
     autocmd Filetype javascript vn <buffer> <leader>mb :call CopyAsBookmarklet(line("'<"), line("'>"))<cr>
 
+    autocmd Filetype typescript nn <buffer> <leader>mr :call MakeX(#{compiler: 'tsc', makeprg: 'ts-node %'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: 'yarn tsc'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mu :call MakeX(#{compiler: 'jest', makeprg: 'yarn jest'})<cr>
 augroup END
