@@ -1456,6 +1456,8 @@ augroup vimrc
     autocmd Filetype typescript nn <buffer> <leader>mr :call MakeX(#{compiler: 'tsc', makeprg: 'ts-node %'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: 'yarn tsc'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mu :call MakeX(#{compiler: 'jest', makeprg: 'yarn jest 2>&1 \\| tee jest.log'})<cr>
+
+    autocmd FileType javascript,typescript iabbrev zp console.log
 augroup END
 
 
