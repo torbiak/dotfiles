@@ -184,9 +184,12 @@ nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
 nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
 nn <leader>x :source ~/source.vim<cr>
-nn <leader>y :let @y = @"<cr>
 nn <leader>mr :!./%<cr>
 
+" Save the unnamed register into @y. Useful when you delete/yank something to
+" move/copy it somewhere else, but then realize that it'd be easiest to first
+" make some changes at the destination that'd overwrite @" and/or @0.
+nn <leader>y :let @y = @"<cr>
 
 " Formatting
 " j: remove comment markers when joining lines
