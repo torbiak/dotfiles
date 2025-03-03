@@ -235,13 +235,14 @@ function! TorbijIndent()
     return prev_indent + inc - dec
 endfunction
 
+
 " If the previous line matches one of these patterns, increment the indent of
 " the current line.
 let g:inc_indent_after = []
 cal add(g:inc_indent_after, '[{\[\(]$')  " Trailing parens/brackets/colons.
 cal add(g:inc_indent_after, '\v^\s*(if|elif|while|for).*(; then|; do|:)$')  " sh|Python|Nim control statements
-cal add(g:inc_indent_after, '\v^\s*(else\>).*:?$')  " 'else' in various languages
-cal add(g:inc_indent_after, '\v^function.*\(\)$')  " VimL function statements.
+cal add(g:inc_indent_after, '\v^\s*(else>).*:?$')  " 'else' in various languages
+cal add(g:inc_indent_after, '\v^function \w+\(.*\)$')  " VimL function statements.
 
 " If the current line matches one of these patterns, decrement its indent.
 " Depends on indentkeys being set appropriately.
