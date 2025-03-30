@@ -1458,11 +1458,12 @@ augroup vimrc
     autocmd Filetype javascript nn <buffer> <leader>mb :call CopyAsBookmarklet(0, line('$'))<cr>
     autocmd Filetype javascript vn <buffer> <leader>mb :call CopyAsBookmarklet(line("'<"), line("'>"))<cr>
 
+    autocmd Filetype javascript nn <buffer> <leader>my :call MakeX(#{compiler: 'tsc', makeprg: 'tsc --noEmit --checkJs %'})<cr>
     autocmd Filetype javascript nn <buffer> <leader>mr :call MakeX(#{compiler: 'javascript', makeprg: 'node %'})<cr>
 
     autocmd Filetype typescript nn <buffer> <leader>mr :call MakeX(#{compiler: 'tsc', makeprg: 'ts-node %'})<cr>
-    autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: exists('yarn.lock') ? 'yarn tsc' : 'tsc'})<cr>
-    autocmd Filetype typescript nn <buffer> <leader>mu :call MakeX(#{compiler: 'jest', makeprg: exists('yarn.lock') ? 'yarn ' : '' . 'jest 2>&1 \\| tee jest.log'})<cr>
+    autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: filereadable('yarn.lock') ? 'yarn tsc' : 'tsc'})<cr>
+    autocmd Filetype typescript nn <buffer> <leader>mu :call MakeX(#{compiler: 'jest', makeprg: (filereadable('yarn.lock') ? 'yarn ' : '') . 'jest 2>&1 \\| tee jest.log'})<cr>
 
     autocmd FileType javascript,typescript iabbrev zp console.log
 augroup END
