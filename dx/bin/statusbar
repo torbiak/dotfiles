@@ -63,7 +63,7 @@ once() {
 
 cont() {
     while true; do
-        once |& logger -t statusbar -p DEBUG
+        once |& logger -t statusbar -p DEBUG || true
         sleep 10
     done
 }
