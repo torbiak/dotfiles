@@ -38,6 +38,10 @@ nn <leader> <nop>
 set vb t_vb=
 nn Y y$
 
+" When yanking quoted strings, don't include leading whitespace.
+nn ya' y2i'
+nn ya" y2i"
+
 " This changes the behaviour of shellescape() and is necessary for the zip
 " plugin's s:Escape() function which surrounds filenames with double quotes.
 " noshellslash should probably be set when using vim on windows without
