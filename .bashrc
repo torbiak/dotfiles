@@ -53,7 +53,7 @@ set -o histexpand
 
 bind C-p:history-search-backward
 bind C-n:history-search-forward
-bind '"C-w": kill-region'
+bind '"\C-x\C-k": kill-region'
 bind '"\ew": copy-region-as-kill'
 bind '"\el": redraw-current-line'
 bind '"\em": menu-complete'
