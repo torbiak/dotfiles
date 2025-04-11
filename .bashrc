@@ -62,10 +62,10 @@ bind '"\eM": menu-complete-backward'
 for key in D H F C B A; do
     bind -r '\eO'"$key"
 done
-bind '"\ep": shell-kill-word'
-bind '"\eo": shell-backward-kill-word'
-bind '"\eP": shell-forward-word'
-bind '"\eO": shell-backward-word'
+bind '"\ep": shell-forward-word'
+bind '"\eo": shell-backward-word'
+bind '"\eP": shell-kill-word'
+bind '"\eO": shell-backward-kill-word'
 # Disable revert-all-at-newline for now since there's a long-standing bug in it
 # that causes a double-free and crash, usually when the previous command has
 # been modified.
