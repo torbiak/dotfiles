@@ -23,4 +23,4 @@ eval fmt->add('%C%p^')  " Continue by extracting the column from a 'pointer line
 eval fmt->add('%+Z%[a-z]%#Error: %m')
 eval fmt->add('%-C%.%#')  " Continue with any (.*) lines, but discard them.
 eval fmt->add('%-G%.%#')  " Discard everything else.
-let &errorformat = fmt->join(',')
+let &l:errorformat = fmt->join(',')
