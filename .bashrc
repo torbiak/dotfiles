@@ -545,44 +545,6 @@ rsi() {
     "$BASH" "$script"
 }
 
-# Array Set Ops
-#
-# The following adds a, b, and c to a set and then removes b, resulting in the
-# `aso` variable containing only a and c afterward.
-#
-#     aso a b c -m b
-#     echo "${aso[@]}"  # a c
-#
-# This is intended to be combined with globbing to remove a subset of a glob
-# and then use the `aso` array variable to provide files to an interactive
-# program, like the following, since it can be awkward to open something like
-# an editor with filenames given from stdin or a file.
-#
-#     aso *.c -m *.test.c; vim "${aso[@]}"
-aso() {
-    local OPTIND
-    local -g -a aso
-    local -A files
-    local usage="aso [-h] <file>... [-m <file>...]"
-    while getopts 'h' opt; do
-        case "$opt" in
-        h) echo "$usage"; return 0;;
-        ?) return 1;;
-        esac
-    done
-    while [[ $# -gt 0 && $1 != '-m' ]]; do
-        files[$1]=1
-        shift
-    done
-    [[ $1 = '-m' ]] && shift
-    while [[ $# -gt 0 ]]; do
-        unset "files[$1]"
-        shift
-    done
-    # shellcheck disable=SC2034
-    aso=("${!files[@]}")
-}
-
 
 dotfiles-begin() {
     export GIT_DIR=~/.dotfiles
