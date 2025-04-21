@@ -1286,6 +1286,7 @@ function! MungeAlone(func) range abort
     new
     setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nomodified
     cal append(0, lines)
+    $d  " Delete the empty line that the buffer started with.
     silent call a:func()
     let processed = getline(0, line('$'))
     quit
