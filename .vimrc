@@ -34,6 +34,7 @@ endif
 set backupdir=~/tmp/vim,.
 ino jk <esc>
 let mapleader = 's'
+let maplocalleader = '\'
 nn <leader> <nop>
 set vb t_vb=
 nn Y y$
