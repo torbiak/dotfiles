@@ -1373,16 +1373,16 @@ function! MarkdownLevel()
     endif
 endfunction
 " md extension signifies markdown, not modula2
-au! filetypedetect BufNewFile,BufRead *.md
-au filetypedetect BufNewFile,BufRead *.md setlocal filetype=markdown
+au! filetypedetect BufNewFile,BufRead *.md setlocal filetype=markdown
 
 " gp extension is for gnuplot instead of the PARI/GP calculator.
-au! filetypedetect BufNewFile,BufRead *.gp
-au filetypedetect BufNewFile,BufRead *.gp setlocal filetype=gnuplot
+au! filetypedetect BufNewFile,BufRead *.gp setlocal filetype=gnuplot
 
 " tmac, mom, ms are for groff instead of nroff
-au! filetypedetect BufNewFile,BufRead *.tmac
-au filetypedetect BufNewFile,BufRead *.tmac,*.mom,*.ms setlocal filetype=groff
+au! filetypedetect BufNewFile,BufRead *.tmac,*.mom,*.ms setlocal filetype=groff
+
+" Mandarin Blueprint
+au! BufRead,BufNewFile *.mb setlocal filetype=mb
 
 
 " Group autocommands so they can be easily removed/refreshed.
