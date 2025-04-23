@@ -1383,7 +1383,7 @@ au! filetypedetect BufNewFile,BufRead *.gp setlocal filetype=gnuplot
 au! filetypedetect BufNewFile,BufRead *.tmac,*.mom,*.ms setlocal filetype=groff
 
 " Mandarin Blueprint
-au! BufRead,BufNewFile *.mb setlocal filetype=mb
+au! filetypedetect BufRead,BufNewFile *.mb setlocal filetype=mb
 
 
 " Group autocommands so they can be easily removed/refreshed.
