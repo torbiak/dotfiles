@@ -10,11 +10,20 @@ let b:did_ftplugin = 1
 let b:undo_ftplugin = 'mapclear <buffer>'
 
 function! MbUsage() range
-    let range = a:firstline . ',' . a:lastline
-    " Delete lines last, since they'd mess up the range for the previous
-    " commands otherwise.
-    silent exe range . 's/\vUsage \d+ - "?([^"]*)"?/- \1/'
-    silent exe range . 'g/^$/d'
+    let raw = getline(a:firstline, a:lastline)
+    let out = []
+    " [\u4E00-\u9FFF] matches common CJK Unified Ideographs
+    " See https://stackoverflow.com/questions/1366068/whats-the-complete-range-for-chinese-characters-in-unicode
+    let m = matchlist(raw[0], '\v^([\u4E00-\u9FFF]+) ?(.*)')
+    let [word, pinyin] = [m[1], m[2]]
+    cal add(out, word)
+    if pinyin != ''
+        cal add(out, pinyin)
+    endif
+    cal extend(out, mapnew(raw[1:], {_, s -> substitute(s, '\vUsage \d+ - "?([^"]*)"?', '- \1', '')}))
+    cal filter(out, {_, s -> s !~ '^$'})
+    cal deletebufline('%', a:firstline, a:lastline)
+    cal append(a:firstline - 1, out)
 endfunction
 command! -range=% MbUsage :<line1>,<line2>call MbUsage()
 vn <buffer> <localleader>u :MbUsage<cr>
