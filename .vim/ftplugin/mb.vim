@@ -79,11 +79,13 @@ endfunction
 command! -range=% MbMovieFormat silent <line1>,<line2>call MbMovieFormat()
 vn <buffer> <localleader>m :MbMovieFormat<cr>
 
-" Bindings to echo or append() definitions for Chinese words.
+" Bindings to get definitions for Chinese words: echo, append(), or copy-as-TSV.
 nn <buffer> <localleader>d :echo system('cedict ' . expand('<cword>'))<cr>
 nn <buffer> <localleader>D :call append('.', systemlist('cedict ' . expand('<cword>')))<cr>
+nn <buffer> <localleader>T :echo system('cedict -t ' . expand('<cword>'))<cr>
 vn <buffer> <localleader>d :<C-u>echo system('cedict ' . GetSelection('v'))<cr>
 vn <buffer> <localleader>D :<C-u>call append('.', systemlist('cedict ' . GetSelection('v')))<cr>
+vn <buffer> <localleader>T :<C-u>echo system('cedict -t ' . GetSelection('v'))<cr>
 
 function! CopyAsTsv() abort
     cal system('xsel -ib', getline("'<", "'>")->join("\t"))
