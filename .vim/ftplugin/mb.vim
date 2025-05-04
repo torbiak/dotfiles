@@ -91,3 +91,5 @@ function! CopyAsTsv() abort
     cal system('xsel -ib', getline("'<", "'>")->join("\t"))
 endfunction
 vn <buffer> <localleader>t :<c-u>call CopyAsTsv()<cr>
+
+nn <buffer> <localleader>n :.!pinyin-num<cr>
