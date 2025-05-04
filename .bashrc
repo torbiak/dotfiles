@@ -471,6 +471,7 @@ rgl() {
 }
 
 clipargs() { xsel -ib <<<"$*"; }
+clip() { xsel -b; }
 
 # Try to pipe the help/usage of a program to less.
 h() {
