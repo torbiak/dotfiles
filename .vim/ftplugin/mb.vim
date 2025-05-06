@@ -12,16 +12,29 @@ let b:undo_ftplugin = 'mapclear <buffer>'
 function! MbUsage() range
     let raw = getline(a:firstline, a:lastline)
     let out = []
-    " [\u4E00-\u9FFF] matches common CJK Unified Ideographs
-    " See https://stackoverflow.com/questions/1366068/whats-the-complete-range-for-chinese-characters-in-unicode
-    let m = matchlist(raw[0], '\v^([\u4E00-\u9FFF]+) ?(.*)')
-    let [word, pinyin] = [m[1], m[2]]
-    cal add(out, word)
-    if pinyin != ''
-        cal add(out, pinyin)
-    endif
-    cal extend(out, mapnew(raw[1:], {_, s -> substitute(s, '\vUsage \d+ - "?([^"]*)"?', '- \1', '')}))
-    cal filter(out, {_, s -> s !~ '^$'})
+    for line in raw
+        if line == ''
+            continue
+        endif
+
+        " [\u4E00-\u9FFF] matches common CJK Unified Ideographs
+        " See https://stackoverflow.com/questions/1366068/whats-the-complete-range-for-chinese-characters-in-unicode
+        let m = matchlist(line, '\v^([\u4E00-\u9FFF]+)')
+        if m->len()
+            let word = m[1]
+            if out->len() != 0
+                cal add(out, '')
+            endif
+            cal add(out, word)
+            let [_, pinyin, definition] = system($"cedict -t {word}")->trim()->split('\t')
+            cal add(out, pinyin)
+            cal add(out, definition)
+            continue
+        endif
+
+        cal add(out, line)
+    endfor
+    cal map(out, {_, s -> substitute(s, '\vUsage \d+ - "?([^"]*)"?', '- \1', '')})
     cal deletebufline('%', a:firstline, a:lastline)
     cal append(a:firstline - 1, out)
 endfunction
