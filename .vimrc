@@ -567,24 +567,6 @@ function! QfLoad()
 endfunction
 command! -nargs=0 QfLoad cal QfLoad()
 
-" Create a review note for the current line.
-function! QfNote(note_file)
-    let filepath = expand('%')
-    let lnum = line('.')
-    " There needs to something after the last colon or the line won't match
-    " any of the default errorformat patterns.
-    let prefix = join([filepath, lnum], ':') . ': '
-    cal OpenOrReuse(a:note_file, 'split')
-    if line('$') == 1 && getline(1) == ''
-        cal setline(1, prefix)
-    else
-        cal append(line('$'), prefix)
-    endif
-    normal G$
-endfunction
-command! -nargs=? -complete=file QfNote cal QfNote(<f-args>)
-
-
 " Idempotent table formatter.
 " sep: field separator pattern
 " opts: dict with the following keys:
