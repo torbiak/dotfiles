@@ -9,7 +9,7 @@ let b:did_ftplugin = 1
 
 let b:undo_ftplugin = 'mapclear <buffer>'
 
-function! MbUsage() range
+function! MbUsage() range abort
     let raw = getline(a:firstline, a:lastline)
     let out = []
     for line in raw
@@ -26,9 +26,17 @@ function! MbUsage() range
                 cal add(out, '')
             endif
             cal add(out, word)
-            let [_, pinyin, definition] = system($"cedict -t {word}")->trim()->split('\t')
-            cal add(out, pinyin)
-            cal add(out, definition)
+            let word_lines = systemlist($"cedict -t {word}")
+            " Assume the first definition is the best match.
+            if word_lines->len() >= 1
+                let [_, pinyin, definition] = word_lines[0]->split('\t')
+                cal add(out, pinyin)
+                cal add(out, definition)
+            endif
+            " Print any other words, too.
+            if word_lines->len() > 1
+                cal extend(out, word_lines[1:])
+            endif
             continue
         endif
 
