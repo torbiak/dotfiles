@@ -1,6 +1,5 @@
 " Helpers for writing mnemonics for Chinese characters and creating Anki
 " flashcards for characters and words.
-"
 
 if exists("b:did_ftplugin")
   finish
@@ -48,6 +47,7 @@ function! MbUsage() range abort
 endfunction
 command! -range=% MbUsage :<line1>,<line2>call MbUsage()
 vn <buffer> <localleader>u :MbUsage<cr>
+nn <buffer> <localleader>u :.MbUsage<cr>
 
 function! MbEntityCompletion(findstart, base) abort
     let entities = []
