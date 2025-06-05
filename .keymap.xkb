@@ -28,5 +28,7 @@ xkb_symbols {
     key <I248>  { [Multi_key] };
     // Framework 13 Ryzen: use the Framework/F12 key.
     key <I234> { [Multi_key] };
+    // XPS 15: use insert
+    key <INS> { [Multi_key] };
 };
-};
+};  // END keymap
