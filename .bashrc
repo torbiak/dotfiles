@@ -315,6 +315,10 @@ gitTrackingBranch() {
     git rev-parse --symbolic-full-name --abbrev-ref '@{upstream}'
 }
 
+repo-root() {
+    git rev-parse --show-toplevel
+}
+
 # git add rebase continue
 garc() {
     git add -u
