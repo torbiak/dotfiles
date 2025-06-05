@@ -1,37 +1,53 @@
 #!/bin/bash
 set -euo pipefail
 
-mk_tty_keymap() {
-    local keymap_dir=/usr/share/kbd/keymaps/i386/qwerty/
-    gunzip --stdout "$keymap_dir"/us.map.gz |
-        sed -E '/^keycode +58/c keycode  58 = Control' |
-        gzip - |
-        sudo tee "$keymap_dir"/jat.map.gz >/dev/null
+console_keymap_dir=/usr/share/kbd/keymaps/i386/qwerty/
+remap_file=/etc/console-setup/remap.inc
+
+set_custom_vc() {
+    if [[ -e $console_keymap_dir ]]; then
+        # Arch
+        mk_tty_keymap &&
+        sudo localectl set-keymap --no-convert jat
+    elif [[ -e $remap_file ]]; then
+        # Ubuntu
+        # remap capslock to control
+        echo 'keycode 58 = Control' | sudo tee -a "$remap_file" >/dev/null &&
+        sudo update-initramfs -u
+    else
+        echo "set console keymap: unsupported system" >&2
+        return 1
+    fi
 }
 
-set_custom() {
-    local repo_dir
-    repo_dir=$(cd "${BASH_SOURCE%/*}/.." && pwd || return 1)
+mk_tty_keymap() {
+    gunzip --stdout "$console_keymap_dir"/us.map.gz |
+        sed -E '/^keycode +58/c keycode  58 = Control' |
+        gzip - |
+        sudo tee "$console_keymap_dir"/jat.map.gz >/dev/null
+}
 
+set_custom_x11() {
     # Since we're just setting the X11 keymap temporarily with xkbcomp, also set the
     # X11 keymap to us+ctrl:nocaps to get most of what we want if the layout
     # gets reset for some reason.
     #
     # Expect a bunch of warnings from xkbcomp about unresolvable keysyms and
     # unassigned keycodes.
-    mk_tty_keymap &&
-    sudo localectl set-keymap --no-convert jat &&
     sudo localectl set-x11-keymap --no-convert us '' '' ctrl:nocaps &&
-    xkbcomp "$repo_dir"/dx/keymap.xkb "$DISPLAY" 2>/dev/null
+    xkbcomp ~/.keymap.xkb "$DISPLAY" 2>/dev/null
 }
 
 set_builtin() {
-    sudo localectl set-keymap --no-convert us &&
-    sudo localectl set-x11-keymap --no-convert us '' '' ctrl:nocaps
+    local -
+    set -x
+    sudo localectl set-keymap --no-convert us || true
+    sudo localectl set-x11-keymap --no-convert us '' '' ctrl:nocaps || true
 }
 
 if [[ $# -eq 0 ]]; then
-    set_custom
+    set_custom_x11 || true
+    set_custom_vc || true
 else
     "$@"
 fi
