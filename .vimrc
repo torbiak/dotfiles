@@ -251,7 +251,7 @@ endfunction
 " the current line.
 let g:inc_indent_after = []
 cal add(g:inc_indent_after, '[{\[\(]$')  " Trailing parens/brackets/colons.
-cal add(g:inc_indent_after, '\v^\s*(class|def|if|elif|while|for)>.*(; then|; do|:)$')  " sh|Python|Nim control statements
+cal add(g:inc_indent_after, '\v^\s*(class|def|async def|if|elif|while|for|with|async with|try|except)>.*(; then|; do|:)$')  " sh|Python|Nim control statements
 cal add(g:inc_indent_after, '\v^\s*(else>).*:?$')  " 'else' in various languages
 cal add(g:inc_indent_after, '\v^function!? \w+\(.*$')  " VimL function statements.
 
