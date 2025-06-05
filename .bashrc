@@ -1,5 +1,5 @@
-# Disable warnings about non-constant sources.
-# shellcheck shell=bash disable=SC1090
+# Disable warnings about non-constant sources, unused variables, and unfollowed files.
+# shellcheck shell=bash disable=SC1090,SC2034,SC1091
 
 PATH=$HOME/bin:$HOME/dx/bin:$HOME/code/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH
 
