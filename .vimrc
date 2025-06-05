@@ -878,15 +878,6 @@ nmap <leader>a <Plug>(EasyAlign)
 
 let g:NERDTreeDirArrows=0
 
-" Probe
-let g:probe_ignore_files = ['\~$', '/_\?build$', '\.pyc$', 'freetds-.*', '\.class$', '/target$', '\.sw[pon]$', '\.\(o\|so\)$', '\(^\|/\)\.']
-command! ProbeFindTc :cal probe#open(
-    \ function('probe#tc#scan'),
-    \ function('probe#tc#open'),
-    \ function('probe#tc#refresh'))
-nn <leader>d :ProbeFindFile<cr>
-nn <leader>f :ProbeFindInRepo<cr>
-
 " Tagbar
 nn <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_type_go = {
