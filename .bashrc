@@ -551,8 +551,8 @@ rgl() {
     rg --color always --heading "$@" | less
 }
 
-clipargs() { xsel -ib <<<"$*"; }
 clip() { xsel -b; }
+clip-args() { xsel -ib <<<"$*"; }
 
 # Try to pipe the help/usage of a program to less.
 h() {
