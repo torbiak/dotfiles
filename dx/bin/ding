@@ -1,7 +1,7 @@
 #!/bin/bash
 sound=~/dx/sounds/phone-outgoing-calling.oga
 for ((i=0; i < ${1:-1}; i++)); do
-    if which paplay &>/dev/null; then
+    if comamnd -v paplay &>/dev/null; then
         # Use paplay since it lets us give a volume.
         # Volume is in [0, 65535].
         case "$HOSTNAME" in
@@ -9,7 +9,9 @@ for ((i=0; i < ${1:-1}; i++)); do
         *) vol=45500;;
         esac
         paplay --volume "$vol" "$sound" &>/dev/null
-    else
+    elif command -v pw-cat &>/dev/null; then
+        pw-play --volume 0.75 -p "$sound"
+    elif command -v aplay &>/dev/null && [[ "$sound" = *.wav ]]; then
         aplay "$sound" &>/dev/null
     fi
 done
