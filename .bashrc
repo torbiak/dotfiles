@@ -47,6 +47,9 @@ alias unp='unp -U'
 alias feh='feh -.'
 alias ncdu='ncdu --color off'
 
+alias e-b='vim ~/.bashrc'
+alias e-bl='vim ~/.bashrc.local'
+
 shopt -s histappend checkwinsize cmdhist extglob failglob cdable_vars
 if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
     shopt -s globstar
