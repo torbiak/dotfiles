@@ -870,8 +870,26 @@ set rtp+=/usr/share/doc/fzf/examples,~/.fzf
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
-  \ 'ctrl-v': 'vsplit' }
-nn <leader>z :FZF --exact<cr>
+  \ 'ctrl-v': 'vsplit',
+  \ }
+let g:my_fzf_options = ['--exact', '--no-mouse', '--scheme=path', $'--history={$HOME}/.fzf/history', '--multi']
+" Search in current dir using fzf's internal file listing. Lists everything.
+nn <leader>fd :cal fzf#run(fzf#wrap(#{options: g:my_fzf_options}))<cr>
+" Search in current dir, using various .ignore files.
+nn <leader>z :cal fzf#run(fzf#wrap(#{source: 'rg --files', options: g:my_fzf_options}))<cr>
+" Search in repo.
+nn <leader>fr :cal fzf#run(fzf#wrap(#{
+    \ source: 'rg --files',
+    \ options: g:my_fzf_options,
+    \ dir: RepoRoot(),
+\ }))<cr>
+" Search for files in the same dir as the current buffer ("here").
+nn <leader>fh :cal fzf#run(fzf#wrap(#{source: 'rg --files', options: g:my_fzf_options, dir: expand('%:h') }))<cr>
+" Search listed buffers.
+nn <leader>fb :cal fzf#run(fzf#wrap(#{
+    \ source: getbufinfo(#{buflisted: 1})->map({_, d -> d['name']}),
+    \ options: g:my_fzf_options,
+\ }))<cr>
 
 vmap <leader>a <Plug>(EasyAlign)
 nmap <leader>a <Plug>(EasyAlign)
@@ -1050,6 +1068,14 @@ function! ReadGitDiff()
     set filetype=diff
 endfunction
 command! Gdr call ReadGitDiff()
+
+function! RepoRoot() abort
+    let repo_root = system('git rev-parse --show-toplevel')->trim()
+    if repo_root =~ '^fatal:'
+        throw repo_root
+    endif
+    return repo_root
+endfunction
 
 function! QuickfixConflicts()
     let files = util#trim(system("git status -s | grep '^\\(UU\\|AA\\)' | awk '{print $2}' | tr '\n' ' '"))
