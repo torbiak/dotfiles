@@ -255,6 +255,11 @@ l2a() {
     xargs -rd '\n' "$@"
 }
 
+# Useful for checking if a glob matches any files.
+exists() {
+    [[ -e "$1" ]]
+}
+
 # Create a new tmux window with the same working directory as the current shell.
 # I prefer to think of splitting vertically as using a vertical splitter, as in
 # vim and most other tools, not as splitting the vertical space as in tmux, so
