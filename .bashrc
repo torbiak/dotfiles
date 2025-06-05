@@ -540,7 +540,8 @@ sleeptil() {
 
 # Expand stdin or the given files as if they were a heredoc. That is,
 # parameter, command, and arithmetic expansions are performed by the shell.
-# Also, a backslash must be used to escape any \, $, or ` characters.
+# Any \, $, or ` characters must be escaped with a backslash to be printed
+# literally.
 heredoc() {
     . <(sed -e '1i cat <<__heredoc_delimiter__' -e '$a __heredoc_delimiter__' "$@")
 }
