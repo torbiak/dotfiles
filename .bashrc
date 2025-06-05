@@ -94,49 +94,116 @@ case $OSTYPE in
 esac
 
 
+[ -e ~/.bash_completion ] && . ~/.bash_completion
+
+
 ## Prompt
 
-prompt1() {
-    local r="\[\e[31m\]" # red
-    local g="\[\e[32m\]" # green
-    local y="\[\e[33m\]" # yellow
-    local p="\[\e[34m\]" # purple
-    local reset="\[\e[0m\]"
-    local sep="$y|"
-    local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
-    local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
+load_git_prompt() {
+    local y="\x01\e[33m\x02" # yellow
+    GIT_PS1_SHOWDIRTYSTATE=yes
+    GIT_PS1_SHOWSTASHSTATE=yes
+    GIT_PS1_SHOWUNTRACKEDFILES=yes
+    GIT_PS1_SHOWUPSTREAM=auto
+    GIT_PS1_STATESEPARATOR=' '
+    GIT_PS1_SHOWCOLORHINTS=yes
 
-    local chroot=
-    [[ -v SCHROOT_CHROOT_NAME ]] && chroot="${r}${SCHROOT_CHROOT_NAME}${sep}"
-
-    local git_sub_cmd="gitBranch"
-    # Use the prompt function that ships with git if it's available.
-    local git_exec_path
-    # shellcheck disable=SC1091
-    git_exec_path=$(git --exec-path) &&
-    [[ -f "$git_exec_path"/git-sh-prompt ]] &&
-    . "$git_exec_path"/git-sh-prompt &&
-    export GIT_PS1_SHOWDIRTYSTATE=yes &&
-    export GIT_PS1_SHOWSTASHSTATE=yes &&
-    export GIT_PS1_SHOWUNTRACKEDFILES=yes &&
-    export GIT_PS1_SHOWUPSTREAM=auto &&
-    export GIT_PS1_STATESEPARATOR='' &&
-    git_sub_cmd="__git_ps1 %s"
-
-    local git_cmd="\$(b=\$($git_sub_cmd); [[ -n \"\$b\" ]] && echo \"$sep$g\$b\")"
-    PS1="\[\a\]${status_cmd}${job_cmd}${chroot}$g\w${git_cmd}$y\\\$$reset "
+    if declare -F __git_ps1 &>/dev/null; then
+        return 0
+    fi
+    [[ -e ~/.config/git-sh-prompt ]] && . ~/.config/git-sh-prompt
 }
-prompt1
+load_git_prompt
+
+print_prompt() {
+    local exit_code=$?
+
+    # Since bash expands \[ and \] before doing command substitution, we need
+    # to use \x01 and \x02 to mark non-printing characters instead. \x01 and
+    # \x02 are what bash expands \[ and \] to, and what readline looks for when
+    # calculating prompt length.
+    local r="\x01\e[31m\x02" # red
+    local g="\x01\e[32m\x02" # green
+    local y="\x01\e[33m\x02" # yellow
+    local b="\x01\e[34m\x02" # blue
+    local m="\x01\e[35m\x02" # magenta
+    local reset="\x01\e[0m\x02"
+    local sep="$y|"
+
+    local parts=()
+
+    [[ $exit_code -ne 0 ]] && parts+=("$r$exit_code")
+
+    # shellcheck disable=SC2207
+    local jobs=($(jobs -p))
+    [[ ${#jobs[@]} -gt 0 ]] && parts+=("$b${#jobs[@]}")
+
+    if [[ -n $VIRTUAL_ENV ]]; then
+        if [[ $PWD == ${VIRTUAL_ENV%/*}* ]]; then
+            parts+=("${m}V")
+        else
+            parts+=("${r}venv=$VIRTUAL_ENV_PROMPT")
+        fi
+    fi
+
+    # Abbreviate PWD based on fav_dirs. Find the shortest one, since they're
+    # retrieved in random order and some might be subdirs of others.
+    local short shortest
+    for name in "${!fav_dirs[@]}"; do
+        short=${PWD/${fav_dirs[$name]}/\{$name\}}
+        if [[ -z $shortest || ${#short} -lt ${#shortest} ]]; then
+            shortest=$short
+        fi
+    done
+    local wd=${shortest/$HOME/\~}
+    parts+=("${g}${wd}")
+
+    if [[ "$prompt_git" ]]; then
+        if declare -F __git_ps1 &>/dev/null; then
+            : "$(__git_ps1)"; : "${_//[()]/}"; : "${_# }"
+            [[ $_ ]] && parts+=("${g}$_ ")
+        elif declare -F gitBranch &>/dev/null; then
+            : "$(gitBranch)"
+            [[ $_ ]] && parts+=("${g}$(_)")
+        fi
+    fi
+
+    [[ $prompt_multiline ]] && echo
+    echo -ne "${parts[0]}"; unset 'parts[0]'
+    for p in "${parts[@]}"; do
+        echo -ne "$sep$p"
+    done
+    [[ $prompt_multiline ]] && echo
+    echo -ne "${y}\$$reset "
+}
+: "${prompt_multiline:=}"
+: "${prompt_git:=yes}"
+declare -A fav_dirs
+PS1="\$(print_prompt)"
+
+# Favorite dirs.
+d() {
+    local name=${1:?No dir name given}
+    cd "${fav_dirs[$name]}" || return
+}
+_d() {
+    local cword=$2
+    mapfile -t COMPREPLY <<<"$(compgen -W "${!fav_dirs[*]}" "$cword")"
+}
+complete -F _d d
+declare -A fav_dirs=()
+[[ -e ~/.dirs ]] && . ~/.dirs
+
 
 prompt1_cheap() {
     local r="\[\e[31m\]" # red
     local g="\[\e[32m\]" # green
     local y="\[\e[33m\]" # yellow
-    local p="\[\e[34m\]" # purple
+    local b="\[\e[34m\]" # blue
     local reset="\[\e[0m\]"
     local sep="$y|"
     local status_cmd="\$(s=\$?; [[ \$s -ne 0 ]] && echo \"$r\$s$sep\")"
-    local job_cmd="\$([[ \j -ne 0 ]] && echo \"$p\j$sep\")"
+    local job_cmd="\$([[ \j -ne 0 ]] && echo \"$b\j$sep\")"
     PS1="\[\a\]${status_cmd}${job_cmd}$g\w$y\\\$$reset "
 }
 
@@ -562,8 +629,6 @@ dotfiles-end() {
 }
 
 
-[ -e ~/.bash_completion ] && . ~/.bash_completion
-
 [[ -e ~/.fzf/key_bindings.bash ]] && . ~/.fzf/key_bindings.bash
 export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
 
@@ -571,15 +636,17 @@ export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
 
 dedupe_path() {
     local -A seen
-    local paths
+    local -a paths
+    local -a venvs
     local IFS=$'\n'
     for d in ${PATH//:/$'\n'}; do
-        [[ -z "${seen[$d]}" ]] && paths+=("$d")
+        [[ -n "${seen[$d]}" ]] && continue
+        [[ $d = *venv* ]] && venvs+=("$d") || paths+=("$d")
         seen["$d"]=y
     done
     # Join paths with a colon.
     IFS=:
-    set "${paths[@]}"
+    set "${venvs[@]}" "${paths[@]}"
     PATH="$*"
 }
 dedupe_path
