@@ -190,6 +190,12 @@ nn <leader>mw :%s/\v\s+$//<cr>
 nn <leader>ms :w<cr>:source %<cr>
 nn <leader>x :source ~/source.vim<cr>
 nn <leader>mr :!./%<cr>
+nn <leader>mf :let @" = expand('%')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
+nn <leader>mF :let @" = expand('%:p')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
+no <leader>m* :let @/ = '\<' . expand('<cword>') . '\>' \| set hlsearch<cr>
+
+" I often don't release shift fast enough and accidentally type :New.
+command -nargs=? -complete=file New new <args>
 
 " Save the unnamed register into @y. Useful when you delete/yank something to
 " move/copy it somewhere else, but then realize that it'd be easiest to first
@@ -522,6 +528,12 @@ function! Date(...)
     endif
     return strftime("%Y-%m-%d %a", localtime() + 86000 * days_offset)
 endfunction
+
+function! Clip(s) abort
+    cal system('xsel -ib', a:s)
+endfunction
+" Copy the unnamed register to the clipboard.
+nn <leader>" :cal Clip(@")<cr>
 
 function! Today()
     return Date(0)
