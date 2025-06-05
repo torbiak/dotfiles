@@ -18,14 +18,16 @@ export LSCOLORS=dxfxcxdxbxegedabagacad
 export LS_COLORS='di=1;35:ln=35:ex=31:su=30;43:sg=30;43:tw=30;43:ow=30;43:'
 export PAGER=less
 export MANOPT='--nh --nj'  # Disable hyphenation and justification.
-export PYTHONSTARTUP=$HOME/.pythonrc
-export PYTHONPATH=.:$HOME/code/python
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 export BC_ENV_ARGS="-l $HOME/.bcrc"
 export DISPLAY=${DISPLAY:-:0}
 export CMUS_HOME=~/.cmus
 export GROFF_TMAC_PATH=~/code/groff
 HISTTIMEFORMAT='%Y-%m-%dT%H:%M:%S '
+
+export PYTHONSTARTUP=$HOME/.pythonrc
+export PYTHONPATH=.:$HOME/code/python
+export PYTHON_BASIC_REPL=1
 
 case $OSTYPE in
     linux-gnu | cygwin) alias ls='ls --color=auto';;
