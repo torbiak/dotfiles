@@ -52,7 +52,6 @@ if has('win32')
 endif
 
 " Display
-syntax enable
 set shortmess-=S  " show incremental search position
 set guioptions='cM'
 set t_Co=16  " Use terminal color palette instead of 8-bit color.
