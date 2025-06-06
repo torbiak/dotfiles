@@ -349,6 +349,10 @@ function! DiffBuffer()
 endfunction
 com! DiffBuffer call DiffBuffer()
 
+" Diff two lines in a new tab.
+" Yank two lines into the unname register before running the command.
+command! DiffLines :tabnew | put! | diffthis | 2,$d | below new | put! | 2,$d | diffthis
+
 function! NormalSurround(open, close)
     normal viW<esc>
     cal VisualSurround(a:open, a:close)
