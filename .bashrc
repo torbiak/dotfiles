@@ -148,10 +148,10 @@ print_prompt() {
 
     # Abbreviate PWD based on fav_dirs. Find the shortest one, since they're
     # retrieved in random order and some might be subdirs of others.
-    local short shortest
+    local short shortest=$PWD
     for name in "${!fav_dirs[@]}"; do
         short=${PWD/${fav_dirs[$name]}/\{$name\}}
-        if [[ -z $shortest || ${#short} -lt ${#shortest} ]]; then
+        if [[ ${#short} -lt ${#shortest} ]]; then
             shortest=$short
         fi
     done
