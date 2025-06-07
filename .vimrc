@@ -52,6 +52,11 @@ if has('win32')
 endif
 
 " Display
+if !exists("g:syntax_on")
+    " Enable syntax at startup, but don't reload highlight groups when
+    " sourcing vimrc later.
+    syntax enable
+endif
 set shortmess-=S  " show incremental search position
 set guioptions='cM'
 set t_Co=16  " Use terminal color palette instead of 8-bit color.
