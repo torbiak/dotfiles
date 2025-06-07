@@ -169,9 +169,10 @@ print_prompt() {
     fi
 
     [[ $prompt_multiline ]] && echo
-    echo -ne "${parts[0]}"; unset 'parts[0]'
-    for p in "${parts[@]}"; do
-        echo -ne "$sep$p"
+    local i
+    for ((i = 0; i < ${#parts[@]}; i++)); do
+        ((i > 0)) && echo -ne "$sep"
+        echo -ne "${parts[$i]}"
     done
     [[ $prompt_multiline ]] && echo
     echo -ne "${y}\$$reset "
