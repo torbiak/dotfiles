@@ -175,7 +175,9 @@ print_prompt() {
         echo -ne "${parts[$i]}"
     done
     [[ $prompt_multiline ]] && echo
-    echo -ne "${y}\$$reset "
+    local dollar_or_hash=\$
+    ((EUID == 0)) && dollar_or_hash=\#
+    echo -ne "${y}${dollar_or_hash}${reset} "
 }
 : "${prompt_multiline:=}"
 : "${prompt_git:=yes}"
