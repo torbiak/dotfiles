@@ -25,7 +25,7 @@ function! MbUsage() range abort
                 cal add(out, '')
             endif
             cal add(out, word)
-            let word_lines = systemlist($"cedict -t {word}")
+            let word_lines = systemlist($"cedict -t {word}")->filter({i, l -> i != 0 || l != ''})
             " Assume the first definition is the best match.
             if word_lines->len() >= 1
                 let [_, pinyin, definition] = word_lines[0]->split('\t')
