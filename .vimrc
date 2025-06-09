@@ -1245,6 +1245,7 @@ function! Man(man_args, win_mods)
     setlocal buftype=nofile   " buffer is not related to any file
     setlocal nowrap           " don't soft-wrap
     setlocal nobuflisted      " don't show up in the buffer list
+    setlocal filetype=man
     " pipe in the formatted manpage
     exe printf('silent 0r !MANWIDTH=%d man %s', winwidth(0), a:man_args)
     " set a descriptive name
