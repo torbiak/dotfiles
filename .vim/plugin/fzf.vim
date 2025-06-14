@@ -303,7 +303,7 @@ function! s:common_sink(action, lines) abort
   if type(Cmd) == type(function('call'))
     return Cmd(a:lines)
   endif
-  if len(a:lines) > 1
+  if a:lines->len() > 1 || Cmd != 'e'
     augroup fzf_swap
       autocmd SwapExists * let v:swapchoice='o'
             \| call s:warn('fzf: E325: swap file exists: '.s:fzf_expand('<afile>'))
