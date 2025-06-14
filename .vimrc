@@ -873,7 +873,6 @@ command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
 " Plugin configuration
 " ====================
 " fzf
-set rtp+=/usr/share/doc/fzf/examples,~/.fzf
 " Change the split binding to be more mnemonic and match probe.
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
