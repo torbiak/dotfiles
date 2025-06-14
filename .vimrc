@@ -1220,8 +1220,8 @@ nnoremap <leader>$ :let g:PipeOpCmd = 'xsel -ib'<cr>vg_:<c-u>call PipeOp(visualm
 vnoremap <leader>c :<c-u>let g:PipeOpCmd = 'xsel -ib'<cr>:call PipeOp(visualmode())<cr>
 nnoremap <leader>* :call append(line('.'), system('xsel -op')->trim()->split('\n'))<cr>
 nnoremap <leader>+ :call append(line('.'), system('xsel -ob')->trim()->split('\n'))<cr>
-inoremap <c-r>* <c-r>=trim(system('xsel -op'))<cr>
-inoremap <c-r>+ <c-r>=trim(system('xsel -ob'))<cr>
+noremap! <c-r>* <c-r>=trim(system('xsel -op'))<cr>
+noremap! <c-r>+ <c-r>=trim(system('xsel -ob'))<cr>
 
 " View images
 "
