@@ -1374,7 +1374,7 @@ function! DebugVarsPython(sep=' ')
         cal add(pieces, printf('{%s%s}', w, suffix))
     endfor
     let format = pieces->join(a:sep)
-    let line = $"{indent}print('{format}')  # TODO: remove"
+    let line = $"{indent}print(f'{format}')  # TODO: remove"
     cal setline('.', line)
 endfunction
 
