@@ -143,7 +143,11 @@ print_prompt() {
         if [[ $PWD == ${VIRTUAL_ENV%/*}* ]]; then
             parts+=("${m}V")
         else
-            parts+=("${r}venv=$VIRTUAL_ENV_PROMPT")
+            if [[ $VIRTUAL_ENV =~ .*/([^/]*/.*) ]]; then
+                parts+=("${r}venv=${BASH_REMATCH[1]}")
+            else
+                parts+=("${r}venv=$VIRTUAL_ENV")
+            fi
         fi
     fi
 
