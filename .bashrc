@@ -28,6 +28,7 @@ HISTTIMEFORMAT='%Y-%m-%dT%H:%M:%S '
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHONPATH=.:$HOME/code/python
 export PYTHON_BASIC_REPL=1
+VIRTUAL_ENV_DISABLE_PROMPT=yes
 
 case $OSTYPE in
     linux-gnu | cygwin) alias ls='ls --color=auto';;
