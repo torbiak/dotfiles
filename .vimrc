@@ -2,7 +2,7 @@
 set rtp-=~/vimfiles
 set rtp+=~/.vim
 
-let g:pathogen_disabled = ['vipyut']
+let g:pathogen_disabled = ['vipyut', 'probe']
 if hostname() == 'hatebox'
     cal add(g:pathogen_disabled, 'vim-go')
 endif
