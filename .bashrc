@@ -327,6 +327,12 @@ repo-root() {
     git rev-parse --show-toplevel
 }
 
+# Run given command in the repo root dir.
+rr() (
+    cd "$(repo-root)" || return 1
+    "$@"
+)
+
 # git add rebase continue
 garc() {
     git add -u
