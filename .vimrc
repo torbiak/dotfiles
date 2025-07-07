@@ -879,7 +879,7 @@ let g:fzf_action = {
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit',
   \ }
-let g:my_fzf_options = ['--exact', '--no-mouse', '--scheme=path', $'--history={$HOME}/.fzf/history', '--multi']
+let g:my_fzf_options = ['--no-mouse', '--scheme=path', $'--history={$HOME}/.fzf/history', '--multi']
 " Search in current dir using fzf's internal file listing. Lists everything.
 nn <leader>fd :cal fzf#run(fzf#wrap(#{options: g:my_fzf_options}))<cr>
 " Search in current dir, using various .ignore files.

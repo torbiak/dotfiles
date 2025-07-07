@@ -654,7 +654,7 @@ dotfiles-end() {
 
 
 [[ -e ~/.fzf/key_bindings.bash ]] && . ~/.fzf/key_bindings.bash
-export FZF_DEFAULT_OPTS='-m --no-mouse --exact'
+export FZF_DEFAULT_OPTS='-m --no-mouse'
 
 [ -e ~/.bashrc.local ] && . ~/.bashrc.local
 
