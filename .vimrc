@@ -201,6 +201,8 @@ no <leader>m* :let @/ = '\<' . expand('<cword>') . '\>' \| set hlsearch<cr>
 " I often don't release shift fast enough and accidentally type :New.
 command -nargs=? -complete=file New new <args>
 
+command -range ExecBash <line1>,<line2>w !bash -s
+
 " Save the unnamed register into @y. Useful when you delete/yank something to
 " move/copy it somewhere else, but then realize that it'd be easiest to first
 " make some changes at the destination that'd overwrite @" and/or @0.
@@ -1455,6 +1457,8 @@ augroup vimrc
     " Key bindings for filetype-specific stuff.
 
     autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %:S')<cr>
+    autocmd Filetype sh no <buffer> <LocalLeader>e :ExecBash<cr>
+    autocmd Filetype sh no <buffer> <LocalLeader>E vip:ExecBash<cr>
 
     autocmd Filetype c nn <buffer> <leader>md :cal DebugVarsC()<cr>
 
