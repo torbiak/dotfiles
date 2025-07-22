@@ -7,6 +7,9 @@ endif
 let b:did_ftplugin = 1
 
 let b:undo_ftplugin = 'mapclear <buffer>'
+    \ .. '| setlocal linebreak<'
+
+setlocal linebreak
 
 function! MbUsage() range abort
     let raw = getline(a:firstline, a:lastline)
