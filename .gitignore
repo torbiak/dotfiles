@@ -5,4 +5,5 @@
 .tags
 tags
 Session.vim
+*_session.vim
 test.log
