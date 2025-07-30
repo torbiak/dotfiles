@@ -103,15 +103,13 @@ endfunction
 command! -range=% MbMovieFormat silent <line1>,<line2>call MbMovieFormat()
 vn <buffer> <localleader>m :MbMovieFormat<cr>
 
-" Bindings to get definitions for Chinese words: echo, append(), or copy-as-TSV.
-nn <buffer> <localleader>d :echo system('cedict -t ' . expand('<cword>'))<cr>
-nn <buffer> <localleader>D :call append('.', systemlist('cedict -t ' . expand('<cword>')))<cr>
-vn <buffer> <localleader>d :<C-u>echo system('cedict -t ' . GetSelection('v'))<cr>
-vn <buffer> <localleader>D :<C-u>call append('.', systemlist('cedict -t ' . GetSelection('v')))<cr>
-nn <buffer> <localleader>c :echo system('cedict -tc ' . expand('<cword>'))<cr>
-nn <buffer> <localleader>C :call append('.', systemlist('cedict -tc ' . expand('<cword>')))<cr>
-vn <buffer> <localleader>c :<C-u>echo system('cedict -tc ' . GetSelection('v'))<cr>
-vn <buffer> <localleader>C :<C-u>call append('.', systemlist('cedict -tc ' . GetSelection('v')))<cr>
+" Bindings to get definitions for Chinese words: echo, append()
+nn <buffer> <localleader>d :echo system('cedict -c ' . expand('<cword>'))<cr>
+nn <buffer> <localleader>D :call append('.', systemlist('cedict -c ' . expand('<cword>')))<cr>
+vn <buffer> <localleader>d :<C-u>echo system('cedict -c ' . GetSelection('v'))<cr>
+vn <buffer> <localleader>D :<C-u>call append('.', systemlist('cedict -c ' . GetSelection('v')))<cr>
+
+nn <buffer> <localleader>c :echo system('cedict ' . getline('.')->strcharpart(charcol('.') - 1, 1))<cr>
 
 nn <buffer> <localleader>n :.!pinyin-num<cr>
 
