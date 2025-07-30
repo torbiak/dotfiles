@@ -1,7 +1,9 @@
 #!/bin/bash
+set -euo pipefail
+
 sound=~/dx/sounds/phone-outgoing-calling.oga
 for ((i=0; i < ${1:-1}; i++)); do
-    if comamnd -v paplay &>/dev/null; then
+    if command -v paplay &>/dev/null; then
         # Use paplay since it lets us give a volume.
         # Volume is in [0, 65535].
         case "$HOSTNAME" in
