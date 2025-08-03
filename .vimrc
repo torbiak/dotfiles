@@ -1451,8 +1451,9 @@ augroup vimrc
     autocmd Filetype rust setlocal nosi  " smartindent was being enabled despite filtype indent:OFF
 
     " Abbreviations
-    autocmd FileType java iabbrev <buffer> sop System.out.println
-    autocmd FileType rust iabbrev <buffer> pl println!
+    autocmd FileType java ino <buffer> ;pl System.out.println
+    autocmd FileType rust ino <buffer> ;pl println!
+    autocmd FileType javascript,typescript ino <buffer> ;pl console.log
 
     " Markdown
     au FileType markdown setlocal foldexpr=MarkdownLevel()
@@ -1509,8 +1510,6 @@ augroup vimrc
     autocmd Filetype typescript nn <buffer> <leader>mr :call MakeX(#{compiler: 'tsc', makeprg: 'ts-node %'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: filereadable('yarn.lock') ? 'yarn tsc' : 'tsc'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mu :call MakeX(#{compiler: 'jest', makeprg: (filereadable('yarn.lock') ? 'yarn ' : '') . 'jest 2>&1 \\| tee jest.log'})<cr>
-
-    autocmd FileType javascript,typescript iabbrev zp console.log
 augroup END
 
 
