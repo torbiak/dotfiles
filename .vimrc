@@ -1522,8 +1522,6 @@ augroup END
 "
 " Use substitute and eval together:
 " '<,'>s/{{\([^}]\+\)}}/\=eval(submatch(1))/g
-"
-" You can basically get tab-specific working directories using :lcd.
 
 if filereadable(expand('~/.vimrc.local'))
     source ~/.vimrc.local
