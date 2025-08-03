@@ -357,8 +357,28 @@ endfunction
 com! DiffBuffer call DiffBuffer()
 
 " Diff two lines in a new tab.
-" Yank two lines into the unname register before running the command.
-command! DiffLines :tabnew | put! | diffthis | 2,$d | below new | put! | 2,$d | diffthis
+function! DiffLines(startline, endline) abort
+    " If a one-line range is given, assume the user wants to diff the given
+    " line with the next one.
+    let [lnum1, lnum2] = [a:startline, a:endline]
+    if lnum1 == lnum2
+        let lnum2 += 1
+    endif
+    let line1 = getline(lnum1)
+    let line2 = getline(lnum2)
+
+    tabnew
+    setlocal buftype=nofile bufhidden=wipe nobuflisted nomodified
+    cal setline(1, line1)
+    diffthis
+
+    below new
+    setlocal buftype=nofile bufhidden=wipe nobuflisted nomodified
+    cal setline(1, line2)
+    diffthis
+endfunction
+command! -range DiffLines cal DiffLines(<line1>, <line2>)
+
 
 function! NormalSurround(open, close)
     normal viW<esc>
