@@ -1,3 +1,7 @@
+" vim:foldmethod=marker
+
+" runtimepath {{{
+
 " setup runtimepath to be more unixy on windows
 set rtp-=~/vimfiles
 set rtp+=~/.vim
@@ -8,9 +12,10 @@ if hostname() == 'hatebox'
 endif
 call pathogen#infect()
 call pathogen#helptags()
+" }}}
 
-" Basics
-" ======
+" Basic options {{{
+
 filetype plugin on
 set encoding=utf-8
 set tags+=.tags
@@ -25,74 +30,60 @@ set complete=.,w  " stay fast by only suggesting completions from open windows
 set winminheight=0
 set modeline
 set more
-set backup
-set shellslash
 set cryptmethod=blowfish2
+set vb t_vb=  " Disable bell.
+
+" Backups
 if exists("*mkdir") && !isdirectory(expand('~/tmp/vim'))
     cal mkdir(expand('~/tmp/vim'), 'p')
 endif
+set backup
 set backupdir=~/tmp/vim,.
+
+" Formatting options {{{
+
+" j: remove comment markers when joining lines
+" q: allow formatting comments with gq
+set formatoptions+=jq
+" Don't insert two spaces after sentences when joining lines.
+set nojoinspaces
+" Don't use Q for Ex mode, use it for formatting.
+noremap Q gq
+" Indent wrapped lines by the width of the bullet matched by formatlistpat
+set breakindent breakindentopt=list:-1
+" Don't treat bulleted lists like comments.
+set comments-=fb:-
+" }}}
+" }}}
+
+" Keybindings {{{
+
 ino jk <esc>
 let mapleader = 's'
 let maplocalleader = '\'
 nn <leader> <nop>
-set vb t_vb=
-nn Y y$
 
 " When yanking quoted strings, don't include leading whitespace.
 nn ya' y2i'
 nn ya" y2i"
 
-" This changes the behaviour of shellescape() and is necessary for the zip
-" plugin's s:Escape() function which surrounds filenames with double quotes.
-" noshellslash should probably be set when using vim on windows without
-" cygwin.
-if has('win32')
-    set noshellslash
-endif
+" Yank/paste
+" Paste the unnamed register more conveniently.
+nn <leader>p "0p
+nn <leader>P "0P
 
-" Display
-if !exists("g:syntax_on")
-    " Enable syntax at startup, but don't reload highlight groups when
-    " sourcing vimrc later.
-    syntax enable
-endif
-set shortmess-=S  " show incremental search position
-set guioptions='cM'
-set t_Co=16  " Use terminal color palette instead of 8-bit color.
-set background=dark
-function ModColorScheme()
-    " Customize colorscheme when using 4-bit color.
-    if str2nr(&t_Co) == 16 && g:colors_name !=# 'forbit'
-        hi Normal ctermfg=NONE ctermbg=NONE cterm=NONE
+nn Y y$
 
-        hi Visual ctermfg=black ctermbg=cyan cterm=NONE
-        hi Search ctermfg=black ctermbg=darkgreen cterm=NONE
-        hi IncSearch ctermfg=black ctermbg=lightyellow cterm=bold
+" Save the unnamed register into @y. Useful when you delete/yank something to
+" move/copy it somewhere else, but then realize that it'd be easiest to first
+" make some changes at the destination that'd overwrite @" and/or @0.
+nn <leader>y :let @y = @"<cr>
 
-        hi DiffAdd ctermfg=darkgreen ctermbg=black cterm=NONE
-        hi DiffChange ctermfg=darkyellow ctermbg=black cterm=NONE
-        hi DiffDelete ctermfg=darkred ctermbg=black cterm=NONE
-        hi DiffText ctermfg=black ctermbg=darkyellow cterm=bold
-    endif
-endfunction
-augroup color_mods
-    au!
-    au ColorScheme * call ModColorScheme()
-augroup END
-colorscheme forbit
-set list
-set listchars=tab:»\ ,trail:·,
+" Yank current filename.
+nn <leader>mf :let @" = expand('%')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
+nn <leader>mF :let @" = expand('%:p')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
 
-" Enable bracketed-paste for screen/tmux. Bracketed-paste isn't advertised via
-" terminfo, so AFAICT vim only sets the relevant t_* settings if the builtin
-" 'xterm' terminal is used or if you set them yourself.
-if &term =~ '\v^(screen|tmux)'
-  let &t_BE = "\e[?2004h"
-  let &t_BD = "\e[?2004l"
-  exec "set t_PS=\e[200~"
-  exec "set t_PE=\e[201~"
-endif
+" Emacs emulation {{{
 
 " Emacs emulation in Cmdline mode.
 "
@@ -120,6 +111,13 @@ inoremap <C-D> <Del>
 inoremap <esc>b <S-Left>
 inoremap <esc>f <S-Right>
 inoremap <esc><bs> <C-w>
+" }}}
+
+" Quickfix
+" I don't find the default bindings for -, _, and + useful, but I use the
+" quickfix list all the time.
+nn - :cp<cr>
+nn + :cn<cr>
 
 " Cycle forward/backward through wildmode matches.
 cnoremap <M-m> <C-N>
@@ -129,27 +127,10 @@ cnoremap <esc>M <C-P>
 
 " Open balanced surroundings.
 ino ;{ {<cr>}<esc>O
-ino ;[ []<esc>i
-ino ;( ()<esc>i
+ino ;[ [<cr>]<esc>O
+ino ;( (<cr>)<esc>O
 ino ;" ""<esc>i
 ino ;' ''<esc>i
-
-" Quickfix
-" I don't find the default bindings for -, _, and + useful, but I use the
-" quickfix list all the time.
-nn - :cp<cr>
-nn + :cn<cr>
-function! JumpToFirstValidError()
-    let qflist = getqflist()
-    for i in range(len(qflist))
-        if qflist[i]['valid'] == v:true
-            exe printf(':cc %d', i+1)
-            return
-        endif
-    endfor
-endfunction
-nn _ :call JumpToFirstValidError()<cr>
-
 
 " Arglist
 nn <leader>n :wn<cr>
@@ -166,65 +147,42 @@ nn <leader>vs :source ~/.vimrc<cr>
 nn <c-j> <c-w>j
 nn <c-k> <c-w>k
 
-" Yank/paste
-" Paste yanks.
-nn <leader>p "0p
-nn <leader>P "0P
-
 " Tab widths
 nn <leader>8 :set ts=8 sw=8 et<cr>
 nn <leader>4 :set ts=4 sw=4 et<cr>
 nn <leader>2 :set ts=2 sw=2 et<cr>
 
 " Jump between methods
-"
 " ]m works for opening-brace-at-beginning-of-line C functions like ]], as well
 " as cuddled opening braces for Java-style methods, so make it more
 " convenient.
 nn ]] ]m
 nn [[ [m
 
-" Various conveniences
+" Toggle settings conveniently.
 nn <leader>mp :set paste!<cr>
 nn <leader>h :noh<cr>
+
+" Grep current word
 nn <leader>g :grep <cword><cr>
 nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
+
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
+
+" source/run the current file
 nn <leader>ms :w<cr>:source %<cr>
 nn <leader>x :source ~/source.vim<cr>
 nn <leader>mr :!./%<cr>
-nn <leader>mf :let @" = expand('%')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
-nn <leader>mF :let @" = expand('%:p')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
+
+" Search for current word without moving. Useful to highlight something
+" while keeping the current view.
 no <leader>m* :let @/ = '\<' . expand('<cword>') . '\>' \| set hlsearch<cr>
+"}}}
 
-" I often don't release shift fast enough and accidentally type :New.
-command -nargs=? -complete=file New new <args>
+" Indenting {{{
 
-command -range ExecBash <line1>,<line2>w !bash -s
-
-" Save the unnamed register into @y. Useful when you delete/yank something to
-" move/copy it somewhere else, but then realize that it'd be easiest to first
-" make some changes at the destination that'd overwrite @" and/or @0.
-nn <leader>y :let @y = @"<cr>
-
-" Formatting
-" j: remove comment markers when joining lines
-" q: allow formatting comments with gq
-set formatoptions+=jq
-" Don't insert two spaces after sentences when joining lines.
-set nojoinspaces
-" Don't use Q for Ex mode, use it for formatting.
-noremap Q gq
-" Indent wrapped lines by the width of the bullet matched by formatlistpat
-set breakindent breakindentopt=list:-1
-" Don't treat bulleted lists like comments.
-set comments-=fb:-
-
-
-" Indenting
-" =========
-" One indenting expression to rule them all.
+" A general-purpose indenting expression that I use for most languages.
 "
 " Cover common cases but let the user take care of anything weird, since
 " trying to be comprehensive complicates the rules past predictability.
@@ -288,14 +246,61 @@ function! ToggleTorbijIndent()
     endif
 endfunction
 nn <leader>i :call ToggleTorbijIndent()<cr>
+" }}}
+"
+" Display {{{
 
-function! GnuC()
-  setlocal sw=2 ts=8 et
-  setlocal cinoptions=>2s,e-s,n-s,f0,{s,^-s,:s,=s,g0,+.5s,p2s,t0,(0 cindent
+if !exists("g:syntax_on")
+    " Enable syntax at startup, but don't reload highlight groups when
+    " sourcing vimrc later.
+    syntax enable
+endif
+
+set shortmess-=S  " show incremental search position
+set guioptions='cM'
+set t_Co=16  " Use terminal color palette instead of 8-bit color.
+set background=dark
+
+set list
+set listchars=tab:»\ ,trail:·,
+
+function ModColorScheme()
+    " Customize colorscheme when using 4-bit color.
+    if str2nr(&t_Co) == 16 && g:colors_name !=# 'forbit'
+        hi Normal ctermfg=NONE ctermbg=NONE cterm=NONE
+
+        hi Visual ctermfg=black ctermbg=cyan cterm=NONE
+        hi Search ctermfg=black ctermbg=darkgreen cterm=NONE
+        hi IncSearch ctermfg=black ctermbg=lightyellow cterm=bold
+
+        hi DiffAdd ctermfg=darkgreen ctermbg=black cterm=NONE
+        hi DiffChange ctermfg=darkyellow ctermbg=black cterm=NONE
+        hi DiffDelete ctermfg=darkred ctermbg=black cterm=NONE
+        hi DiffText ctermfg=black ctermbg=darkyellow cterm=bold
+    endif
 endfunction
+augroup color_mods
+    au!
+    au ColorScheme * call ModColorScheme()
+augroup END
+colorscheme forbit
+" }}}
 
-" Spelling
-" ========
+" Bracketed paste {{{
+
+" Enable bracketed-paste for screen/tmux. Bracketed-paste isn't advertised via
+" terminfo, so AFAICT vim only sets the relevant t_* settings if the builtin
+" 'xterm' terminal is used or if you set them yourself.
+if &term =~ '\v^(screen|tmux)'
+  let &t_BE = "\e[?2004h"
+  let &t_BD = "\e[?2004l"
+  exec "set t_PS=\e[200~"
+  exec "set t_PE=\e[201~"
+endif
+" }}}
+
+" Spelling {{{
+
 function! ToggleSpell()
     if !&spell
         set spellcapcheck=
@@ -312,9 +317,10 @@ function! ToggleSpell()
     set spell!
 endfunction
 nn <leader>= :call ToggleSpell()<cr>
+" }}}
 
-" Functions
-" =========
+" File/Buffer commands {{{
+
 " Rename buffer's file.
 function! Rename(dst)
     let old = expand('%')
@@ -343,8 +349,36 @@ function! PlusExecutable()
 endfunction
 command! Px cal PlusExecutable()
 
-" Count lines in range. g C-g does something similar.
-command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
+" I often don't release shift fast enough and accidentally type :New.
+"command -nargs=? -complete=file New new <args>
+" Try an abbreviation instead, which converges history.
+cabbrev New new
+
+" Evaluate arguments as globs and set the unnamed register to the resulting
+" newline-separated list of filenames.
+"
+" Intended for easily finding files and accurately copying their paths into a
+" document, instead of going to a shell and using the OS's copy-paste
+" functionality. Another crude but effective way to do this (without globbing)
+" while still using filename completion is to read in the results of `echo`,
+" like `:r !echo ~/.bash<TAB>`.
+"
+" See also :h i_CTRL-X_CTRL-F, for completing filenames in insert mode.
+com! -nargs=* -complete=file YankFilepaths let @" = join(GlobEach([<f-args>]), "\n")
+function! GlobEach(patterns)
+    let files = []
+    for pattern in a:patterns
+        for file in glob(pattern, 0, 1)
+            let f = substitute(file, '^\V' . escape(expand("$HOME"), '\'), '\~', "")
+            cal add(files, f)
+        endfor
+    endfor
+    return files
+endfunction
+
+" }}}
+
+" Diff {{{
 
 " Diff current buffer with what's on disk.
 function! DiffBuffer()
@@ -378,7 +412,9 @@ function! DiffLines(startline, endline) abort
     diffthis
 endfunction
 command! -range DiffLines cal DiffLines(<line1>, <line2>)
+" }}}
 
+" Surround {{{
 
 function! NormalSurround(open, close)
     normal viW<esc>
@@ -407,6 +443,9 @@ function! VisualSurround(open, close) range
     cal cursor(line("'>"), endCol + strlen(a:open) + strlen(a:close))
 endfunction
 vn <leader>mb :call VisualSurround('<tt>', '</tt>')<cr>
+" }}}
+
+" Templating {{{
 
 " Using the given range as a template, generate all combinations of given
 " substitutions, adding them below the given range.
@@ -513,39 +552,17 @@ function! TemplateLinear(...) range
     cal append(a:lastline, lines)
 endfunction
 
-function! Semicolon() range
-    for i in range(a:firstline, a:lastline)
-        let line = getline(i)
-        if line =~ '^\s*$' | echo 'blank' | continue | endif  " blanks
-        if line =~ '\v^\s*(#|//)' | echo 'scomm' | continue | endif  " comments at start
-        " Skip comments at the end of a line. Try not to match comment
-        " indicators in strings, though.
-        if line =~ "\\v(#|//)[^'\"]*$" | echo 'ecomm' | continue | endif
-        " Skip lines ending with characters that imply continuance. Also,
-        " lines ending with } often don't want a semicolon.
-        if line =~ '\v[\[\{,\(; \}]$' | echo 'cont' | continue | endif
-        if getline(i + 1) =~ '\v^\s*\.' | echo 'chain' | continue | endif  " method chains
-        cal setline(i, line . ';')
-    endfor
+" Assign-and-increase function intended to be used when making substitutions
+" using the expression register. For example, to replace 'X's with
+" 1, 2, 3, ...: let i=1 | s/X/\=Inc(1)/g
+let g:i = 1
+function! Inc(step)
+    let g:i += a:step
+    return g:i - a:step
 endfunction
-command! -range Semicolon <line1>,<line2>call Semicolon()
-nn <leader>; :Semicolon<cr>
-vn <leader>; :Semicolon<cr>
+" }}}
 
-function! RedirToTab(cmd)
-  redir => message
-  silent execute a:cmd
-  redir END
-  if empty(message)
-    echoerr "no output"
-  else
-    " use "new" instead of "tabnew" below if you prefer split windows instead of tabs
-    tabnew
-    setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nomodified
-    silent put=message
-  endif
-endfunction
-command! -nargs=+ -complete=command RedirToTab call RedirToTab(<q-args>)
+" Date {{{
 
 " Insert using CTRL-R and the expression register.
 function! Date(...)
@@ -572,42 +589,9 @@ endfunction
 function! Timestamp()
     return strftime("%Y-%m-%dT%H:%M")
 endfunction
+"}}}
 
-" Collect lines matching pattern into register g.
-command! -nargs=? Collect let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
-
-function! Chars(start, stop)
-    let result = ""
-    let i = a:start
-    while i < a:stop
-        let result .= nr2char(i)
-        let i += 1
-    endwhile
-    return result
-endfunction
-
-
-" split: 'none', 'split', 'vsplit'
-function! OpenOrReuse(filepath, split)
-    let buffer_name = a:filepath
-    let window = bufwinnr(buffer_name)
-    if window != -1
-        exe printf('%dwincmd w', window)
-    else
-        exe printf('silent! %s %s', a:split, buffer_name)
-    endif
-endfunction
-
-" Load notes from the current window into the quickfix list.
-function! QfLoad()
-    if &autowrite
-        write
-    endif
-    let &l:grepprg = 'cat %:S'  " This won't work on Windows.
-    let &l:grepformat = '%A%f:%l:%m <<--,%Z--,%f:%l:%m,%+C%.%#,%.%#'
-    grep!
-endfunction
-command! -nargs=0 QfLoad cal QfLoad()
+" Formatting {{{
 
 " Idempotent table formatter.
 " sep: field separator pattern
@@ -662,20 +646,24 @@ nn <leader>mt :exe printf('%scal Table(" \\{2,}", {"newsep": "  "})', util#cpar_
 vn <leader>mt :cal Table(' \{2,}', {'newsep': '  '})<cr>
 command! -range AlignComments <line1>,<line2>call Table('\v +\ze[/#]', {'newsep': ' '})
 
-" Make script-local function global.
-function! Public(function_name)
-    let groups = matchlist(a:function_name, '\v^(<SID>|s:)(.*)')
-    let prefix = groups[1]
-    let basename = groups[2]
-    exe printf('%%s/%s\>/\u%s/g', a:function_name, basename)
+function! Semicolon() range
+    for i in range(a:firstline, a:lastline)
+        let line = getline(i)
+        if line =~ '^\s*$' | echo 'blank' | continue | endif  " blanks
+        if line =~ '\v^\s*(#|//)' | echo 'scomm' | continue | endif  " comments at start
+        " Skip comments at the end of a line. Try not to match comment
+        " indicators in strings, though.
+        if line =~ "\\v(#|//)[^'\"]*$" | echo 'ecomm' | continue | endif
+        " Skip lines ending with characters that imply continuance. Also,
+        " lines ending with } often don't want a semicolon.
+        if line =~ '\v[\[\{,\(; \}]$' | echo 'cont' | continue | endif
+        if getline(i + 1) =~ '\v^\s*\.' | echo 'chain' | continue | endif  " method chains
+        cal setline(i, line . ';')
+    endfor
 endfunction
-nn sme :cal Public(expand('<cword>'))<cr>
-
-" Hide global function by making it script-local.
-function! Private(function_name)
-    exe printf('%%s/\<%s\>/s:\l&/g', a:function_name)
-endfunction
-nn smh :cal Private(expand('<cword>'))<cr>
+command! -range Semicolon <line1>,<line2>call Semicolon()
+nn <leader>; :Semicolon<cr>
+vn <leader>; :Semicolon<cr>
 
 function! RightAlignSecondField()
     let line = getline('.')
@@ -709,6 +697,145 @@ function! ArgsOnSeparateLines()
     let indent = base_indent . repeat(' ', shiftwidth())
     silent s/\v, /\=",\n" . indent/g
 endfunction
+
+" Copy Javascript code to the clipboard in a format suitable for using as a
+" bookmarklet in Firefox.
+"
+" AFAICT only newlines need to be percent-encoded.
+function! CopyAsBookmarklet(start, end) abort
+    let text = getline(a:start, a:end)->join("%0A")
+    let text = $"javascript: (function() {{{text}}})()"
+    cal system('xsel -ib', text)
+endfunction
+
+" Join lines, trimming whitespace from all but the first.
+function! JoinNoWhitespace() range abort
+    " Modify the range so that when JoinNoWhitespace() is called on a single
+    " line range it joins it with the next line.
+    let first = a:firstline
+    let last = first == a:lastline ? first + 1 : a:lastline
+    let joined = getline(first, last)
+        \->map({ i, line -> i == 0 ? line : line->trim('', 1) })
+        \->join('')
+    exe $'{first},{last}d'
+    cal append(first - 1, joined)
+endfunction
+command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
+
+" }}}
+
+" Viewing {{{
+
+" View images
+"
+" It seems more convenient to use <cfile> instead of expecting an operator for
+" the common case. For filenames with spaces you'll need to visually select it
+" first, unless it's on a line by itself, in which case the  `mV` binding is
+" appropriate.
+let g:ViewCmd = 'feh --scale-down'
+nnoremap <leader>mv :echo system(g:ViewCmd . ' ' . expand('<cfile>') . ' &')<cr>
+nnoremap <leader>mV :<c-u>echo system(g:ViewCmd . ' ' . fnameescape(GetSelection(visualmode())) . ' &')<cr>
+vnoremap <leader>mv :<c-u>echo system(g:ViewCmd . ' ' . fnameescape(GetSelection(visualmode())) . ' &')<cr>
+
+" Open links or whatever.
+nnoremap <leader>mo :echo system('xdg-open ' . expand('<cfile>'))->trim()<cr>
+
+" Make a new window and format a man page for it.
+function! Man(man_args, win_mods)
+    exe printf('%s new', a:win_mods)
+    setlocal bufhidden=unload " unload buf when no longer displayed
+    setlocal buftype=nofile   " buffer is not related to any file
+    setlocal nowrap           " don't soft-wrap
+    setlocal nobuflisted      " don't show up in the buffer list
+    setlocal filetype=man
+    " pipe in the formatted manpage
+    exe printf('silent 0r !MANWIDTH=%d man %s', winwidth(0), a:man_args)
+    " set a descriptive name
+    exe printf('silent file %s', fnameescape('man ' . a:man_args))
+    0
+endfunction
+com! -nargs=+ Man call Man(<q-args>, <q-mods>)
+" }}}
+
+" Highlighting {{{
+
+" Define highlight groups with characteristics similar to IncSearch to be used
+" with :match and matchadd()
+"
+" For example:
+"
+"     :match jat1 /some_pattern/  " highlight some_pattern
+"     :match jat1 /other_pattern/  " highlight other_pattern instead
+"     :2match jat2 /yet_another/  " also highlight yet_another
+"     :match none  " clear other_pattern
+"     :2match none  " clear yet_another
+function! MakeJatHighlightGroups() abort
+    let color_pairs = [['black', 'magenta'], ['black', 'green'], ['white', 'blue'], ['black', 'cyan']]
+    let i = 1
+    for [fg, bg] in color_pairs
+        exe $"hi jat{i} ctermfg={fg} ctermbg={bg}"
+        let i += 1
+    endfor
+endfunction
+cal MakeJatHighlightGroups()
+
+function! SynGroup()
+    let l:s = synID(line('.'), col('.'), 1)
+    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+endfun
+nn <leader>5 :call SynGroup()<cr>
+
+function! SynStack()
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+nn <leader>6 :call SynStack()<cr>
+
+" }}}
+
+" Printf debugging {{{
+
+" Generate printf-style debugging calls based on variable names on the current
+" line.
+
+function! DebugVarsC(sep=' ')
+    let indent_len = line('.')->indent()
+    let indent = &expandtab ? repeat(' ', indent_len) : repeat("\t", indent_len / &tabstop)
+    let words = getline('.')->split()
+    let formats = []
+    let vars = []
+    for w in words
+        let [_, var, spec; _] = matchlist(w, '\v(\w+)%(:(.*))?')
+        cal add(vars, var)
+        let spec = spec ?? 's'
+        if spec == 's'
+            cal add(formats, $"{var}=[%{spec}]")
+        else
+            cal add(formats, $"{var}=%{spec}")
+        endif
+    endfor
+    let format = formats->join(a:sep) . '\n'
+    let args = join(vars, ', ')
+    let line = $"{indent}printf(\"{format}\", {args});  // TODO: remove"
+    cal setline('.', line)
+endfunction
+
+function! DebugVarsPython(sep=' ')
+    let indent_len = line('.')->indent()
+    let indent = &expandtab ? repeat(' ', indent_len) : repeat("\t", indent_len / &tabstop)
+    let words = getline('.')->split()
+    let pieces = []
+    for w in words
+        " If no formatting was specified, add '=' to print the expr itself.
+        let suffix = (match(w, '\v[!:=]') == -1) ? '=' : ''
+        cal add(pieces, printf('{%s%s}', w, suffix))
+    endfor
+    let format = pieces->join(a:sep)
+    let line = $"{indent}print(f'{format}')  # TODO: remove"
+    cal setline('.', line)
+endfunction
+" }}}
+
+" Extracting {{{
 
 " Extract strings from a buffer using a regex.
 "
@@ -765,14 +892,11 @@ if has('lambda')
     endfunction
 endif
 
-" Assign-and-increase function intended to be used when making substitutions
-" using the expression register. For example, to replace 'X's with
-" 1, 2, 3, ...: let i=1 | s/X/\=Inc(1)/g
-let g:i = 1
-function! Inc(step)
-    let g:i += a:step
-    return g:i - a:step
-endfunction
+" Collect lines matching pattern into register g.
+command! -nargs=? Collect let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
+" }}}
+
+" Navigation {{{
 
 " A weak fuzzy file finder for use in environments where installing vim
 " plugins or other executables isn't possible or worth it.
@@ -834,66 +958,10 @@ function! GoAndSearch()
     let @" = saved_unnamed_reg
 endfunction
 nn <leader>mg :call GoAndSearch()<cr>
+"}}}
 
-" Evaluate arguments as globs and set the unnamed register to the resulting
-" newline-separated list of filenames.
-"
-" Intended for easily finding files and accurately copying their paths into a
-" document, instead of going to a shell and using the OS's copy-paste
-" functionality. Another crude but effective way to do this (without globbing)
-" while still using filename completion is to read in the results of `echo`,
-" like `:r !echo ~/.bash<TAB>`.
-"
-" See also :h i_CTRL-X_CTRL-F, for completing filenames in insert mode.
-com! -nargs=* -complete=file YankFilepaths let @" = join(GlobEach([<f-args>]), "\n")
-function! GlobEach(patterns)
-    let files = []
-    for pattern in a:patterns
-        for file in glob(pattern, 0, 1)
-            let f = substitute(file, '^\V' . escape(expand("$HOME"), '\'), '\~', "")
-            cal add(files, f)
-        endfor
-    endfor
-    return files
-endfunction
+" Plugin configuration {{{
 
-" Copy Javascript code to the clipboard in a format suitable for using as a
-" bookmarklet in Firefox.
-"
-" AFAICT only newlines need to be percent-encoded.
-function! CopyAsBookmarklet(start, end) abort
-    let text = getline(a:start, a:end)->join("%0A")
-    let text = $"javascript: (function() {{{text}}})()"
-    cal system('xsel -ib', text)
-endfunction
-
-function! SynGroup()
-    let l:s = synID(line('.'), col('.'), 1)
-    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
-endfun
-nn <leader>5 :call SynGroup()<cr>
-
-function! SynStack()
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-nn <leader>6 :call SynStack()<cr>
-
-" Join lines, trimming whitespace from all but the first.
-function! JoinNoWhitespace() range abort
-    " Modify the range so that when JoinNoWhitespace() is called on a single
-    " line range it joins it with the next line.
-    let first = a:firstline
-    let last = first == a:lastline ? first + 1 : a:lastline
-    let joined = getline(first, last)
-        \->map({ i, line -> i == 0 ? line : line->trim('', 1) })
-        \->join('')
-    exe $'{first},{last}d'
-    cal append(first - 1, joined)
-endfunction
-command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
-
-" Plugin configuration
-" ====================
 " fzf
 " Change the split binding to be more mnemonic and match probe.
 let g:fzf_action = {
@@ -919,6 +987,7 @@ nn <leader>fb :cal fzf#run(fzf#wrap(#{
     \ source: getbufinfo(#{buflisted: 1})->map({_, d -> d['name']}),
     \ options: g:my_fzf_options,
 \ }))<cr>
+
 
 vmap <leader>a <Plug>(EasyAlign)
 nmap <leader>a <Plug>(EasyAlign)
@@ -975,9 +1044,22 @@ let g:go_fmt_autosave = 0
 let g:go_mod_autosave = 0
 let g:go_template_use_pkg = 1
 
+" }}}
 
-" Quickfix
-" ========
+" Quickfix {{{
+
+function! JumpToFirstValidError()
+    let qflist = getqflist()
+    for i in range(len(qflist))
+        if qflist[i]['valid'] == v:true
+            exe printf(':cc %d', i+1)
+            return
+        endif
+    endfor
+endfunction
+nn _ :call JumpToFirstValidError()<cr>
+
+
 function! Make(makeprg)
     call MakeX(#{makeprg: a:makeprg})
 endfunction
@@ -1091,6 +1173,9 @@ function! QuickfixGitDiff(...)
     call setqflist(locList)
 endfunction
 command! -nargs=* Gdqf call QuickfixGitDiff('<args>')
+" }}}
+
+" Git {{{
 
 function! ReadGitDiff()
     0r !git diff
@@ -1112,9 +1197,12 @@ function! QuickfixConflicts()
     redraw!
 endfunction
 com! -nargs=0 Conflicts call QuickfixConflicts()
+" }}}
 
-" Operator-pending evalutators
-" ============================
+" Evaluation {{{
+
+command -range ExecBash <line1>,<line2>w !bash -s
+
 let g:PipeEvalInterpreter = 'bc'
 function! PipeEval(input)
     let result = system(g:PipeEvalInterpreter, a:input . "\n")
@@ -1221,8 +1309,6 @@ function! GetSelection(type) abort
     return getregion(beg, end, #{type: linewise ? 'V' : 'v'})->join("\n")
 endfunction
 
-" One-way operator-pending commands
-" =================================
 let g:PipeOpCmd = 'xsel -ib'
 let g:PipeOpOut = ''
 function! PipeOp(type)
@@ -1244,36 +1330,6 @@ nnoremap <leader>* :call append(line('.'), system('xsel -op')->trim()->split('\n
 nnoremap <leader>+ :call append(line('.'), system('xsel -ob')->trim()->split('\n'))<cr>
 noremap! <c-r>* <c-r>=trim(system('xsel -op'))<cr>
 noremap! <c-r>+ <c-r>=trim(system('xsel -ob'))<cr>
-
-" View images
-"
-" It seems more convenient to use <cfile> instead of expecting an operator for
-" the common case. For filenames with spaces you'll need to visually select it
-" first, unless it's on a line by itself, in which case the  `mV` binding is
-" appropriate.
-let g:ViewCmd = 'feh --scale-down'
-nnoremap <leader>mv :echo system(g:ViewCmd . ' ' . expand('<cfile>') . ' &')<cr>
-nnoremap <leader>mV :<c-u>echo system(g:ViewCmd . ' ' . fnameescape(GetSelection(visualmode())) . ' &')<cr>
-vnoremap <leader>mv :<c-u>echo system(g:ViewCmd . ' ' . fnameescape(GetSelection(visualmode())) . ' &')<cr>
-
-" Open links or whatever.
-nnoremap <leader>mo :echo system('xdg-open ' . expand('<cfile>'))->trim()<cr>
-
-" Make a new window and format a man page for it.
-function! Man(man_args, win_mods)
-    exe printf('%s new', a:win_mods)
-    setlocal bufhidden=unload " unload buf when no longer displayed
-    setlocal buftype=nofile   " buffer is not related to any file
-    setlocal nowrap           " don't soft-wrap
-    setlocal nobuflisted      " don't show up in the buffer list
-    setlocal filetype=man
-    " pipe in the formatted manpage
-    exe printf('silent 0r !MANWIDTH=%d man %s', winwidth(0), a:man_args)
-    " set a descriptive name
-    exe printf('silent file %s', fnameescape('man ' . a:man_args))
-    0
-endfunction
-com! -nargs=+ Man call Man(<q-args>, <q-mods>)
 
 " Display shell command output in a scratch window.
 "
@@ -1304,6 +1360,9 @@ function! PipeShellToScratch(buffer_name, cmd, win_mods) abort
     exe saved_win . 'wincmd w'
 endfunction
 com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-mods>)
+" }}}
+
+" Misc {{{
 
 " MungeAlone filters a range of lines using a Vim function, similar to
 " how :'<,'>!<cmd> would filter lines with a shell command (see :h :range!).
@@ -1337,72 +1396,42 @@ function! MungeAlone(func) range abort
     exe $"resize {saved_height}"
 endfunction
 
+" Count lines in range. g C-g does something similar.
+command! -range -nargs=0 Lines echo <line2> - <line1> + 1 "lines"
 
-" Define highlight groups with characteristics similar to IncSearch to be used
-" with :match and matchadd()
-"
-" For example:
-"
-"     :match jat1 /some_pattern/  " highlight some_pattern
-"     :match jat1 /other_pattern/  " highlight other_pattern instead
-"     :2match jat2 /yet_another/  " also highlight yet_another
-"     :match none  " clear other_pattern
-"     :2match none  " clear yet_another
-function! MakeJatHighlightGroups() abort
-    let color_pairs = [['black', 'magenta'], ['black', 'green'], ['white', 'blue'], ['black', 'cyan']]
-    let i = 1
-    for [fg, bg] in color_pairs
-        exe $"hi jat{i} ctermfg={fg} ctermbg={bg}"
+function! RedirToTab(cmd)
+  redir => message
+  silent execute a:cmd
+  redir END
+  if empty(message)
+    echoerr "no output"
+  else
+    " use "new" instead of "tabnew" below if you prefer split windows instead of tabs
+    tabnew
+    setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nomodified
+    silent put=message
+  endif
+endfunction
+command! -nargs=+ -complete=command RedirToTab call RedirToTab(<q-args>)
+
+function! Chars(start, stop)
+    let result = ""
+    let i = a:start
+    while i < a:stop
+        let result .= nr2char(i)
         let i += 1
-    endfor
+    endwhile
+    return result
 endfunction
-cal MakeJatHighlightGroups()
+" }}}
 
+" Filetypes {{{
 
-" Printf debugging
-" Generate printf-style debugging calls based on variable names on the current
-" line.
-
-function! DebugVarsC(sep=' ')
-    let indent_len = line('.')->indent()
-    let indent = &expandtab ? repeat(' ', indent_len) : repeat("\t", indent_len / &tabstop)
-    let words = getline('.')->split()
-    let formats = []
-    let vars = []
-    for w in words
-        let [_, var, spec; _] = matchlist(w, '\v(\w+)%(:(.*))?')
-        cal add(vars, var)
-        let spec = spec ?? 's'
-        if spec == 's'
-            cal add(formats, $"{var}=[%{spec}]")
-        else
-            cal add(formats, $"{var}=%{spec}")
-        endif
-    endfor
-    let format = formats->join(a:sep) . '\n'
-    let args = join(vars, ', ')
-    let line = $"{indent}printf(\"{format}\", {args});  // TODO: remove"
-    cal setline('.', line)
+function! GnuC()
+  setlocal sw=2 ts=8 et
+  setlocal cinoptions=>2s,e-s,n-s,f0,{s,^-s,:s,=s,g0,+.5s,p2s,t0,(0 cindent
 endfunction
 
-function! DebugVarsPython(sep=' ')
-    let indent_len = line('.')->indent()
-    let indent = &expandtab ? repeat(' ', indent_len) : repeat("\t", indent_len / &tabstop)
-    let words = getline('.')->split()
-    let pieces = []
-    for w in words
-        " If no formatting was specified, add '=' to print the expr itself.
-        let suffix = (match(w, '\v[!:=]') == -1) ? '=' : ''
-        cal add(pieces, printf('{%s%s}', w, suffix))
-    endfor
-    let format = pieces->join(a:sep)
-    let line = $"{indent}print(f'{format}')  # TODO: remove"
-    cal setline('.', line)
-endfunction
-
-
-" Filetypes
-" =========
 
 " The standard markdown plugin is lacking as of Vim7.4
 " Improvements in tpope/vim-markdown will eventually be merged upstream.
@@ -1511,17 +1540,7 @@ augroup vimrc
     autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: filereadable('yarn.lock') ? 'yarn tsc' : 'tsc'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mu :call MakeX(#{compiler: 'jest', makeprg: (filereadable('yarn.lock') ? 'yarn ' : '') . 'jest 2>&1 \\| tee jest.log'})<cr>
 augroup END
-
-
-" Tips
-"
-" Evaluate vimscript almost anywhere using the expression register: <c-r>=
-"
-" Globally replace the word under the cursor with something else:
-" :nn <leader>r :exec printf('%%s#\<%s\>#self.%s#g', expand('<cword>'), expand('<cword>'))<cr>
-"
-" Use substitute and eval together:
-" '<,'>s/{{\([^}]\+\)}}/\=eval(submatch(1))/g
+" }}}
 
 if filereadable(expand('~/.vimrc.local'))
     source ~/.vimrc.local
