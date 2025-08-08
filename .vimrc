@@ -44,7 +44,10 @@ set backupdir=~/tmp/vim,.
 
 " j: remove comment markers when joining lines
 " q: allow formatting comments with gq
+" t: automatically break lines longer than textwidth in insert mode
+" c: automatically break comment lines and insert comment marker
 set formatoptions+=jq
+set formatoptions-=tc
 " Don't insert two spaces after sentences when joining lines.
 set nojoinspaces
 " Don't use Q for Ex mode, use it for formatting.
