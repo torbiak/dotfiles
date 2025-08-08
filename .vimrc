@@ -250,7 +250,7 @@ function! ToggleTorbijIndent()
 endfunction
 nn <leader>i :call ToggleTorbijIndent()<cr>
 " }}}
-"
+
 " Display {{{
 
 if !exists("g:syntax_on")
