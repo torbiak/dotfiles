@@ -1200,6 +1200,34 @@ function! QuickfixConflicts()
     redraw!
 endfunction
 com! -nargs=0 Conflicts call QuickfixConflicts()
+
+" Get the GitHub url for the current location.
+function! GitHubUrl() abort
+    let dir = shellescape(expand('%:h'))
+    let path = shellescape(expand('%'))
+    let relpath = system($'git -C {dir} ls-files --full-name {path}')->trim()
+
+    let origin_url = system($'git -C {dir} remote get-url origin')->trim()
+    if origin_url =~ 'git@'
+        let repo_name = substitute(origin_url, 'git@[^:]*:', '', '')
+    elseif origin_url =~ 'http'
+        let repo_name = substitute(origin_url, '^https://[^/]*/', '', '')
+    endif
+    let repo_name = substitute(repo_name, '\.git$', '', '')
+
+    " We might be on a topic branch that hasn't been pushed, so instead use
+    " the most recent commit hash that we have from the default branch.
+    " Use a hash instead of the branch name to anchor the link in time
+    " somewhat.
+    let default_branch = system($'git -C {dir} rev-parse --abbrev-ref origin/HEAD')->trim()->split('/')[1]
+    let hash = system($'git -C {dir} rev-parse --verify --short {default_branch}')->trim()
+
+    let line = line('.')
+    let url = $'https://github.com/{repo_name}/blob/{hash}/{relpath}#L{line}'
+    return url
+endfunction
+command! GitHubUrl cal Clip(Echo(GitHubUrl()))
+
 " }}}
 
 " Evaluation {{{
@@ -1365,6 +1393,17 @@ endfunction
 com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-mods>)
 " }}}
 
+" Vim programming {{{
+
+" Echo and return the given argument.
+" Useful for showing an intermediate result.
+function! Echo(s)
+    echo a:s
+    return a:s
+endfunction
+
+" }}}
+
 " Misc {{{
 
 " MungeAlone filters a range of lines using a Vim function, similar to
@@ -1426,6 +1465,11 @@ function! Chars(start, stop)
     endwhile
     return result
 endfunction
+
+function! Location()
+    return $"{expand('%:p')}:{line('.')}"->substitute('^' . $HOME, '~', '')
+endfunction
+nn <leader>ml :cal Clip(Location())<cr>
 " }}}
 
 " Filetypes {{{
