@@ -36,8 +36,6 @@
     whitespace = fix
 [notes]
     rewriteRef = refs/notes/*
-[include]
-    path = .gitconfig.local
 [rebase]
     autoSquash = true
 [pull]
@@ -58,3 +56,5 @@
 	required = true
 [credential]
 	helper = store
+[include]
+    path = ~/.gitconfig.local
