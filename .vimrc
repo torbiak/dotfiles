@@ -896,7 +896,7 @@ if has('lambda')
 endif
 
 " Collect lines matching pattern into register g.
-command! -nargs=? Collect let @g = '' | execute 'g/<args>/y G' | let @g = @g[1:]
+command! -range=% -nargs=? Collect let @g = '' | execute '<line1>,<line2>g/<args>/y G' | let @g = @g[1:]
 " }}}
 
 " Navigation {{{
