@@ -568,6 +568,8 @@ rgl() {
 
 clip() { xsel -b; }
 clip-args() { xsel -ib <<<"$*"; }
+clip2file() { xclip -o -selection clipboard >"${1:?No filename given}"; }
+
 
 # Try to pipe the help/usage of a program to less.
 h() {
