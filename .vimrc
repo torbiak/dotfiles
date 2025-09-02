@@ -322,6 +322,12 @@ endfunction
 nn <leader>= :call ToggleSpell()<cr>
 " }}}
 
+" Folding {{{
+function! FoldBlocks() abort
+    set foldmethod=marker foldmarker={,} foldminlines=5 foldlevel=5
+endfunction
+" }}}
+
 " File/Buffer commands {{{
 
 " Rename buffer's file.
@@ -834,6 +840,19 @@ function! DebugVarsPython(sep=' ')
     endfor
     let format = pieces->join(a:sep)
     let line = $"{indent}print(f'{format}')  # TODO: remove"
+    cal setline('.', line)
+endfunction
+
+function! DebugVarsJavascript(sep=' ')
+    let indent_len = line('.')->indent()
+    let indent = &expandtab ? repeat(' ', indent_len) : repeat("\t", indent_len / &tabstop)
+    let words = getline('.')->split()
+    let pieces = []
+    for w in words
+        cal add(pieces, printf('%s=${%s}', w, w))
+    endfor
+    let format = pieces->join(a:sep)
+    let line = $"{indent}console.log(`{format}`);  // TODO: remove"
     cal setline('.', line)
 endfunction
 " }}}
@@ -1519,7 +1538,7 @@ augroup vimrc
     autocmd Filetype python setlocal foldmethod=indent foldnestmax=2 foldlevel=99
     au Filetype make setlocal sw=4 ts=4 noet
     au Filetype typescript setlocal sw=2 et
-    au Filetype javascript setlocal sw=2 et
+    au Filetype javascript setlocal sw=2 et foldmethod=marker foldmarker={,} foldminlines=5 foldlevel=5
 
     " Rust
     " Note this block shouldn't be necessary or have any effect in Vim9+
@@ -1579,8 +1598,9 @@ augroup vimrc
 
     autocmd Filetype javascript nn <buffer> <leader>mb :call CopyAsBookmarklet(0, line('$'))<cr>
     autocmd Filetype javascript vn <buffer> <leader>mb :call CopyAsBookmarklet(line("'<"), line("'>"))<cr>
+    autocmd Filetype javascript nn <buffer> <leader>md :cal DebugVarsJavascript()<cr>
 
-    autocmd Filetype javascript nn <buffer> <leader>my :call MakeX(#{compiler: 'tsc', makeprg: 'tsc --noEmit --checkJs %'})<cr>
+    autocmd Filetype javascript nn <buffer> <leader>my :call MakeX(#{makeprg: 'jshint --show-non-errors %:S', efm: '%f: line %l\, col %c\, %m'})<cr>
     autocmd Filetype javascript nn <buffer> <leader>mr :call MakeX(#{compiler: 'javascript', makeprg: 'node %'})<cr>
 
     autocmd Filetype typescript nn <buffer> <leader>mr :call MakeX(#{compiler: 'tsc', makeprg: 'ts-node %'})<cr>
