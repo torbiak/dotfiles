@@ -79,12 +79,16 @@ todo() {
         esac
     done
     shift $((OPTIND-1))
-    local msg=${1:?No msg given}
+    if (($# == 0)); then
+        echo "no messages given" >&2
+        return 1
+    fi
 
-    mkdir -p "$msg_dir" &&
-    touch "$msg_dir/$msg" &&
-    once ||
-    return 1
+    mkdir -p "$msg_dir" || return 1
+    for msg in "$@"; do
+        touch "$msg_dir/$msg" || return 1
+    done
+    once || return 1
 
     if [[ "$sound" ]]; then
         paplay ~/dx/sounds/xylofon.wav &
