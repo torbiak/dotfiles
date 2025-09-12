@@ -1546,9 +1546,10 @@ augroup vimrc
     autocmd Filetype rust setlocal nosi  " smartindent was being enabled despite filtype indent:OFF
 
     " Abbreviations
-    autocmd FileType java ino <buffer> ;pl System.out.println
-    autocmd FileType rust ino <buffer> ;pl println!
-    autocmd FileType javascript,typescript ino <buffer> ;pl console.log
+    autocmd FileType java ino <buffer> ;pl System.out.println(
+    autocmd FileType rust ino <buffer> ;pl println!(
+    autocmd FileType javascript,typescript ino <buffer> ;pl console.log(
+    autocmd FileType javascript,typescript ino <buffer> ;pj console.log(JSON.stringify(
 
     " Markdown
     au FileType markdown setlocal foldexpr=MarkdownLevel()
