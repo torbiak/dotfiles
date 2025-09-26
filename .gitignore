@@ -1,6 +1,6 @@
 *$py.class
 *.pyc
-*.sw[opn]
+*.sw[opnm]
 *~
 .tags
 tags
