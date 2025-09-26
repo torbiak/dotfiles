@@ -166,10 +166,6 @@ nn [[ [m
 nn <leader>mp :set paste!<cr>
 nn <leader>h :noh<cr>
 
-" Grep current word
-nn <leader>g :grep <cword><cr>
-nn <c-w>g :grep! <cword><cr>:new<cr>:cc 1<cr>
-
 " remove trailing whitespace
 nn <leader>mw :%s/\v\s+$//<cr>
 
@@ -919,6 +915,26 @@ command! -range=% -nargs=? Collect let @g = '' | execute '<line1>,<line2>g/<args
 " }}}
 
 " Navigation {{{
+
+function! Grep(args, open_window) abort
+    " Tell :grep to never jump ('!'), but then open a new window for the
+    " results if requested or the current buffer is modified.
+    exe $':grep! {a:args}'
+    let nhits = getqflist({'size' : 1})['size']
+    if nhits && (a:open_window || &modified)
+        new
+        cc 1
+    endif
+endfunction
+command! -nargs=+ -bang Grep cal Grep(<q-args>, "<bang>" == '!')
+command! -nargs=+ -bang GrepRepo cal Grep(<q-args> . ' ' . fnameescape(RepoRoot()), "<bang>" == '!')
+cnoreabbrev GR GrepRepo
+
+" Grep current word.
+nn <leader>g :cal Grep(expand('<cword>'), 0)<cr>
+nn <c-w>g :cal Grep(expand('<cword>'), 1)<cr>
+nn <leader>G :cal Grep(expand('<cword>') . ' ' . fnameescape(RepoRoot()), 0)<cr>
+nn <c-w>G :cal Grep(expand('<cword>') . ' ' . fnameescape(RepoRoot()), 1)<cr>
 
 " A weak fuzzy file finder for use in environments where installing vim
 " plugins or other executables isn't possible or worth it.
