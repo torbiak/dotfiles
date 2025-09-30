@@ -103,6 +103,7 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 cnoremap <esc>b <S-Left>
 cnoremap <esc>f <S-Right>
+" Note that C-w deletes to the previous non-'iskeyword' character.
 cnoremap <esc><bs> <C-w>
 
 " Emacs emulation in insert mode.
