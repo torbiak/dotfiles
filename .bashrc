@@ -130,6 +130,7 @@ print_prompt() {
     local m="\x01\e[35m\x02" # magenta
     local reset="\x01\e[0m\x02"
     local sep="$y|"
+    local bell="\x01\a\x02"
 
     local parts=()
 
@@ -182,7 +183,7 @@ print_prompt() {
     [[ $prompt_multiline ]] && echo
     local dollar_or_hash=\$
     ((EUID == 0)) && dollar_or_hash=\#
-    echo -ne "${y}${dollar_or_hash}${reset} "
+    echo -ne "${y}${dollar_or_hash}${reset}${bell} "
 }
 : "${prompt_multiline:=}"
 : "${prompt_git:=yes}"
