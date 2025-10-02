@@ -1241,9 +1241,13 @@ com! -nargs=0 Conflicts call QuickfixConflicts()
 function! GitHubUrl() abort
     let dir = shellescape(expand('%:h'))
     let path = shellescape(expand('%'))
-    let relpath = system($'git -C {dir} ls-files --full-name {path}')->trim()
+    let repo_root = system($'git -C {dir} rev-parse --show-toplevel')->trim()
+    if repo_root =~ '^fatal:'
+        throw repo_root
+    endif
+    let relpath = system($'git -C {repo_root} ls-files --full-name {path}')->trim()
 
-    let origin_url = system($'git -C {dir} remote get-url origin')->trim()
+    let origin_url = system($'git -C {repo_root} remote get-url origin')->trim()
     if origin_url =~ 'git@'
         let repo_name = substitute(origin_url, 'git@[^:]*:', '', '')
     elseif origin_url =~ 'http'
@@ -1255,8 +1259,8 @@ function! GitHubUrl() abort
     " the most recent commit hash that we have from the default branch.
     " Use a hash instead of the branch name to anchor the link in time
     " somewhat.
-    let default_branch = system($'git -C {dir} rev-parse --abbrev-ref origin/HEAD')->trim()->split('/')[1]
-    let hash = system($'git -C {dir} rev-parse --verify --short {default_branch}')->trim()
+    let default_branch = system($'git -C {repo_root} rev-parse --abbrev-ref origin/HEAD')->trim()->split('/')[1]
+    let hash = system($'git -C {repo_root} rev-parse --verify --short {default_branch}')->trim()
 
     let line = line('.')
     let url = $'https://github.com/{repo_name}/blob/{hash}/{relpath}#L{line}'
