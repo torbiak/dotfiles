@@ -1430,7 +1430,7 @@ function! PipeShellToScratch(buffer_name, cmd, win_mods) abort
     " Go back to the saved window
     exe saved_win . 'wincmd w'
 endfunction
-com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-mods>)
+com! -nargs=+ PipeShellToScratch call PipeShellToScratch(<q-args>, <q-args>, <q-mods>)
 " }}}
 
 " Vim programming {{{
