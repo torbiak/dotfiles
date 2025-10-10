@@ -1519,6 +1519,14 @@ function! GnuC()
   setlocal cinoptions=>2s,e-s,n-s,f0,{s,^-s,:s,=s,g0,+.5s,p2s,t0,(0 cindent
 endfunction
 
+function! FiletypeJavascript()
+    setlocal et foldmethod=marker foldmarker={,} foldminlines=5 foldlevel=99
+    if expand('%:p') =~ '\v/scode/|/jsam/'
+        setlocal sw=4
+    else
+        setlocal sw=2
+    endif
+endfunction
 
 " The standard markdown plugin is lacking as of Vim7.4
 " Improvements in tpope/vim-markdown will eventually be merged upstream.
@@ -1559,7 +1567,7 @@ augroup vimrc
     autocmd Filetype python setlocal foldmethod=indent foldnestmax=2 foldlevel=99
     au Filetype make setlocal sw=4 ts=4 noet
     au Filetype typescript setlocal sw=2 et
-    au Filetype javascript setlocal sw=2 et foldmethod=marker foldmarker={,} foldminlines=5 foldlevel=5
+    au Filetype javascript call FiletypeJavascript()
 
     " Rust
     " Note this block shouldn't be necessary or have any effect in Vim9+
