@@ -47,6 +47,7 @@ alias python3='python3 -q'
 alias unp='unp -U'
 alias feh='feh -.'
 alias ncdu='ncdu --color off'
+alias xs=xmlstarlet
 
 alias e-b='vim ~/.bashrc'
 alias e-bl='vim ~/.bashrc.local'
