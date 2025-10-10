@@ -1602,9 +1602,9 @@ augroup vimrc
 
     " Key bindings for filetype-specific stuff.
 
-    autocmd Filetype sh nn <buffer> <leader>my :call Make('shellcheck -f gcc %:S')<cr>
-    autocmd Filetype sh no <buffer> <LocalLeader>e :ExecBash<cr>
-    autocmd Filetype sh no <buffer> <LocalLeader>E vip:ExecBash<cr>
+    autocmd Filetype sh,bash nn <buffer> <leader>my :call Make('shellcheck -f gcc %:S')<cr>
+    autocmd Filetype sh,bash no <buffer> <LocalLeader>e :ExecBash<cr>
+    autocmd Filetype sh,bash no <buffer> <LocalLeader>E vip:ExecBash<cr>
 
     autocmd Filetype c nn <buffer> <leader>md :cal DebugVarsC()<cr>
 
