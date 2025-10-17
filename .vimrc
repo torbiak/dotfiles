@@ -846,7 +846,7 @@ function! DebugVarsJavascript(sep=' ')
     let words = getline('.')->split()
     let pieces = []
     for w in words
-        cal add(pieces, printf('%s=${%s}', w, w))
+        cal add(pieces, printf('%s=${JSON.stringify(%s, null, 2)}', w, w))
     endfor
     let format = pieces->join(a:sep)
     let line = $"{indent}console.log(`{format}`);  // TODO: remove"
