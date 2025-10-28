@@ -1633,6 +1633,7 @@ augroup vimrc
 
     autocmd Filetype javascript nn <buffer> <leader>my :call MakeX(#{makeprg: 'jshint --show-non-errors %:S', efm: '%f: line %l\, col %c\, %m'})<cr>
     autocmd Filetype javascript nn <buffer> <leader>mr :call MakeX(#{compiler: 'javascript', makeprg: 'node %'})<cr>
+    autocmd Filetype javascript nn <buffer> <leader>mu :!npx mocha % 2>&1 \| tee test.log<cr>
 
     autocmd Filetype typescript nn <buffer> <leader>mr :call MakeX(#{compiler: 'tsc', makeprg: 'ts-node %'})<cr>
     autocmd Filetype typescript nn <buffer> <leader>mm :call MakeX(#{compiler: 'tsc', makeprg: filereadable('yarn.lock') ? 'yarn tsc' : 'tsc'})<cr>
