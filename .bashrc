@@ -63,7 +63,6 @@ bind C-p:history-search-backward
 bind C-n:history-search-forward
 bind '"\C-x\C-k": kill-region'
 bind '"\ew": copy-region-as-kill'
-bind '"\el": redraw-current-line'
 bind '"\em": menu-complete'
 bind '"\eM": menu-complete-backward'
 # Unbind keys that use \eO as a prefix.
