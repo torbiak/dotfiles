@@ -1034,7 +1034,9 @@ nmap <leader>a <Plug>(EasyAlign)
 let g:NERDTreeDirArrows=0
 
 " Tagbar
-nn <leader>t :TagbarOpen<cr>
+let g:tagbar_autoclose = 1
+let g:tagbar_autofocus = 1
+nn <leader>t :TagbarOpen j<cr>
 nn <leader>T :TagbarClose<cr>
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
