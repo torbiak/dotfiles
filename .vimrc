@@ -1263,7 +1263,7 @@ function! GitHubUrl() abort
     " Use a hash instead of the branch name to anchor the link in time
     " somewhat.
     let default_branch = system($'git -C {repo_root} rev-parse --abbrev-ref origin/HEAD')->trim()->split('/')[1]
-    let hash = system($'git -C {repo_root} rev-parse --verify --short {default_branch}')->trim()
+    let hash = system($'git -C {repo_root} rev-parse --verify {default_branch}')->trim()
 
     let line = line('.')
     let url = $'https://github.com/{repo_name}/blob/{hash}/{relpath}#L{line}'
