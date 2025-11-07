@@ -48,6 +48,7 @@ alias unp='unp -U'
 alias feh='feh -.'
 alias ncdu='ncdu --color off'
 alias xs=xmlstarlet
+alias loadrc='. ~/.bashrc'
 
 alias e-b='vim ~/.bashrc'
 alias e-bl='vim ~/.bashrc.local'
