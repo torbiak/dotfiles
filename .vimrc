@@ -1243,7 +1243,7 @@ com! -nargs=0 Conflicts call QuickfixConflicts()
 " Get the GitHub url for the current location.
 function! GitHubUrl() abort
     let dir = shellescape(expand('%:h'))
-    let path = shellescape(expand('%'))
+    let path = shellescape(expand('%:p'))
     let repo_root = system($'git -C {dir} rev-parse --show-toplevel')->trim()
     if repo_root =~ '^fatal:'
         throw repo_root
