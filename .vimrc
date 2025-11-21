@@ -544,6 +544,8 @@ function! TemplateLinear(...) range
     let template = join(getline(a:firstline, a:lastline), "\r")
     let lines = []
 
+    let saved_ignorecase = &ignorecase
+    let &ignorecase = 0
     for i in range(nrepl)
         " Make substitutions.
         let out = template
@@ -554,6 +556,7 @@ function! TemplateLinear(...) range
 
         cal extend(lines, split(out, "\r"))
     endfor
+    let &ignorecase = saved_ignorecase
 
     cal append(a:lastline, lines)
 endfunction
