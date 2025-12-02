@@ -71,10 +71,12 @@ cont() {
 todo() {
     OPTIND=0
     local sound=
-    while getopts "hs" opt; do
+    local notify=
+    while getopts "hsn" opt; do
         case "$opt" in
         h) echo "$usage"; exit 0;;
         s) sound=yes;;
+        n) notify=yes;;
         *) exit 1;;
         esac
     done
@@ -91,7 +93,11 @@ todo() {
     once || return 1
 
     if [[ "$sound" ]]; then
-        paplay ~/dx/sounds/xylofon.wav &
+        paplay ~/dx/sounds/xylofon.oga &
+    fi
+
+    if [[ "$notify" ]]; then
+        notify-send "$msg"
     fi
 }
 
