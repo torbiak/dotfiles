@@ -492,6 +492,8 @@ function! TemplateCartesian(...) range
     let lines = []
 
     " Generate all combinations of replacements.
+    let saved_ignorecase = &ignorecase
+    let &ignorecase = 0
     while combination[0] < len(replacementLists[patterns[0]])
         let out = template
         for pi in range(len(patterns))  " pi: pattern index
@@ -512,6 +514,7 @@ function! TemplateCartesian(...) range
             endif
         endfor
     endwhile
+    let &ignorecase = saved_ignorecase
 
     cal append(a:lastline, lines)
 endfunction
