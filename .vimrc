@@ -1618,6 +1618,7 @@ augroup vimrc
     autocmd Filetype c nn <buffer> <leader>md :cal DebugVarsC()<cr>
 
     autocmd Filetype python nn <buffer> <leader>my :call Make('mypy %:S')<cr>
+    autocmd Filetype python nn <buffer> <leader>mm :call Make('uvx ruff check --output-format concise %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>mu :call Make('python3 -munittest %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>md :cal DebugVarsPython()<cr>
 
