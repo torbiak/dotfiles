@@ -568,7 +568,12 @@ rgl() {
     rg --color always --heading "$@" | less
 }
 
-clip() { xsel -b; }
+clip() {
+    local s
+    s=$(cat)
+    echo "$s"
+    xsel -b <<<"$s"
+}
 clip-args() { xsel -ib <<<"$*"; }
 clip2file() { xclip -o -selection clipboard >"${1:?No filename given}"; }
 
