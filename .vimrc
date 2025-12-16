@@ -734,6 +734,8 @@ function! JoinNoWhitespace() range abort
 endfunction
 command! -range JoinNoWhitespace <line1>,<line2>call JoinNoWhitespace()
 
+command -range=% FormatPy <line1>,<line2>!uvx ruff format -
+
 " }}}
 
 " Viewing {{{
@@ -1621,6 +1623,7 @@ augroup vimrc
     autocmd Filetype python nn <buffer> <leader>mm :call Make('uvx ruff check --output-format concise %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>mu :call Make('python3 -munittest %:S')<cr>
     autocmd Filetype python nn <buffer> <leader>md :cal DebugVarsPython()<cr>
+    autocmd Filetype python no <buffer> <LocalLeader>f :FormatPy<cr>
 
     " Rust
     autocmd Filetype rust nn <buffer> <leader>mc :call Make('cargo check --tests')<cr>
