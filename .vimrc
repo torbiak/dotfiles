@@ -42,12 +42,18 @@ set backupdir=~/tmp/vim,.
 
 " Formatting options {{{
 
-" j: remove comment markers when joining lines
+" Note that lots of ftplugins modify formatoptions, so add ~/.vim/after/ftplugin/{ft}.vim if you
+" want to override them.
+"
+" omit t and c: no automatic line-breaking
+"
+" r: insert comment leader after hitting ender
+" o: insert comment leader after hitting o/O
+" /: don't insert comment leader for a // comment after a statement
 " q: allow formatting comments with gq
-" t: automatically break lines longer than textwidth in insert mode
-" c: automatically break comment lines and insert comment marker
-set formatoptions+=jq
-set formatoptions-=tc
+" j: remove comment markers when joining lines
+set formatoptions=ro/qj
+
 " Don't insert two spaces after sentences when joining lines.
 set nojoinspaces
 " Don't use Q for Ex mode, use it for formatting.
