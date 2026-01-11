@@ -1042,6 +1042,7 @@ nmap <leader>a <Plug>(EasyAlign)
 let g:NERDTreeDirArrows=0
 
 " Tagbar
+let g:tagbar_sort = 0
 let g:tagbar_autoclose = 1
 let g:tagbar_autofocus = 1
 nn <leader>t :TagbarOpen j<cr>
