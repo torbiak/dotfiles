@@ -79,6 +79,7 @@ function! MbMovieFormat() range abort
     let lines = getline(a:firstline, a:lastline)
     let fields = []
     for line in lines
+        let line = line->trim()
         if line =~ '^$'
             continue
         elseif line =~ '^Make a Movie '
@@ -112,6 +113,16 @@ vn <buffer> <localleader>D :<C-u>call append('.', systemlist('cedict -c ' . GetS
 nn <buffer> <localleader>c :echo system('cedict ' . getline('.')->strcharpart(charcol('.') - 1, 1))<cr>
 
 nn <buffer> <localleader>n :.!pinyin-num<cr>
+
+function! JoinWithBreaks() range abort
+    let [start, end] = [a:firstline, a:lastline]
+    if end > start
+        let end -= 1
+    endif
+    exe $'{start},{end}s/\n/<br>/'
+endfunction
+com! -range JoinWithBreaks silent <line1>,<line2>call JoinWithBreaks()
+no <buffer> <localleader>J :JoinWithBreaks<cr>
 
 function! CopyTsvAsLines() abort
     cal system('xsel -ib', getline('.')->substitute('\t', '\n', 'g'))
