@@ -42,17 +42,18 @@ set backupdir=~/tmp/vim,.
 
 " Formatting options {{{
 
-" Note that lots of ftplugins modify formatoptions, so add ~/.vim/after/ftplugin/{ft}.vim if you
-" want to override them.
+" Note that lots of ftplugins modify formatoptions, so it's also set in an autocmd below.
 "
 " omit t and c: no automatic line-breaking
 "
-" r: insert comment leader after hitting ender
+" r: insert comment leader after hitting <Enter>
 " o: insert comment leader after hitting o/O
 " /: don't insert comment leader for a // comment after a statement
 " q: allow formatting comments with gq
 " j: remove comment markers when joining lines
-set formatoptions=ro/qj
+set formatoptions=jorq/
+
+set textwidth=100
 
 " Don't insert two spaces after sentences when joining lines.
 set nojoinspaces
@@ -1573,6 +1574,8 @@ au! filetypedetect BufRead,BufNewFile *.mb setlocal filetype=mb
 augroup vimrc
     " Remove all vimrc autocommands.
     autocmd!
+
+    autocmd Filetype * setlocal formatoptions=jorq/
 
     " Indentation settings.
     autocmd Filetype java setlocal sw=2 et
