@@ -766,7 +766,6 @@ function! Man(man_args, win_mods)
     exe printf('%s new', a:win_mods)
     setlocal bufhidden=unload " unload buf when no longer displayed
     setlocal buftype=nofile   " buffer is not related to any file
-    setlocal nowrap           " don't soft-wrap
     setlocal nobuflisted      " don't show up in the buffer list
     setlocal filetype=man
     " pipe in the formatted manpage
