@@ -40,3 +40,6 @@
 [submodule ".vim/bundle/vim-easy-align"]
 	path = .vim/bundle/vim-easy-align
 	url = https://github.com/junegunn/vim-easy-align.git
+[submodule ".vim/pack/vimBookmarks"]
+	path = .vim/pack/vimBookmarks
+	url = https://github.com/torbiak/vimBookmarks.git
