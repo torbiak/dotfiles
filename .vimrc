@@ -1174,6 +1174,7 @@ com! MakeTest call Make('make test')
 nn <leader>mu :MakeTest<cr>
 
 com! -nargs=* -complete=file Pyflakes call Make('pyflakes ' . (<q-args> == '' ? '%' : <q-args>))
+com! -nargs=* -complete=file Flake8 call Make('flake8 --append-config ~/.config/flake8 ' . (<q-args> == '' ? '%' : <q-args>))
 
 " Fill the quickfix list with pylint output. Run pylint on all the files
 " changed since the last commmit (default) or between given revisions, which
