@@ -12,6 +12,8 @@ if hostname() == 'hatebox'
 endif
 call pathogen#infect()
 call pathogen#helptags()
+
+packadd! bmk
 " }}}
 
 " Basic options {{{
