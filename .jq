@@ -20,5 +20,21 @@ def leaf_value_counts(max):
 ;
 def leaf_value_counts: leaf_value_counts(-1);
 
-def freq_by(f): reduce .[] as $i ({}; .[$i | f | tostring] += 1);
+# Count the frequency of the input array after applying the given filter. If the filter produces
+# objects, freq_by adds a count field to them, and otherwise it produces {key, count} objects.
+#
+# Previously I was producing one object with all the counts, but that forced the values being
+# counted to be represented as strings.
+def freq_by(f):
+    reduce .[] as $i ({}; .[$i | {key: f} | tojson] += 1)
+    | to_entries
+    | map(
+        (.key | fromjson | .key) as $key
+        | if ($key | type) == "object" then
+            $key + {count: .value}
+        else
+            {$key, count: .value}
+        end
+    )
+;
 def freq: freq_by(.);
