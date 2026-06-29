@@ -554,6 +554,12 @@ sleeptil() {
     sleep $((next - now))
 }
 
+date-iso() {
+    local out
+    out=$(date -Iseconds "$@")
+    echo "${out/+00:00/Z}"
+}
+
 # Expand stdin or the given files as if they were a heredoc. That is,
 # parameter, command, and arithmetic expansions are performed by the shell.
 # Any \, $, or ` characters must be escaped with a backslash to be printed
