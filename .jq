@@ -38,3 +38,5 @@ def freq_by(f):
     )
 ;
 def freq: freq_by(.);
+
+def intersection($a1; $a2): $a1 - ($a1 - $a2) | unique;
