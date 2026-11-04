@@ -1027,6 +1027,8 @@ let g:fzf_action = {
 let g:my_fzf_options = ['--no-mouse', '--scheme=path', $'--history={$HOME}/.fzf/history', '--multi']
 " Search in current dir using fzf's internal file listing. Lists everything.
 nn <leader>fd :cal fzf#run(fzf#wrap(#{options: g:my_fzf_options}))<cr>
+" Search in dir of current buffer, using fzf's internal file listing. Lists everything.
+nn <leader>fD :cal fzf#run(fzf#wrap(#{options: g:my_fzf_options, dir: expand('%:h')}))<cr>
 " Search in current dir, using various .ignore files.
 nn <leader>z :cal fzf#run(fzf#wrap(#{source: 'rg --files', options: g:my_fzf_options}))<cr>
 " Search in repo.
@@ -1035,8 +1037,15 @@ nn <leader>fr :cal fzf#run(fzf#wrap(#{
     \ options: g:my_fzf_options,
     \ dir: RepoRoot(),
 \ }))<cr>
+" Search in repo of the current buffer.
+nn <leader>fR :cal fzf#run(fzf#wrap(#{
+    \ source: 'rg --files',
+    \ options: g:my_fzf_options,
+    \ dir: RepoRoot(expand('%:h')),
+\ }))<cr>
 " Search for files in the same dir as the current buffer ("here").
 nn <leader>fh :cal fzf#run(fzf#wrap(#{source: 'rg --files', options: g:my_fzf_options, dir: expand('%:h') }))<cr>
+nn <leader>Z :cal fzf#run(fzf#wrap(#{source: 'rg --files', options: g:my_fzf_options, dir: expand('%:h') }))<cr>
 " Search listed buffers.
 nn <leader>fb :cal fzf#run(fzf#wrap(#{
     \ source: getbufinfo(#{buflisted: 1})->map({_, d -> d['name']}),
@@ -1243,8 +1252,10 @@ function! ReadGitDiff()
 endfunction
 command! Gdr call ReadGitDiff()
 
-function! RepoRoot() abort
-    let repo_root = system('git rev-parse --show-toplevel')->trim()
+function! RepoRoot(dir = v:null) abort
+    let dir = a:dir == v:null ? getcwd() : a:dir
+    let escaped_dir = fnameescape(dir)
+    let repo_root = system($"git -C {escaped_dir} rev-parse --show-toplevel")->trim()
     if repo_root =~ '^fatal:'
         throw repo_root
     endif
