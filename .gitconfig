@@ -1,5 +1,6 @@
 [alias]
     d = diff
+    da = diff-all
     ci = commit -v
     co = checkout
     br = branch
