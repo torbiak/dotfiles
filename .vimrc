@@ -1542,6 +1542,8 @@ function! Location()
     return $"{expand('%:p')}:{line('.')}"->substitute('^' . $HOME, '~', '')
 endfunction
 nn <leader>ml :cal Clip(Location())<cr>
+
+let re_non_ascii = '[^\x00-\xFF]'
 " }}}
 
 " Filetypes {{{
