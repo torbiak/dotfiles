@@ -91,7 +91,7 @@ nn Y y$
 " make some changes at the destination that'd overwrite @" and/or @0.
 nn <leader>y :let @y = @"<cr>
 
-" Yank current filename.
+" Yank current filename. Probably superceded by ClipLoc.
 nn <leader>mf :let @" = expand('%')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
 nn <leader>mF :let @" = expand('%:p')->substitute('^' . $HOME, '~', '') <bar> echo @"<cr>
 
@@ -1013,6 +1013,30 @@ function! GoAndSearch()
     let @" = saved_unnamed_reg
 endfunction
 nn <leader>mg :call GoAndSearch()<cr>
+
+" options:
+" -a,--abs  absolute path
+" -n,--number  include line number
+function Loc(...) abort
+    let abs = 0
+    let number = 0
+    for arg in a:000
+        if arg ==# '-a' || arg ==# '--abs'
+            let abs = 1
+        elseif arg ==# '-n' || arg ==# '--number'
+            let number = 1
+        else
+            echoerr $"unexpected option: {arg}"
+            return
+        endif
+    endfor
+    let loc = expand(abs == 1 ? '%:p' : '%')->substitute('^' . $HOME, '~', '')
+    if number
+        let loc .= ':' .. line('.')
+    endif
+    return loc
+endfunction
+com! -nargs=* ClipLoc call Loc(<f-args>)->Echo()->Clip()
 "}}}
 
 " Plugin configuration {{{
